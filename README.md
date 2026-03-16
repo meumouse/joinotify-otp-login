@@ -1,12 +1,6 @@
-# Joinotify
+# Joinotify OTP Login - Autenticação simplificada sem senha
 
-Aumente a satisfação do seu cliente automatizando o envio de mensagens via WhatsApp com o Joinotify.
-
----
-
-#### Propriedade intelectual:
-O software Joinotify ® é uma propriedade registrada da MEUMOUSE.COM® – SOLUÇÕES DIGITAIS LTDA, em conformidade com o §2°, art. 2° da Lei 9.609, de 19 de Fevereiro de 1998.
-É expressamente proibido a distribuição ou cópia ilegal deste software, sujeita a penalidades conforme as leis de direitos autorais vigentes.
+Permita que seus usuários façam login com segurança utilizando verificação por código enviado via WhatsApp através do Joinotify, oferecendo uma experiência rápida e sem necessidade de senha.
 
 ---
 

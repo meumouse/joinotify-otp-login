@@ -10,7 +10,7 @@
  * Version: 				1.0.0
  * Requires PHP: 			7.4
  * Tested up to:      		6.9.4
- * Text Domain: 			joinotify
+ * Text Domain: 			joinotify-otp-login
  * Domain Path: 			/languages
  * License:                 GPLv2 or later
  * License URI:             https://www.gnu.org/licenses/gpl-2.0.html
