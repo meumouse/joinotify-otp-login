@@ -4,7 +4,7 @@
  * Plugin Name: 			Joinotify OTP Login - Autenticação simplificada sem senha
  * Description: 			Permita que seus usuários façam login com segurança utilizando verificação por código enviado via WhatsApp através do Joinotify, oferecendo uma experiência rápida e sem necessidade de senha.
  * Plugin URI: 				https://meumouse.com/plugins/joinotify/?utm_source=wordpress&utm_medium=plugin_list&utm_campaign=joinotify_otp_login
- * Requires Plugins: 		woocommerce
+ * Requires Plugins: 		joinotify
  * Author: 					MeuMouse.com
  * Author URI: 				https://meumouse.com/?utm_source=wordpress&utm_medium=plugin_list&utm_campaign=joinotify_otp_login
  * Version: 				1.0.0

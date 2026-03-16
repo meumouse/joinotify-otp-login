@@ -1,10 +1,9 @@
 <?php
-
 namespace MeuMouse\Joinotify\Otp_Login\Core;
 
-use ReflectionException;
-use ReflectionClass;
 use Exception;
+use ReflectionClass;
+use ReflectionException;
 
 defined('ABSPATH') || exit;
 
@@ -73,21 +72,20 @@ final class Plugin {
 		/**
 		 * Fire hook before plugin initialize.
 		 *
-		 * @since 1.1.0
+		 * @since 1.0.0
 		 */
 		do_action('Joinotify/Otp_Login/Before_Init');
 
-		// Display notice if PHP version is below 7.4.
-		if ( version_compare( phpversion(), '7.4', '<' ) ) {
-			add_action( 'admin_notices', array( $this, 'php_version_notice' ) );
+		if ( ! $this->validate_requirements() ) {
 			return;
 		}
 
 		$this->setup_constants();
+        
 		$this->directory = JOINOTIFY_OTP_LOGIN_DIR;
 		$this->basename = JOINOTIFY_OTP_LOGIN_BASENAME;
 
-		$this->register_hooked_classes();
+		$this->register_classes();
 
 		// Add settings link on plugins list.
 	//	add_filter( 'plugin_action_links_' . $this->basename, array( $this, 'add_action_plugin_links' ), 10, 4 );
@@ -101,7 +99,7 @@ final class Plugin {
 		/**
 		 * Fire hook after plugin initialize.
 		 *
-		 * @since 1.1.0
+		 * @since 1.0.0
 		 */
 		do_action('Joinotify/Otp_Login/Init');
 	}
@@ -115,6 +113,46 @@ final class Plugin {
 	 */
 	public function load_text_domain() {
 		load_plugin_textdomain( 'joinotify-otp-login', false, dirname( $this->basename ) . '/languages/' );
+	}
+
+
+	/**
+	 * Validate plugin requirements before initialization.
+	 *
+	 * @since 1.0.0
+	 * @return bool
+	 */
+	private function validate_requirements() {
+		// check PHP version
+		if ( version_compare( phpversion(), '7.4', '<' ) ) {
+			add_action( 'admin_notices', function() {
+				$class = 'notice notice-error is-dismissible';
+				$message = __( '<strong>Joinotify OTP Login</strong> requer a versão do PHP 7.4 ou maior. Contate o suporte da sua hospedagem para realizar a atualização.', 'joinotify-otp-login' );
+
+				printf( '<div class="%1$s"><p>%2$s</p></div>', esc_attr( $class ), $message );
+			});
+
+			return false;
+		}
+
+		// load function if not exists
+		if ( ! function_exists('is_plugin_active') ) {
+			require_once ABSPATH . 'wp-admin/includes/plugin.php';
+		}
+
+		// check if Joinotify is active
+		if ( ! is_plugin_active( 'joinotify/joinotify.php' ) ) {
+			add_action( 'admin_notices', function() {
+				$class = 'notice notice-error is-dismissible';
+				$message = __( '<strong>Joinotify OTP Login</strong> requer que o plugin <strong>Joinotify</strong> esteja ativo para funcionar.', 'joinotify-otp-login' );
+
+				printf( '<div class="%1$s"><p>%2$s</p></div>', esc_attr( $class ), $message );
+			});
+
+			return false;
+		}
+
+		return true;
 	}
 
 
@@ -153,26 +191,12 @@ final class Plugin {
 
 
 	/**
-	 * PHP version notice.
-	 *
-	 * @since 1.0.0
-	 * @return void
-	 */
-	public function php_version_notice() {
-		$class = 'notice notice-error is-dismissible';
-		$message = __( '<strong>Joinotify OTP Login</strong> requer a versão do PHP 7.4 ou maior. Contate o suporte da sua hospedagem para realizar a atualização.', 'joinotify-otp-login' );
-
-		printf( '<div class="%1$s"><p>%2$s</p></div>', esc_attr( $class ), $message );
-	}
-
-
-	/**
 	 * Register class instantiation handlers for each mapped hook.
 	 *
 	 * @since 1.0.0
 	 * @return void
 	 */
-	private function register_hooked_classes() {
+	private function register_classes() {
         $hook_classes = array(
 			'init' => array(
 				'MeuMouse\\Joinotify\\Otp_Login\\Core\\Assets',
@@ -293,7 +317,7 @@ final class Plugin {
 	public function add_row_meta_links( $plugin_meta, $plugin_file, $plugin_data, $status ) {
 		if ( strpos( $plugin_file, $this->basename ) !== false ) {
 			$new_links = array(
-				'docs' => '<a href="' . esc_attr( JOINOTIFY_OTP_LOGIN_DOCS_URL ) . '" target="_blank">' . __( 'Documentação', 'joinotify-otp-login' ) . '</a>',
+				'docs' => '<a href="' . esc_attr( JOINOTIFY_OTP_LOGIN_DOCS_URL ) . '" target="_blank">' . __( 'DocumentaÃ§Ã£o', 'joinotify-otp-login' ) . '</a>',
 			);
 
 			$plugin_meta = array_merge( $plugin_meta, $new_links );
