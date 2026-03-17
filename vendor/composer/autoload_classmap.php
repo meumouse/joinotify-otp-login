@@ -7,4 +7,8 @@ $baseDir = dirname($vendorDir);
 
 return array(
     'Composer\\InstalledVersions' => $vendorDir . '/composer/InstalledVersions.php',
+    'MeuMouse\\Joinotify\\Otp_Login\\Core\\Ajax' => $baseDir . '/inc/Core/Ajax.php',
+    'MeuMouse\\Joinotify\\Otp_Login\\Core\\Assets' => $baseDir . '/inc/Core/Assets.php',
+    'MeuMouse\\Joinotify\\Otp_Login\\Core\\Plugin' => $baseDir . '/inc/Core/Plugin.php',
+    'MeuMouse\\Joinotify\\Otp_Login\\Validations\\Otp_Validation' => $baseDir . '/inc/Validations/Otp_Validation.php',
 );

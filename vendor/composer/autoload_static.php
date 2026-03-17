@@ -22,6 +22,10 @@ class ComposerStaticInit75a436700607835cd721623e2ebc999b
 
     public static $classMap = array (
         'Composer\\InstalledVersions' => __DIR__ . '/..' . '/composer/InstalledVersions.php',
+        'MeuMouse\\Joinotify\\Otp_Login\\Core\\Ajax' => __DIR__ . '/../..' . '/inc/Core/Ajax.php',
+        'MeuMouse\\Joinotify\\Otp_Login\\Core\\Assets' => __DIR__ . '/../..' . '/inc/Core/Assets.php',
+        'MeuMouse\\Joinotify\\Otp_Login\\Core\\Plugin' => __DIR__ . '/../..' . '/inc/Core/Plugin.php',
+        'MeuMouse\\Joinotify\\Otp_Login\\Validations\\Otp_Validation' => __DIR__ . '/../..' . '/inc/Validations/Otp_Validation.php',
     );
 
     public static function getInitializer(ClassLoader $loader)
