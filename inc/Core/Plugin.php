@@ -1,4 +1,5 @@
 <?php
+
 namespace MeuMouse\Joinotify\Otp_Login\Core;
 
 use Exception;
@@ -200,6 +201,7 @@ final class Plugin {
         $hook_classes = array(
 			'init' => array(
 				'MeuMouse\\Joinotify\\Otp_Login\\Core\\Assets',
+				'MeuMouse\\Joinotify\\Otp_Login\\Integrations\\Woocommerce',
 			),
 			'wp_loaded' => array(
 				'MeuMouse\\Joinotify\\Otp_Login\\Core\\Ajax',

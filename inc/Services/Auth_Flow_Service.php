@@ -1,0 +1,271 @@
+<?php
+
+namespace MeuMouse\Joinotify\Otp_Login\Services;
+
+use MeuMouse\Joinotify\Otp_Login\Repositories\User_Repository;
+use MeuMouse\Joinotify\Otp_Login\Support\Phone_Utils;
+use MeuMouse\Joinotify\Otp_Login\Validations\Otp_Validation;
+
+use WP_Error;
+
+defined('ABSPATH') || exit;
+
+/**
+ * Coordinates the OTP login, password login and account registration flows.
+ *
+ * @since 1.0.0
+ * @package MeuMouse\Joinotify\Otp_Login\Services
+ * @author MeuMouse.com
+ */
+class Auth_Flow_Service {
+
+    /**
+     * User repository instance.
+     *
+     * @since 1.0.0
+     * @var User_Repository
+     */
+    private $users;
+
+    /**
+     * OTP validation service instance.
+     *
+     * @since 1.0.0
+     * @var Otp_Validation
+     */
+    private $otp_validation;
+
+
+    /**
+     * Build the service with optional dependency injection.
+     *
+     * @since 1.0.0
+     * @param User_Repository|null $users Optional user repository instance.
+     * @param Otp_Validation|null  $otp_validation Optional OTP service instance.
+     * @return void
+     */
+    public function __construct( ?User_Repository $users = null, ?Otp_Validation $otp_validation = null ) {
+        $this->users = $users ?: new User_Repository();
+        $this->otp_validation = $otp_validation ?: new Otp_Validation();
+    }
+
+
+    /**
+     * Request an OTP for the account associated with the submitted phone number.
+     *
+     * @since 1.0.0
+     * @param string $phone Raw or normalized phone number.
+     * @return array|WP_Error Response payload or a WordPress error object.
+     */
+    public function request_otp_login( $phone ) {
+        $normalized_phone = Phone_Utils::normalize( $phone );
+
+        if ( empty( $normalized_phone ) ) {
+            return new WP_Error( 'invalid_phone', __( 'Informe um telefone valido com DDI.', 'joinotify-otp-login' ) );
+        }
+
+        $user = $this->users->find_by_phone( $normalized_phone );
+
+        if ( ! $user ) {
+            return array(
+                'status' => 'not_found',
+                'message' => __( 'Não encontramos nenhuma conta com este telefone. Use o login com e-mail e senha.', 'joinotify-otp-login' ),
+                'nextStep' => 'password',
+            );
+        }
+
+        if ( ! $this->otp_validation->generate_and_send_otp( $normalized_phone ) ) {
+            return new WP_Error( 'otp_not_sent', __( 'Nao foi possivel enviar o codigo por WhatsApp agora.', 'joinotify-otp-login' ) );
+        }
+
+        return array(
+            'status' => 'otp_sent',
+            'message' => sprintf(
+                __( 'Enviamos um codigo para o WhatsApp %s.', 'joinotify-otp-login' ),
+                Phone_Utils::mask( $normalized_phone )
+            ),
+            'nextStep' => 'otp',
+            'phone' => $normalized_phone,
+        );
+    }
+
+
+    /**
+     * Validate the submitted OTP and authenticate the matching user.
+     *
+     * @since 1.0.0
+     * @param string $phone Raw or normalized phone number.
+     * @param string $otp User submitted OTP code.
+     * @param bool   $remember Whether the auth cookie should be persistent.
+     * @return array|WP_Error Response payload or a WordPress error object.
+     */
+    public function verify_otp_login( $phone, $otp, $remember = false ) {
+        $normalized_phone = Phone_Utils::normalize( $phone );
+        $otp = preg_replace( '/\D+/', '', (string) $otp );
+
+        if ( empty( $normalized_phone ) || empty( $otp ) ) {
+            return new WP_Error( 'invalid_otp_payload', __( 'Preencha o telefone e o codigo recebido.', 'joinotify-otp-login' ) );
+        }
+
+        $user = $this->users->find_by_phone( $normalized_phone );
+
+        if ( ! $user ) {
+            return new WP_Error( 'user_not_found', __( 'Nao encontramos uma conta para este telefone.', 'joinotify-otp-login' ) );
+        }
+
+        if ( ! $this->otp_validation->validate_otp( $normalized_phone, $otp ) ) {
+            return new WP_Error( 'invalid_otp', __( 'O codigo informado e invalido ou expirou.', 'joinotify-otp-login' ) );
+        }
+
+        $this->users->save_phone( $user->ID, $normalized_phone );
+        $this->login_user( $user->ID, (bool) $remember );
+
+        return array(
+            'status' => 'authenticated',
+            'message' => __( 'Login realizado com sucesso.', 'joinotify-otp-login' ),
+        );
+    }
+
+
+    /**
+     * Authenticate a user using email and password credentials.
+     *
+     * @since 1.0.0
+     * @param string $email Submitted email address.
+     * @param string $password Submitted password.
+     * @param bool   $remember Whether the auth cookie should be persistent.
+     * @return array|WP_Error Response payload or a WordPress error object.
+     */
+    public function login_with_password( $email, $password, $remember = false ) {
+        $email = sanitize_email( $email );
+
+        if ( ! is_email( $email ) ) {
+            return new WP_Error( 'invalid_email', __( 'Informe um e-mail valido.', 'joinotify-otp-login' ) );
+        }
+
+        if ( empty( $password ) ) {
+            return new WP_Error( 'empty_password', __( 'Informe sua senha.', 'joinotify-otp-login' ) );
+        }
+
+        $user = wp_signon(
+            array(
+                'user_login' => $email,
+                'user_password' => $password,
+                'remember' => (bool) $remember,
+            ),
+            is_ssl()
+        );
+
+        if ( is_wp_error( $user ) ) {
+            return new WP_Error( 'auth_failed', __( 'Nao foi possivel autenticar com este e-mail e senha.', 'joinotify-otp-login' ) );
+        }
+
+        return array(
+            'status' => 'authenticated',
+            'message' => __( 'Login realizado com sucesso.', 'joinotify-otp-login' ),
+        );
+    }
+
+
+    /**
+     * Register a new user, store the phone metadata and sign the user in.
+     *
+     * @since 1.0.0
+     * @param array<string,mixed> $payload Registration payload.
+     * @return array|WP_Error Response payload or a WordPress error object.
+     */
+    public function register_user( array $payload ) {
+        $email = sanitize_email( $payload['email'] ?? '' );
+        $password = (string) ( $payload['password'] ?? '' );
+        $username = sanitize_user( $payload['username'] ?? '', true );
+        $phone = Phone_Utils::normalize( $payload['phone'] ?? '' );
+
+        if ( ! is_email( $email ) ) {
+            return new WP_Error( 'invalid_email', __( 'Informe um e-mail valido.', 'joinotify-otp-login' ) );
+        }
+
+        if ( empty( $password ) ) {
+            return new WP_Error( 'empty_password', __( 'Informe uma senha para criar a conta.', 'joinotify-otp-login' ) );
+        }
+
+        if ( empty( $phone ) ) {
+            return new WP_Error( 'invalid_phone', __( 'Informe um telefone valido com DDI.', 'joinotify-otp-login' ) );
+        }
+
+        if ( email_exists( $email ) ) {
+            return new WP_Error( 'email_exists', __( 'Ja existe uma conta cadastrada com este e-mail.', 'joinotify-otp-login' ) );
+        }
+
+        if ( $this->users->phone_exists( $phone ) ) {
+            return new WP_Error( 'phone_exists', __( 'Ja existe uma conta cadastrada com este telefone.', 'joinotify-otp-login' ) );
+        }
+
+        if ( empty( $username ) ) {
+            $username = $this->generate_username_from_email( $email );
+        }
+
+        if ( username_exists( $username ) ) {
+            $username = $this->generate_username_from_email( $email );
+        }
+
+        if ( function_exists( 'wc_create_new_customer' ) ) {
+            $user_id = wc_create_new_customer( $email, $username, $password );
+        } else {
+            $user_id = wp_create_user( $username, $password, $email );
+        }
+
+        if ( is_wp_error( $user_id ) ) {
+            return new WP_Error( 'registration_failed', $user_id->get_error_message() );
+        }
+
+        $this->users->save_phone( $user_id, $phone );
+        $this->login_user( $user_id, true );
+
+        return array(
+            'status' => 'registered',
+            'message' => __( 'Conta criada com sucesso.', 'joinotify-otp-login' ),
+        );
+    }
+
+
+    /**
+     * Generate a unique username from the email local-part.
+     *
+     * @since 1.0.0
+     * @param string $email Email address.
+     * @return string Generated username.
+     */
+    private function generate_username_from_email( $email ) {
+        $base = sanitize_user( current( explode( '@', $email ) ), true );
+        $base = empty( $base ) ? 'cliente' : $base;
+        $candidate = $base;
+        $suffix = 1;
+
+        while ( username_exists( $candidate ) ) {
+            $candidate = $base . $suffix;
+            $suffix++;
+        }
+
+        return $candidate;
+    }
+
+
+    /**
+     * Sign a user into WordPress and trigger the standard login action.
+     *
+     * @since 1.0.0
+     * @param int  $user_id Target user ID.
+     * @param bool $remember Whether the auth cookie should be persistent.
+     * @return void
+     */
+    private function login_user( $user_id, $remember ) {
+        wp_set_current_user( $user_id );
+        wp_set_auth_cookie( $user_id, $remember, is_ssl() );
+
+        $user = get_user_by( 'id', $user_id );
+
+        if ( $user ) {
+            do_action( 'wp_login', $user->user_login, $user );
+        }
+    }
+}

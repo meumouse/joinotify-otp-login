@@ -1,0 +1,99 @@
+.joinotify-otp-login,
+.joinotify-otp-register {
+    border: 1px solid #e5e7eb;
+    border-radius: 18px;
+    background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
+    padding: 24px;
+    margin-bottom: 24px;
+    box-shadow: 0 10px 24px rgba(15, 23, 42, 0.06);
+}
+
+.joinotify-otp-login__header {
+    margin-bottom: 20px;
+}
+
+.joinotify-otp-login__title {
+    margin: 0 0 8px;
+    font-size: 24px;
+    line-height: 1.2;
+}
+
+.joinotify-otp-login__description {
+    margin: 0;
+    color: #475569;
+}
+
+.joinotify-otp-notice {
+    margin-bottom: 16px;
+    padding: 12px 14px;
+    border-radius: 12px;
+    font-size: 14px;
+}
+
+.joinotify-otp-notice--success {
+    background: #ecfdf3;
+    color: #166534;
+}
+
+.joinotify-otp-notice--error {
+    background: #fef2f2;
+    color: #991b1b;
+}
+
+.joinotify-otp-login__actions,
+.joinotify-otp-login__links {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+.joinotify-otp-login__separator {
+    margin: 20px 0;
+    color: #64748b;
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+}
+
+.joinotify-otp-login .button,
+.joinotify-otp-register .button,
+.joinotify-otp-register .woocommerce-Button {
+    min-height: 46px;
+}
+
+.joinotify-otp-link {
+    color: #0f766e;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.joinotify-otp-link:hover {
+    text-decoration: underline;
+}
+
+.joinotify-otp-login .iti,
+.joinotify-otp-register .iti {
+    width: 100%;
+}
+
+.joinotify-otp-login input[type="text"],
+.joinotify-otp-login input[type="email"],
+.joinotify-otp-login input[type="password"],
+.joinotify-otp-register input[type="text"],
+.joinotify-otp-register input[type="email"],
+.joinotify-otp-register input[type="password"] {
+    width: 100%;
+}
+
+@media (max-width: 767px) {
+    .joinotify-otp-login,
+    .joinotify-otp-register {
+        padding: 18px;
+        border-radius: 14px;
+    }
+
+    .joinotify-otp-login__title {
+        font-size: 21px;
+    }
+}

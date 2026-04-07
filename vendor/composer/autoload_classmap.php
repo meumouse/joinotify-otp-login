@@ -10,5 +10,10 @@ return array(
     'MeuMouse\\Joinotify\\Otp_Login\\Core\\Ajax' => $baseDir . '/inc/Core/Ajax.php',
     'MeuMouse\\Joinotify\\Otp_Login\\Core\\Assets' => $baseDir . '/inc/Core/Assets.php',
     'MeuMouse\\Joinotify\\Otp_Login\\Core\\Plugin' => $baseDir . '/inc/Core/Plugin.php',
+    'MeuMouse\\Joinotify\\Otp_Login\\Integrations\\Woocommerce' => $baseDir . '/inc/Integrations/Woocommerce.php',
+    'MeuMouse\\Joinotify\\Otp_Login\\Repositories\\User_Repository' => $baseDir . '/inc/Repositories/User_Repository.php',
+    'MeuMouse\\Joinotify\\Otp_Login\\Services\\Auth_Flow_Service' => $baseDir . '/inc/Services/Auth_Flow_Service.php',
+    'MeuMouse\\Joinotify\\Otp_Login\\Support\\Phone_Utils' => $baseDir . '/inc/Support/Phone_Utils.php',
     'MeuMouse\\Joinotify\\Otp_Login\\Validations\\Otp_Validation' => $baseDir . '/inc/Validations/Otp_Validation.php',
+    'MeuMouse\\Joinotify\\Otp_Login\\Views\\Templates' => $baseDir . '/inc/Views/Templates.php',
 );
