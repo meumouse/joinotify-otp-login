@@ -86,8 +86,6 @@ final class Plugin {
 		$this->directory = JOINOTIFY_OTP_LOGIN_DIR;
 		$this->basename = JOINOTIFY_OTP_LOGIN_BASENAME;
 
-		$this->register_classes();
-
 		// Add settings link on plugins list.
 	//	add_filter( 'plugin_action_links_' . $this->basename, array( $this, 'add_action_plugin_links' ), 10, 4 );
 
@@ -96,6 +94,9 @@ final class Plugin {
 
 		// Load plugin text domain.
 		add_action( 'init', array( $this, 'load_text_domain' ) );
+
+		// Instance classes after Joinotify initialized
+		add_action( 'joinotify_init', array( $this, 'register_classes' ) );
 
 		/**
 		 * Fire hook after plugin initialize.
@@ -128,7 +129,7 @@ final class Plugin {
 		if ( version_compare( phpversion(), '7.4', '<' ) ) {
 			add_action( 'admin_notices', function() {
 				$class = 'notice notice-error is-dismissible';
-				$message = __( '<strong>Joinotify OTP Login</strong> requer a versão do PHP 7.4 ou maior. Contate o suporte da sua hospedagem para realizar a atualização.', 'joinotify-otp-login' );
+				$message = __( '<strong>Joinotify OTP Login</strong> requires PHP 7.4 or higher. Contact your hosting provider to upgrade PHP.', 'joinotify-otp-login' );
 
 				printf( '<div class="%1$s"><p>%2$s</p></div>', esc_attr( $class ), $message );
 			});
@@ -145,7 +146,7 @@ final class Plugin {
 		if ( ! is_plugin_active( 'joinotify/joinotify.php' ) ) {
 			add_action( 'admin_notices', function() {
 				$class = 'notice notice-error is-dismissible';
-				$message = __( '<strong>Joinotify OTP Login</strong> requer que o plugin <strong>Joinotify</strong> esteja ativo para funcionar.', 'joinotify-otp-login' );
+				$message = __( '<strong>Joinotify OTP Login</strong> requires the <strong>Joinotify</strong> plugin to be active.', 'joinotify-otp-login' );
 
 				printf( '<div class="%1$s"><p>%2$s</p></div>', esc_attr( $class ), $message );
 			});
@@ -197,7 +198,7 @@ final class Plugin {
 	 * @since 1.0.0
 	 * @return void
 	 */
-	private function register_classes() {
+	public function register_classes() {
         $hook_classes = array(
 			'init' => array(
 				'MeuMouse\\Joinotify\\Otp_Login\\Core\\Assets',
@@ -298,7 +299,7 @@ final class Plugin {
 	 */
 	public function add_action_plugin_links( $action_links ) {
 		$plugins_links = array(
-            '<a href="' . admin_url( 'admin.php?page=joinotify' ) . '">' . __( 'Configurar', 'joinotify-otp-login' ) . '</a>',
+            '<a href="' . admin_url( 'admin.php?page=joinotify' ) . '">' . __( 'Configure', 'joinotify-otp-login' ) . '</a>',
         );
 
 		return array_merge( $plugins_links, $action_links );
@@ -319,7 +320,7 @@ final class Plugin {
 	public function add_row_meta_links( $plugin_meta, $plugin_file, $plugin_data, $status ) {
 		if ( strpos( $plugin_file, $this->basename ) !== false ) {
 			$new_links = array(
-				'docs' => '<a href="' . esc_attr( JOINOTIFY_OTP_LOGIN_DOCS_URL ) . '" target="_blank">' . __( 'DocumentaÃ§Ã£o', 'joinotify-otp-login' ) . '</a>',
+				'docs' => '<a href="' . esc_attr( JOINOTIFY_OTP_LOGIN_DOCS_URL ) . '" target="_blank">' . __( 'Documentation', 'joinotify-otp-login' ) . '</a>',
 			);
 
 			$plugin_meta = array_merge( $plugin_meta, $new_links );

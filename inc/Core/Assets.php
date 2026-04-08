@@ -124,12 +124,12 @@ class Assets {
             'nonce' => wp_create_nonce( 'joinotify_otp_login_nonce' ),
             'defaultCountry' => $default_country,
             'i18n' => array(
-                'invalidPhone' => __( 'Informe um telefone valido com DDI.', 'joinotify-otp-login' ),
-                'invalidOtp' => __( 'Informe o codigo de verificacao recebido.', 'joinotify-otp-login' ),
-                'sending' => __( 'Enviando...', 'joinotify-otp-login' ),
-                'verifying' => __( 'Verificando...', 'joinotify-otp-login' ),
-                'loading' => __( 'Processando...', 'joinotify-otp-login' ),
-                'unexpectedError' => __( 'Nao foi possivel concluir a solicitacao agora. Tente novamente.', 'joinotify-otp-login' ),
+                'invalidPhone' => __( 'Enter a valid phone number with country code.', 'joinotify-otp-login' ),
+                'invalidOtp' => __( 'Enter the verification code you received.', 'joinotify-otp-login' ),
+                'sending' => __( 'Sending...', 'joinotify-otp-login' ),
+                'verifying' => __( 'Verifying...', 'joinotify-otp-login' ),
+                'loading' => __( 'Processing...', 'joinotify-otp-login' ),
+                'unexpectedError' => __( 'We could not complete the request right now. Please try again.', 'joinotify-otp-login' ),
             ),
         );
     }

@@ -45,8 +45,8 @@ if ( $registration_at_checkout || $login_reminder_at_checkout ) :
         array(
             'context' => 'checkout',
             'redirect_url' => wc_get_checkout_url(),
-            'title' => __( 'Entrar para continuar sua compra', 'joinotify-otp-login' ),
-            'description' => __( 'Use seu telefone para receber um codigo OTP no WhatsApp ou entre com e-mail e senha.', 'joinotify-otp-login' ),
+            'title' => __( 'Sign in to continue your purchase', 'joinotify-otp-login' ),
+            'description' => __( 'Use your phone to receive an OTP code on WhatsApp or sign in with email and password.', 'joinotify-otp-login' ),
         )
     );
 endif;

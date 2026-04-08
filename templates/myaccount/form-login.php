@@ -40,8 +40,8 @@ do_action( 'woocommerce_before_customer_login_form' ); ?>
             array(
                 'context' => 'myaccount',
                 'redirect_url' => wc_get_page_permalink( 'myaccount' ),
-                'title' => __( 'Entrar com WhatsApp', 'joinotify-otp-login' ),
-                'description' => __( 'Informe seu telefone para localizar sua conta e receber o codigo OTP no WhatsApp.', 'joinotify-otp-login' ),
+                'title' => __( 'Sign in with WhatsApp', 'joinotify-otp-login' ),
+                'description' => __( 'Enter your phone number to find your account and receive the OTP code on WhatsApp.', 'joinotify-otp-login' ),
             )
         );
         ?>
@@ -79,7 +79,7 @@ do_action( 'woocommerce_before_customer_login_form' ); ?>
                 </p>
 
                 <p class="woocommerce-form-row woocommerce-form-row--wide form-row form-row-wide">
-                    <label for="reg_phone"><?php esc_html_e( 'Telefone', 'joinotify-otp-login' ); ?>&nbsp;<span class="required" aria-hidden="true">*</span></label>
+                    <label for="reg_phone"><?php esc_html_e( 'Phone', 'joinotify-otp-login' ); ?>&nbsp;<span class="required" aria-hidden="true">*</span></label>
                     <input type="tel" class="woocommerce-Input woocommerce-Input--text input-text" id="reg_phone" data-phone-visible autocomplete="tel" />
                     <input type="hidden" name="phone" data-phone-hidden />
                 </p>

@@ -61,7 +61,7 @@ class Auth_Flow_Service {
         $normalized_phone = Phone_Utils::normalize( $phone );
 
         if ( empty( $normalized_phone ) ) {
-            return new WP_Error( 'invalid_phone', __( 'Informe um telefone valido com DDI.', 'joinotify-otp-login' ) );
+            return new WP_Error( 'invalid_phone', __( 'Enter a valid phone number with country code.', 'joinotify-otp-login' ) );
         }
 
         $user = $this->users->find_by_phone( $normalized_phone );
@@ -69,19 +69,22 @@ class Auth_Flow_Service {
         if ( ! $user ) {
             return array(
                 'status' => 'not_found',
-                'message' => __( 'Não encontramos nenhuma conta com este telefone. Use o login com e-mail e senha.', 'joinotify-otp-login' ),
+                'message' => __( 'We could not find an account with this phone number. Use email and password to log in.', 'joinotify-otp-login' ),
                 'nextStep' => 'password',
             );
         }
 
         if ( ! $this->otp_validation->generate_and_send_otp( $normalized_phone ) ) {
-            return new WP_Error( 'otp_not_sent', __( 'Nao foi possivel enviar o codigo por WhatsApp agora.', 'joinotify-otp-login' ) );
+            return new WP_Error(
+                'otp_not_sent',
+                __( 'We could not send the code via WhatsApp right now. Make sure there is an active sender and that Joinotify is connected.', 'joinotify-otp-login' )
+            );
         }
 
         return array(
             'status' => 'otp_sent',
             'message' => sprintf(
-                __( 'Enviamos um codigo para o WhatsApp %s.', 'joinotify-otp-login' ),
+                __( 'We sent a code to WhatsApp %s.', 'joinotify-otp-login' ),
                 Phone_Utils::mask( $normalized_phone )
             ),
             'nextStep' => 'otp',
@@ -104,17 +107,17 @@ class Auth_Flow_Service {
         $otp = preg_replace( '/\D+/', '', (string) $otp );
 
         if ( empty( $normalized_phone ) || empty( $otp ) ) {
-            return new WP_Error( 'invalid_otp_payload', __( 'Preencha o telefone e o codigo recebido.', 'joinotify-otp-login' ) );
+            return new WP_Error( 'invalid_otp_payload', __( 'Fill in the phone number and the code you received.', 'joinotify-otp-login' ) );
         }
 
         $user = $this->users->find_by_phone( $normalized_phone );
 
         if ( ! $user ) {
-            return new WP_Error( 'user_not_found', __( 'Nao encontramos uma conta para este telefone.', 'joinotify-otp-login' ) );
+            return new WP_Error( 'user_not_found', __( 'We could not find an account for this phone number.', 'joinotify-otp-login' ) );
         }
 
         if ( ! $this->otp_validation->validate_otp( $normalized_phone, $otp ) ) {
-            return new WP_Error( 'invalid_otp', __( 'O codigo informado e invalido ou expirou.', 'joinotify-otp-login' ) );
+            return new WP_Error( 'invalid_otp', __( 'The code you entered is invalid or has expired.', 'joinotify-otp-login' ) );
         }
 
         $this->users->save_phone( $user->ID, $normalized_phone );
@@ -122,7 +125,7 @@ class Auth_Flow_Service {
 
         return array(
             'status' => 'authenticated',
-            'message' => __( 'Login realizado com sucesso.', 'joinotify-otp-login' ),
+            'message' => __( 'Login successful.', 'joinotify-otp-login' ),
         );
     }
 
@@ -140,11 +143,11 @@ class Auth_Flow_Service {
         $email = sanitize_email( $email );
 
         if ( ! is_email( $email ) ) {
-            return new WP_Error( 'invalid_email', __( 'Informe um e-mail valido.', 'joinotify-otp-login' ) );
+            return new WP_Error( 'invalid_email', __( 'Enter a valid email address.', 'joinotify-otp-login' ) );
         }
 
         if ( empty( $password ) ) {
-            return new WP_Error( 'empty_password', __( 'Informe sua senha.', 'joinotify-otp-login' ) );
+            return new WP_Error( 'empty_password', __( 'Enter your password.', 'joinotify-otp-login' ) );
         }
 
         $user = wp_signon(
@@ -157,12 +160,12 @@ class Auth_Flow_Service {
         );
 
         if ( is_wp_error( $user ) ) {
-            return new WP_Error( 'auth_failed', __( 'Nao foi possivel autenticar com este e-mail e senha.', 'joinotify-otp-login' ) );
+            return new WP_Error( 'auth_failed', __( 'We could not authenticate with this email and password.', 'joinotify-otp-login' ) );
         }
 
         return array(
             'status' => 'authenticated',
-            'message' => __( 'Login realizado com sucesso.', 'joinotify-otp-login' ),
+            'message' => __( 'Login successful.', 'joinotify-otp-login' ),
         );
     }
 
@@ -181,23 +184,23 @@ class Auth_Flow_Service {
         $phone = Phone_Utils::normalize( $payload['phone'] ?? '' );
 
         if ( ! is_email( $email ) ) {
-            return new WP_Error( 'invalid_email', __( 'Informe um e-mail valido.', 'joinotify-otp-login' ) );
+            return new WP_Error( 'invalid_email', __( 'Enter a valid email address.', 'joinotify-otp-login' ) );
         }
 
         if ( empty( $password ) ) {
-            return new WP_Error( 'empty_password', __( 'Informe uma senha para criar a conta.', 'joinotify-otp-login' ) );
+            return new WP_Error( 'empty_password', __( 'Enter a password to create the account.', 'joinotify-otp-login' ) );
         }
 
         if ( empty( $phone ) ) {
-            return new WP_Error( 'invalid_phone', __( 'Informe um telefone valido com DDI.', 'joinotify-otp-login' ) );
+            return new WP_Error( 'invalid_phone', __( 'Enter a valid phone number with country code.', 'joinotify-otp-login' ) );
         }
 
         if ( email_exists( $email ) ) {
-            return new WP_Error( 'email_exists', __( 'Ja existe uma conta cadastrada com este e-mail.', 'joinotify-otp-login' ) );
+            return new WP_Error( 'email_exists', __( 'An account is already registered with this email address.', 'joinotify-otp-login' ) );
         }
 
         if ( $this->users->phone_exists( $phone ) ) {
-            return new WP_Error( 'phone_exists', __( 'Ja existe uma conta cadastrada com este telefone.', 'joinotify-otp-login' ) );
+            return new WP_Error( 'phone_exists', __( 'An account is already registered with this phone number.', 'joinotify-otp-login' ) );
         }
 
         if ( empty( $username ) ) {
@@ -223,7 +226,7 @@ class Auth_Flow_Service {
 
         return array(
             'status' => 'registered',
-            'message' => __( 'Conta criada com sucesso.', 'joinotify-otp-login' ),
+            'message' => __( 'Account created successfully.', 'joinotify-otp-login' ),
         );
     }
 

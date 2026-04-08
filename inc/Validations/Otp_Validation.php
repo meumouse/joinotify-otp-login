@@ -58,13 +58,24 @@ class Otp_Validation {
      * @return bool True when the OTP was sent successfully, false otherwise.
      */
     public function generate_and_send_otp( $phone ) {
-        $phone = preg_replace( '/\s+/', '', (string) $phone );
+        $phone = joinotify_prepare_receiver( preg_replace( '/\s+/', '', (string) $phone ) );
         $otp = $this->generate_otp();
         $expiration_time = time() + (int) $this->otp_expiry_time;
 
         $this->store_otp( $phone, $otp, $expiration_time );
 
+        if ( ! function_exists('joinotify_get_first_sender') || ! function_exists('joinotify_send_whatsapp_message_text') ) {
+            error_log( 'Joinotify OTP Login: Joinotify helpers are unavailable.' );
+            return false;
+        }
+
         $sender = apply_filters( 'Joinotify/Otp_Validation/Sender', joinotify_get_first_sender() );
+
+        if ( empty( $sender ) ) {
+            error_log( 'Joinotify OTP Login: No Joinotify sender configured.' );
+            return false;
+        }
+
         $message = $this->set_message( $otp );
         $send_otp = joinotify_send_whatsapp_message_text( $sender, $phone, $message );
 
@@ -81,7 +92,7 @@ class Otp_Validation {
      */
     public function set_message( $otp ) {
         $message = sprintf(
-            __( 'Seu codigo de acesso e: %s. Este codigo expira em 5 minutos.', 'joinotify-otp-login' ),
+            __( 'Your access code is: %s. This code expires in 5 minutes.', 'joinotify-otp-login' ),
             $otp
         );
 
