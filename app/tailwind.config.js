@@ -1,5 +1,5 @@
 export default {
-  content: ['./src/**/*.{vue,js}'],
+  content: ['./src/**/*.{vue,js}', '../*.php', '../inc/**/*.php', '../templates/**/*.php'],
   theme: {
     extend: {
       colors: {

@@ -199,9 +199,11 @@ final class Plugin {
 	 * @return void
 	 */
 	public function register_classes() {
-        $hook_classes = array(
+		$hook_classes = array(
 			'init' => array(
 				'MeuMouse\\Joinotify\\Otp_Login\\Core\\Assets',
+				'MeuMouse\\Joinotify\\Otp_Login\\Core\\Shortcodes',
+				'MeuMouse\\Joinotify\\Otp_Login\\Admin\\Settings_Page',
 				'MeuMouse\\Joinotify\\Otp_Login\\Integrations\\Woocommerce',
 			),
 			'wp_loaded' => array(

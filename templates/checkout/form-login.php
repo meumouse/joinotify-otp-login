@@ -30,8 +30,8 @@ if ( $login_reminder_at_checkout ) : ?>
     <div class="woocommerce-form-login-toggle">
         <?php
         wc_print_notice(
-            apply_filters( 'woocommerce_checkout_login_message', esc_html__( 'Returning customer?', 'woocommerce' ) ) .
-            ' <a href="#" class="showlogin">' . esc_html__( 'Click here to login', 'woocommerce' ) . '</a>',
+            apply_filters( 'woocommerce_checkout_login_message', esc_html__( 'Já possui conta?', 'joinotify-otp-login' ) ) .
+            ' <a href="#" class="showlogin">' . esc_html__( 'Clique aqui para entrar', 'joinotify-otp-login' ) . '</a>',
             'notice'
         );
         ?>
@@ -43,10 +43,11 @@ if ( $registration_at_checkout || $login_reminder_at_checkout ) :
     Templates::render(
         'shared/otp-login-form.php',
         array(
-            'context' => 'checkout',
-            'redirect_url' => wc_get_checkout_url(),
-            'title' => __( 'Sign in to continue your purchase', 'joinotify-otp-login' ),
-            'description' => __( 'Use your phone to receive an OTP code on WhatsApp or sign in with email and password.', 'joinotify-otp-login' ),
-        )
-    );
+        'context' => 'checkout',
+        'redirect_url' => wc_get_checkout_url(),
+        'title' => __( 'Entrar para continuar', 'joinotify-otp-login' ),
+        'description' => __( 'Use seu telefone para receber o código no WhatsApp ou entre com e-mail e senha.', 'joinotify-otp-login' ),
+        'show_header' => true,
+    )
+);
 endif;

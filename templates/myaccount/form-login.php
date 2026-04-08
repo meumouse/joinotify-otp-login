@@ -30,19 +30,20 @@ do_action( 'woocommerce_before_customer_login_form' ); ?>
 
 <?php endif; ?>
 
-        <h2><?php esc_html_e( 'Login', 'woocommerce' ); ?></h2>
+        <h2><?php esc_html_e( 'Entrar', 'joinotify-otp-login' ); ?></h2>
 
         <?php do_action( 'woocommerce_login_form_start' ); ?>
 
 <?php
         Templates::render(
             'shared/otp-login-form.php',
-            array(
-                'context' => 'myaccount',
-                'redirect_url' => wc_get_page_permalink( 'myaccount' ),
-                'title' => __( 'Sign in with WhatsApp', 'joinotify-otp-login' ),
-                'description' => __( 'Enter your phone number to find your account and receive the OTP code on WhatsApp.', 'joinotify-otp-login' ),
-            )
+                array(
+                    'context' => 'myaccount',
+                    'redirect_url' => wc_get_page_permalink( 'myaccount' ),
+                    'title' => __( 'Entrar com WhatsApp', 'joinotify-otp-login' ),
+                    'description' => __( 'Use seu número para receber um código de acesso e continuar.', 'joinotify-otp-login' ),
+                    'show_header' => true,
+                )
         );
         ?>
 
@@ -55,7 +56,7 @@ do_action( 'woocommerce_before_customer_login_form' ); ?>
 
     <div class="u-column2 col-2">
 
-        <h2><?php esc_html_e( 'Register', 'woocommerce' ); ?></h2>
+        <h2><?php esc_html_e( 'Registrar', 'joinotify-otp-login' ); ?></h2>
 
         <div class="joinotify-otp-register">
             <div class="joinotify-otp-notice joinotify-otp-notice--info" data-register-notice hidden></div>
@@ -67,14 +68,14 @@ do_action( 'woocommerce_before_customer_login_form' ); ?>
                 <?php if ( 'no' === get_option( 'woocommerce_registration_generate_username' ) ) : ?>
 
                     <p class="woocommerce-form-row woocommerce-form-row--wide form-row form-row-wide">
-                        <label for="reg_username"><?php esc_html_e( 'Username', 'woocommerce' ); ?>&nbsp;<span class="required" aria-hidden="true">*</span><span class="screen-reader-text"><?php esc_html_e( 'Required', 'woocommerce' ); ?></span></label>
+                        <label for="reg_username"><?php esc_html_e( 'Nome de usuário', 'joinotify-otp-login' ); ?>&nbsp;<span class="required" aria-hidden="true">*</span><span class="screen-reader-text"><?php esc_html_e( 'Obrigatório', 'joinotify-otp-login' ); ?></span></label>
                         <input type="text" class="woocommerce-Input woocommerce-Input--text input-text" name="username" id="reg_username" autocomplete="username" required aria-required="true" />
                     </p>
 
                 <?php endif; ?>
 
                 <p class="woocommerce-form-row woocommerce-form-row--wide form-row form-row-wide">
-                    <label for="reg_email"><?php esc_html_e( 'Email address', 'woocommerce' ); ?>&nbsp;<span class="required" aria-hidden="true">*</span><span class="screen-reader-text"><?php esc_html_e( 'Required', 'woocommerce' ); ?></span></label>
+                    <label for="reg_email"><?php esc_html_e( 'E-mail', 'joinotify-otp-login' ); ?>&nbsp;<span class="required" aria-hidden="true">*</span><span class="screen-reader-text"><?php esc_html_e( 'Obrigatório', 'joinotify-otp-login' ); ?></span></label>
                     <input type="email" class="woocommerce-Input woocommerce-Input--text input-text" name="email" id="reg_email" autocomplete="email" required aria-required="true" />
                 </p>
 
@@ -84,15 +85,15 @@ do_action( 'woocommerce_before_customer_login_form' ); ?>
                     array(
                         'field_id' => 'reg_phone',
                         'field_name' => 'phone',
-                        'label' => __( 'Phone', 'joinotify-otp-login' ),
+                        'label' => __( 'Telefone', 'joinotify-otp-login' ),
                         'context' => 'myaccount-register',
-                        'helper' => __( 'Include the country code so the number can be normalized correctly.', 'joinotify-otp-login' ),
+                        'helper' => __( 'Inclua o código do país para que o número seja normalizado corretamente.', 'joinotify-otp-login' ),
                     )
                 );
                 ?>
 
                 <p class="woocommerce-form-row woocommerce-form-row--wide form-row form-row-wide">
-                    <label for="reg_password"><?php esc_html_e( 'Password', 'woocommerce' ); ?>&nbsp;<span class="required" aria-hidden="true">*</span><span class="screen-reader-text"><?php esc_html_e( 'Required', 'woocommerce' ); ?></span></label>
+                    <label for="reg_password"><?php esc_html_e( 'Senha', 'joinotify-otp-login' ); ?>&nbsp;<span class="required" aria-hidden="true">*</span><span class="screen-reader-text"><?php esc_html_e( 'Obrigatório', 'joinotify-otp-login' ); ?></span></label>
                     <input type="password" class="woocommerce-Input woocommerce-Input--text input-text" name="password" id="reg_password" autocomplete="new-password" required aria-required="true" />
                 </p>
 
@@ -101,7 +102,7 @@ do_action( 'woocommerce_before_customer_login_form' ); ?>
                 <?php do_action( 'woocommerce_register_form' ); ?>
 
                 <p class="woocommerce-form-row form-row">
-                    <button type="submit" class="woocommerce-Button woocommerce-button button<?php echo esc_attr( wc_wp_theme_get_element_class_name( 'button' ) ? ' ' . wc_wp_theme_get_element_class_name( 'button' ) : '' ); ?> woocommerce-form-register__submit" name="register" value="<?php esc_attr_e( 'Register', 'woocommerce' ); ?>"><?php esc_html_e( 'Register', 'woocommerce' ); ?></button>
+                    <button type="submit" class="woocommerce-Button woocommerce-button button<?php echo esc_attr( wc_wp_theme_get_element_class_name( 'button' ) ? ' ' . wc_wp_theme_get_element_class_name( 'button' ) : '' ); ?> woocommerce-form-register__submit" name="register" value="<?php esc_attr_e( 'Registrar', 'joinotify-otp-login' ); ?>"><?php esc_html_e( 'Registrar', 'joinotify-otp-login' ); ?></button>
                 </p>
 
                 <?php do_action( 'woocommerce_register_form_end' ); ?>

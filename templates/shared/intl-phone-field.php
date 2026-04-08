@@ -18,14 +18,14 @@ $context = $context ?? 'default';
 $helper = $helper ?? '';
 ?>
 
-<p class="form-row form-row-wide joinotify-phone-field">
-    <label for="<?php echo esc_attr( $field_id ); ?>">
+<p class="space-y-2">
+    <label for="<?php echo esc_attr( $field_id ); ?>" class="block text-sm font-semibold text-slate-700">
         <?php echo esc_html( $label ); ?>
         <span class="required" aria-hidden="true">*</span>
     </label>
     <input
         type="tel"
-        class="input-text joinotify-phone-field__visible"
+        class="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-indigo-500 focus:bg-white focus:ring-4 focus:ring-indigo-100"
         id="<?php echo esc_attr( $field_id ); ?>"
         data-phone-visible
         autocomplete="tel"
@@ -34,6 +34,6 @@ $helper = $helper ?? '';
     <input type="hidden" name="<?php echo esc_attr( $field_name ); ?>" data-phone-hidden />
 
     <?php if ( ! empty( $helper ) ) : ?>
-        <small class="joinotify-phone-field__helper"><?php echo esc_html( $helper ); ?></small>
+        <small class="block text-xs leading-5 text-slate-500"><?php echo esc_html( $helper ); ?></small>
     <?php endif; ?>
 </p>

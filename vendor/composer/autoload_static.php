@@ -22,9 +22,11 @@ class ComposerStaticInit75a436700607835cd721623e2ebc999b
 
     public static $classMap = array (
         'Composer\\InstalledVersions' => __DIR__ . '/..' . '/composer/InstalledVersions.php',
+        'MeuMouse\\Joinotify\\Otp_Login\\Admin\\Settings_Page' => __DIR__ . '/../..' . '/inc/Admin/Settings_Page.php',
         'MeuMouse\\Joinotify\\Otp_Login\\Core\\Ajax' => __DIR__ . '/../..' . '/inc/Core/Ajax.php',
         'MeuMouse\\Joinotify\\Otp_Login\\Core\\Assets' => __DIR__ . '/../..' . '/inc/Core/Assets.php',
         'MeuMouse\\Joinotify\\Otp_Login\\Core\\Plugin' => __DIR__ . '/../..' . '/inc/Core/Plugin.php',
+        'MeuMouse\\Joinotify\\Otp_Login\\Core\\Shortcodes' => __DIR__ . '/../..' . '/inc/Core/Shortcodes.php',
         'MeuMouse\\Joinotify\\Otp_Login\\Integrations\\Woocommerce' => __DIR__ . '/../..' . '/inc/Integrations/Woocommerce.php',
         'MeuMouse\\Joinotify\\Otp_Login\\Repositories\\User_Repository' => __DIR__ . '/../..' . '/inc/Repositories/User_Repository.php',
         'MeuMouse\\Joinotify\\Otp_Login\\Rest\\Abstract_Route' => __DIR__ . '/../..' . '/inc/Rest/Abstract_Route.php',
@@ -33,6 +35,7 @@ class ComposerStaticInit75a436700607835cd721623e2ebc999b
         'MeuMouse\\Joinotify\\Otp_Login\\Rest\\Routes' => __DIR__ . '/../..' . '/inc/Rest/Routes.php',
         'MeuMouse\\Joinotify\\Otp_Login\\Rest\\Verify_Code' => __DIR__ . '/../..' . '/inc/Rest/Verify_Code.php',
         'MeuMouse\\Joinotify\\Otp_Login\\Services\\Auth_Flow_Service' => __DIR__ . '/../..' . '/inc/Services/Auth_Flow_Service.php',
+        'MeuMouse\\Joinotify\\Otp_Login\\Support\\Color_Scheme' => __DIR__ . '/../..' . '/inc/Support/Color_Scheme.php',
         'MeuMouse\\Joinotify\\Otp_Login\\Support\\Phone_Utils' => __DIR__ . '/../..' . '/inc/Support/Phone_Utils.php',
         'MeuMouse\\Joinotify\\Otp_Login\\Validations\\Otp_Validation' => __DIR__ . '/../..' . '/inc/Validations/Otp_Validation.php',
         'MeuMouse\\Joinotify\\Otp_Login\\Views\\Templates' => __DIR__ . '/../..' . '/inc/Views/Templates.php',

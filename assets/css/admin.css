@@ -1,75 +1,9 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
-
-@layer base {
-  :root {
-    color-scheme: light;
-  }
-
-  body {
-    @apply text-slate-900;
-  }
-}
-
-@layer components {
-  .joinotify-otp-login .iti {
-    @apply w-full;
-  }
-
-  .joinotify-otp-login__surface {
-    border-radius: var(--joinotify-radius, 1.75rem);
-    box-shadow: 0 24px 80px rgba(15, 23, 42, 0.12);
-  }
-
-  .joinotify-otp-login__orb--primary {
-    background: color-mix(in srgb, var(--joinotify-primary) 22%, white);
-  }
-
-  .joinotify-otp-login__orb--secondary {
-    background: color-mix(in srgb, var(--joinotify-primary) 12%, white);
-  }
-
-  .joinotify-otp-login__input {
-    border-radius: var(--joinotify-radius, 1.75rem);
-  }
-
-  .joinotify-otp-login__input:focus {
-    border-color: var(--joinotify-primary);
-    background-color: #fff;
-    box-shadow: 0 0 0 4px color-mix(in srgb, var(--joinotify-primary) 16%, transparent);
-  }
-
-  .joinotify-otp-login__button {
-    border-radius: var(--joinotify-radius, 1.75rem);
-    background: var(--joinotify-primary);
-    box-shadow: 0 18px 36px color-mix(in srgb, var(--joinotify-primary) 24%, transparent);
-  }
-
-  .joinotify-otp-login__button:hover {
-    background: color-mix(in srgb, var(--joinotify-primary) 88%, black);
-  }
-
-  .joinotify-otp-login__button:focus {
-    box-shadow: 0 0 0 4px color-mix(in srgb, var(--joinotify-primary) 18%, transparent);
-  }
-
-  .joinotify-otp-login__button-secondary {
-    border-radius: var(--joinotify-radius, 1.75rem);
-  }
-
-  .joinotify-otp-login__button-secondary:hover {
-    border-color: color-mix(in srgb, var(--joinotify-primary) 18%, #cbd5e1);
-    background-color: color-mix(in srgb, var(--joinotify-primary) 4%, white);
-  }
-
-  .joinotify-otp-login__button-secondary:focus {
-    box-shadow: 0 0 0 4px color-mix(in srgb, var(--joinotify-primary) 10%, transparent);
-  }
-}
-
 .joinotify-otp-settings {
-  --joinotify-settings-accent: #4f46e5;
+  max-width: 1280px;
+}
+
+.joinotify-otp-settings .form-table th {
+  width: 220px;
 }
 
 .joinotify-otp-settings__hero {

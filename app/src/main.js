@@ -12,6 +12,7 @@ function mountOtpLoginApp(root) {
   const otpLength = Number.parseInt(root.dataset.otpLength || '6', 10) || 6;
   const defaultCountry = root.dataset.defaultCountry || 'br';
   const redirectUrl = root.dataset.redirectUrl || window.location.href;
+  const showHeader = root.dataset.showHeader === '1';
   const apiBaseUrl = window.joinotifyOtpLogin.restUrl || window.joinotifyOtpLogin.ajaxUrl;
 
   const app = createApp(OtpLoginApp, {
@@ -20,8 +21,9 @@ function mountOtpLoginApp(root) {
     defaultCountry,
     apiBaseUrl,
     redirectUrl,
-    title: readText(root, '.joinotify-otp-login__title'),
-    description: readText(root, '.joinotify-otp-login__description'),
+    showHeader,
+    title: root.dataset.title || readText(root, '.joinotify-otp-login__title'),
+    description: root.dataset.description || readText(root, '.joinotify-otp-login__description'),
   });
 
   app.mount(root);

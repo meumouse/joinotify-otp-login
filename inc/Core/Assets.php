@@ -118,8 +118,17 @@ class Assets {
     private function should_enqueue_frontend_assets() {
         $is_account = function_exists( 'is_account_page' ) && is_account_page();
         $is_checkout = function_exists( 'is_checkout' ) && is_checkout();
+        $has_shortcode = false;
 
-        return ! is_user_logged_in() && ( $is_account || $is_checkout );
+        if ( is_singular() ) {
+            $post = get_post();
+
+            if ( $post instanceof \WP_Post ) {
+                $has_shortcode = has_shortcode( $post->post_content, 'joinotify_otp_login' );
+            }
+        }
+
+        return ! is_user_logged_in() && ( $is_account || $is_checkout || $has_shortcode );
     }
 
 
@@ -146,17 +155,45 @@ class Assets {
             'nonce' => wp_create_nonce( 'wp_rest' ),
             'legacyNonce' => wp_create_nonce( 'joinotify_otp_login_nonce' ),
             'defaultCountry' => $default_country,
+            'intlUtilsUrl' => 'https://cdn.jsdelivr.net/npm/intl-tel-input@25.3.0/build/js/utils.js',
+            'lostPasswordUrl' => esc_url_raw( wp_lostpassword_url() ),
             'otpLength' => (int) apply_filters( 'Joinotify/Otp_Login/Otp_Length', 6 ),
+            'theme' => $this->get_theme_config(),
             'i18n' => array(
-                'invalidPhone' => __( 'Enter a valid phone number with country code.', 'joinotify-otp-login' ),
-                'invalidOtp' => __( 'Enter the verification code you received.', 'joinotify-otp-login' ),
-                'sending' => __( 'Sending...', 'joinotify-otp-login' ),
-                'verifying' => __( 'Verifying...', 'joinotify-otp-login' ),
-                'loading' => __( 'Processing...', 'joinotify-otp-login' ),
-                'resendOtpLabel' => __( 'Resend code in', 'joinotify-otp-login' ),
-                'resendOtpButton' => __( 'Resend code', 'joinotify-otp-login' ),
-                'secondsLabel' => __( 'seconds', 'joinotify-otp-login' ),
-                'unexpectedError' => __( 'We could not complete the request right now. Please try again.', 'joinotify-otp-login' ),
+                'panelEyebrow' => __( 'Acesso seguro', 'joinotify-otp-login' ),
+                'phoneTitle' => __( 'Entrar com WhatsApp', 'joinotify-otp-login' ),
+                'phoneDescription' => __( 'Use seu número para receber o código e entrar com mais rapidez.', 'joinotify-otp-login' ),
+                'phoneLabel' => __( 'Telefone', 'joinotify-otp-login' ),
+                'phoneHelper' => __( 'Digite um número válido. O DDI será exibido automaticamente.', 'joinotify-otp-login' ),
+                'phoneAction' => __( 'Entrar com WhatsApp', 'joinotify-otp-login' ),
+                'useEmailPassword' => __( 'Usar e-mail e senha', 'joinotify-otp-login' ),
+                'emailSeparator' => __( 'Ou entre com e-mail', 'joinotify-otp-login' ),
+                'emailLabel' => __( 'E-mail', 'joinotify-otp-login' ),
+                'emailPlaceholder' => __( 'Digite seu e-mail', 'joinotify-otp-login' ),
+                'passwordLabel' => __( 'Senha', 'joinotify-otp-login' ),
+                'passwordPlaceholder' => __( 'Digite sua senha', 'joinotify-otp-login' ),
+                'rememberMe' => __( 'Lembrar de mim', 'joinotify-otp-login' ),
+                'forgotPassword' => __( 'Esqueceu a senha?', 'joinotify-otp-login' ),
+                'signIn' => __( 'Entrar', 'joinotify-otp-login' ),
+                'signInLoading' => __( 'Processando...', 'joinotify-otp-login' ),
+                'backToWhatsapp' => __( 'Voltar ao WhatsApp', 'joinotify-otp-login' ),
+                'requestCode' => __( 'Receber código', 'joinotify-otp-login' ),
+                'requestCodeLoading' => __( 'Enviando...', 'joinotify-otp-login' ),
+                'enterCodeTitle' => __( 'Digite o código de acesso', 'joinotify-otp-login' ),
+                'enterCodeDescription' => __( 'Informe o código de %d dígitos enviado para o seu WhatsApp.', 'joinotify-otp-login' ),
+                'otpDigitLabel' => __( 'Dígito %d do código', 'joinotify-otp-login' ),
+                'resendOtpLabel' => __( 'Reenviar código em', 'joinotify-otp-login' ),
+                'resendOtpButton' => __( 'Reenviar código', 'joinotify-otp-login' ),
+                'secondsLabel' => __( 'segundos', 'joinotify-otp-login' ),
+                'verifyCode' => __( 'Verificar código', 'joinotify-otp-login' ),
+                'verifyCodeLoading' => __( 'Verificando...', 'joinotify-otp-login' ),
+                'changePhone' => __( 'Alterar número', 'joinotify-otp-login' ),
+                'showPassword' => __( 'Mostrar senha', 'joinotify-otp-login' ),
+                'hidePassword' => __( 'Ocultar senha', 'joinotify-otp-login' ),
+                'missingCredentials' => __( 'Preencha o e-mail e a senha.', 'joinotify-otp-login' ),
+                'invalidPhone' => __( 'Digite um telefone válido com DDI.', 'joinotify-otp-login' ),
+                'invalidOtp' => __( 'Digite o código de verificação recebido.', 'joinotify-otp-login' ),
+                'unexpectedError' => __( 'Não foi possível concluir a solicitação agora. Tente novamente.', 'joinotify-otp-login' ),
             ),
         );
     }
@@ -208,5 +245,50 @@ class Assets {
             'style_src' => $css_src,
             'version' => ! empty( $entry['file'] ) ? md5( $entry['file'] . '|' . (string) filemtime( $manifest_path ) ) : JOINOTIFY_OTP_LOGIN_VERSION,
         );
+    }
+
+
+    /**
+     * Build the frontend theme payload from saved options.
+     *
+     * @since 1.0.0
+     * @return array<string,mixed>
+     */
+    private function get_theme_config() {
+        $primary_color = get_option( 'joinotify_otp_login_primary_color', '#4f46e5' );
+        $border_radius = (int) get_option( 'joinotify_otp_login_border_radius', 28 );
+        $palette = array();
+
+        if ( class_exists( '\\MeuMouse\\Joinotify\\Otp_Login\\Support\\Color_Scheme' ) ) {
+            $palette = \MeuMouse\Joinotify\Otp_Login\Support\Color_Scheme::generate_palette( $primary_color );
+        }
+
+        return array(
+            'primaryColor' => $primary_color,
+            'borderRadius' => max( 0, min( 80, $border_radius ) ),
+            'palette' => $this->palette_to_map( $palette ),
+        );
+    }
+
+
+    /**
+     * Convert palette rows into a lookup map.
+     *
+     * @since 1.0.0
+     * @param array<int,array{step:string,color:string}> $palette Palette rows.
+     * @return array<string,string>
+     */
+    private function palette_to_map( array $palette ) {
+        $map = array();
+
+        foreach ( $palette as $token ) {
+            if ( ! is_array( $token ) || empty( $token['step'] ) || empty( $token['color'] ) ) {
+                continue;
+            }
+
+            $map[ (string) $token['step'] ] = (string) $token['color'];
+        }
+
+        return $map;
     }
 }
