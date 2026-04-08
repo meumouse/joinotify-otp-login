@@ -207,6 +207,9 @@ final class Plugin {
 			'wp_loaded' => array(
 				'MeuMouse\\Joinotify\\Otp_Login\\Core\\Ajax',
 			),
+			'rest_api_init' => array(
+				'MeuMouse\\Joinotify\\Otp_Login\\Rest\\Routes',
+			),
 		);
 
 		foreach ( $hook_classes as $hook => $classes ) {

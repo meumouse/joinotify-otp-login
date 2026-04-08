@@ -2,6 +2,8 @@
 
 namespace MeuMouse\Joinotify\Otp_Login\Validations;
 
+use MeuMouse\Joinotify\Otp_Login\Support\Phone_Utils;
+
 // Exit if accessed directly.
 defined('ABSPATH') || exit;
 
@@ -66,7 +68,7 @@ class Otp_Validation {
      * @return bool True when the OTP was sent successfully, false otherwise.
      */
     public function generate_and_send_otp( $phone ) {
-        $phone = joinotify_prepare_receiver( preg_replace( '/\s+/', '', (string) $phone ) );
+        $phone = Phone_Utils::normalize( $phone );
         $otp = $this->generate_otp();
         $expiration_time = time() + (int) $this->otp_expiry_time;
 
@@ -85,7 +87,8 @@ class Otp_Validation {
         }
 
         $message = $this->set_message( $otp );
-        $send_otp = joinotify_send_whatsapp_message_text( $sender, $phone, $message );
+        $receiver = function_exists( 'joinotify_prepare_receiver' ) ? joinotify_prepare_receiver( preg_replace( '/\s+/', '', (string) $phone ) ) : $phone;
+        $send_otp = joinotify_send_whatsapp_message_text( $sender, $receiver, $message );
 
         return true === $send_otp || 201 === $send_otp || '201' === $send_otp;
     }

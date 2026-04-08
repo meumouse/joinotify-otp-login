@@ -3,3 +3,4 @@ composer.json
 .env
 node_modules/
 release/
+dist/

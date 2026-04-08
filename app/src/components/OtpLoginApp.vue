@@ -10,6 +10,10 @@ const props = defineProps({
     type: String,
     default: 'br',
   },
+  apiBaseUrl: {
+    type: String,
+    default: '',
+  },
   description: {
     type: String,
     default: '',
@@ -51,6 +55,16 @@ const email = ref('');
 const password = ref('');
 const otpDigits = ref(Array.from({ length: props.otpLength }, () => ''));
 const phoneIti = ref(null);
+const apiBaseUrl = computed(() => props.apiBaseUrl || window.joinotifyOtpLogin.restUrl || '');
+const useRestApi = computed(() => Boolean(window.joinotifyOtpLogin.restUrl));
+
+function requestUrl(pathOrAction) {
+  if (useRestApi.value) {
+    return `${apiBaseUrl.value}/${pathOrAction}`;
+  }
+
+  return window.joinotifyOtpLogin.ajaxUrl;
+}
 
 const otpJoined = computed(() => otpDigits.value.join(''));
 const phonePreview = computed(() => otpPhone.value || hiddenPhone.value || visiblePhone.value);
@@ -178,15 +192,14 @@ async function requestOtp() {
   setLoadingState(true);
 
   try {
-    const response = await window.fetch(window.joinotifyOtpLogin.ajaxUrl, {
+    const response = await window.fetch(requestUrl('request-code'), {
       method: 'POST',
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
+        'X-WP-Nonce': window.joinotifyOtpLogin.nonce,
       },
       body: new URLSearchParams({
-        action: 'joinotify_otp_request_code',
-        nonce: window.joinotifyOtpLogin.nonce,
-        phone,
+        ...(useRestApi.value ? { phone } : { action: 'joinotify_otp_request_code', nonce: window.joinotifyOtpLogin.legacyNonce, phone }),
       }),
     });
 
@@ -236,18 +249,23 @@ async function verifyOtp() {
   setLoadingState(true);
 
   try {
-    const response = await window.fetch(window.joinotifyOtpLogin.ajaxUrl, {
+    const response = await window.fetch(requestUrl('verify-code'), {
       method: 'POST',
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
+        'X-WP-Nonce': window.joinotifyOtpLogin.nonce,
       },
       body: new URLSearchParams({
-        action: 'joinotify_otp_verify_code',
-        nonce: window.joinotifyOtpLogin.nonce,
-        phone,
-        otp,
-        remember: remember.value ? '1' : '0',
-        redirect: props.redirectUrl,
+        ...(useRestApi.value
+          ? { phone, otp, remember: remember.value ? '1' : '0', redirect: props.redirectUrl }
+          : {
+              action: 'joinotify_otp_verify_code',
+              nonce: window.joinotifyOtpLogin.legacyNonce,
+              phone,
+              otp,
+              remember: remember.value ? '1' : '0',
+              redirect: props.redirectUrl,
+            }),
       }),
     });
 
@@ -275,18 +293,28 @@ async function loginWithPassword() {
   setLoadingState(true);
 
   try {
-    const response = await window.fetch(window.joinotifyOtpLogin.ajaxUrl, {
+    const response = await window.fetch(requestUrl('password-login'), {
       method: 'POST',
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
+        'X-WP-Nonce': window.joinotifyOtpLogin.nonce,
       },
       body: new URLSearchParams({
-        action: 'joinotify_otp_password_login',
-        nonce: window.joinotifyOtpLogin.nonce,
-        email: email.value,
-        password: password.value,
-        remember: remember.value ? '1' : '0',
-        redirect: props.redirectUrl,
+        ...(useRestApi.value
+          ? {
+              email: email.value,
+              password: password.value,
+              remember: remember.value ? '1' : '0',
+              redirect: props.redirectUrl,
+            }
+          : {
+              action: 'joinotify_otp_password_login',
+              nonce: window.joinotifyOtpLogin.legacyNonce,
+              email: email.value,
+              password: password.value,
+              remember: remember.value ? '1' : '0',
+              redirect: props.redirectUrl,
+            }),
       }),
     });
 

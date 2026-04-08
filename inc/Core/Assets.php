@@ -142,7 +142,9 @@ class Assets {
 
         return array(
             'ajaxUrl' => admin_url( 'admin-ajax.php' ),
-            'nonce' => wp_create_nonce( 'joinotify_otp_login_nonce' ),
+            'restUrl' => esc_url_raw( rest_url( 'joinotify-otp-login/v1' ) ),
+            'nonce' => wp_create_nonce( 'wp_rest' ),
+            'legacyNonce' => wp_create_nonce( 'joinotify_otp_login_nonce' ),
             'defaultCountry' => $default_country,
             'otpLength' => (int) apply_filters( 'Joinotify/Otp_Login/Otp_Length', 6 ),
             'i18n' => array(
@@ -167,7 +169,7 @@ class Assets {
      * @return array<string,mixed>
      */
     private function get_frontend_asset_bundle() {
-        $manifest_path = trailingslashit( JOINOTIFY_OTP_LOGIN_DIR ) . 'assets/build/.vite/manifest.json';
+        $manifest_path = trailingslashit( JOINOTIFY_OTP_LOGIN_DIR ) . 'dist/.vite/manifest.json';
 
         if ( ! file_exists( $manifest_path ) ) {
             return array(
@@ -191,7 +193,7 @@ class Assets {
             );
         }
 
-        $base_url = trailingslashit( JOINOTIFY_OTP_LOGIN_URL ) . 'assets/build/';
+        $base_url = trailingslashit( JOINOTIFY_OTP_LOGIN_URL ) . 'dist/';
         $css_src = '';
 
         if ( ! empty( $entry['css'] ) && is_array( $entry['css'] ) ) {
