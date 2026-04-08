@@ -44,6 +44,76 @@ class Phone_Utils {
 
 
     /**
+     * Build a set of lookup variants for a phone number.
+     *
+     * The variants cover the full number and common shortened forms without
+     * DDI/DDD prefixes so account lookup can match both complete and partial
+     * numbers supplied by the user.
+     *
+     * @since 1.0.0
+     * @param string $phone Raw or normalized phone number.
+     * @return string[] Unique lookup variants.
+     */
+    public static function lookup_variants( $phone ) {
+        $normalized = self::normalize( $phone );
+        $digits = self::digits_only( $normalized );
+        $variants = array_filter(
+            array(
+                $normalized,
+                $digits,
+            )
+        );
+
+        $country_code_lengths = self::get_known_country_code_lengths();
+
+        foreach ( $country_code_lengths as $length ) {
+            if ( strlen( $digits ) > $length ) {
+                $variants[] = substr( $digits, $length );
+            }
+        }
+
+        return array_values( array_unique( $variants ) );
+    }
+
+
+    /**
+     * Get the known international country code lengths from Joinotify when available.
+     *
+     * @since 1.0.0
+     * @return int[]
+     */
+    private static function get_known_country_code_lengths() {
+        $lengths = array( 2, 4 );
+
+        if ( class_exists('\MeuMouse\Joinotify\Validations\Country_Codes') ) {
+            $codes = \MeuMouse\Joinotify\Validations\Country_Codes::get_country_codes_for_validation();
+
+            foreach ( $codes as $code ) {
+                $lengths[] = strlen( (string) $code );
+            }
+        }
+
+        return array_values( array_unique( array_filter( $lengths ) ) );
+    }
+
+
+    /**
+     * Check whether two phone numbers match using full and partial variants.
+     *
+     * @since 1.0.0
+     * @param string $left First phone number.
+     * @param string $right Second phone number.
+     * @return bool True when both numbers match in any supported form.
+     */
+    public static function matches( $left, $right ) {
+        $left_variants = self::lookup_variants( $left );
+        $right_variants = self::lookup_variants( $right );
+
+        return ! empty( array_intersect( $left_variants, $right_variants ) );
+    }
+
+
+    /**
      * Mask part of a phone number for safer frontend display.
      *
      * @since 1.0.0

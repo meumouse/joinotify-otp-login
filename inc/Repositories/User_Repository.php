@@ -39,14 +39,14 @@ class User_Repository {
     public function find_by_phone( $phone ) {
         global $wpdb;
 
-        $normalized = Phone_Utils::normalize( $phone );
+        $lookup_variants = Phone_Utils::lookup_variants( $phone );
 
-        if ( empty( $normalized ) ) {
+        if ( empty( $lookup_variants ) ) {
             return null;
         }
 
-        $digits = Phone_Utils::digits_only( $normalized );
         $meta_keys_placeholders = implode( ',', array_fill( 0, count( $this->phone_meta_keys ), '%s' ) );
+        $value_placeholders = implode( ' OR meta_value = ', array_fill( 0, count( $lookup_variants ), '%s' ) );
 
         $sql = "
             SELECT user_id, meta_value
@@ -54,20 +54,11 @@ class User_Repository {
             WHERE meta_key IN ({$meta_keys_placeholders})
             AND meta_value <> ''
             AND (
-                meta_value = %s
-                OR meta_value = %s
-                OR meta_value LIKE %s
+                meta_value = {$value_placeholders}
             )
         ";
 
-        $prepared = array_merge(
-            $this->phone_meta_keys,
-            array(
-                $normalized,
-                $digits,
-                '%' . $digits . '%',
-            )
-        );
+        $prepared = array_merge( $this->phone_meta_keys, $lookup_variants );
 
         $results = $wpdb->get_results( $wpdb->prepare( $sql, $prepared ) );
 
@@ -76,7 +67,7 @@ class User_Repository {
         }
 
         foreach ( $results as $result ) {
-            if ( Phone_Utils::normalize( $result->meta_value ) === $normalized ) {
+            if ( Phone_Utils::matches( $result->meta_value, $phone ) ) {
                 $user = get_user_by( 'id', (int) $result->user_id );
 
                 if ( $user instanceof WP_User ) {

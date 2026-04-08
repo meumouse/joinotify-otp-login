@@ -77,6 +77,22 @@
     width: 100%;
 }
 
+.joinotify-phone-field {
+    position: relative;
+}
+
+.joinotify-phone-field__helper {
+    display: block;
+    margin-top: 8px;
+    color: #64748b;
+    font-size: 12px;
+    line-height: 1.4;
+}
+
+.joinotify-otp-register .iti {
+    margin-top: 4px;
+}
+
 .joinotify-otp-login input[type="text"],
 .joinotify-otp-login input[type="email"],
 .joinotify-otp-login input[type="password"],

@@ -34,7 +34,7 @@ do_action( 'woocommerce_before_customer_login_form' ); ?>
 
         <?php do_action( 'woocommerce_login_form_start' ); ?>
 
-        <?php
+<?php
         Templates::render(
             'shared/otp-login-form.php',
             array(
@@ -78,11 +78,18 @@ do_action( 'woocommerce_before_customer_login_form' ); ?>
                     <input type="email" class="woocommerce-Input woocommerce-Input--text input-text" name="email" id="reg_email" autocomplete="email" required aria-required="true" />
                 </p>
 
-                <p class="woocommerce-form-row woocommerce-form-row--wide form-row form-row-wide">
-                    <label for="reg_phone"><?php esc_html_e( 'Phone', 'joinotify-otp-login' ); ?>&nbsp;<span class="required" aria-hidden="true">*</span></label>
-                    <input type="tel" class="woocommerce-Input woocommerce-Input--text input-text" id="reg_phone" data-phone-visible autocomplete="tel" />
-                    <input type="hidden" name="phone" data-phone-hidden />
-                </p>
+                <?php
+                Templates::render(
+                    'shared/intl-phone-field.php',
+                    array(
+                        'field_id' => 'reg_phone',
+                        'field_name' => 'phone',
+                        'label' => __( 'Phone', 'joinotify-otp-login' ),
+                        'context' => 'myaccount-register',
+                        'helper' => __( 'Include the country code so the number can be normalized correctly.', 'joinotify-otp-login' ),
+                    )
+                );
+                ?>
 
                 <p class="woocommerce-form-row woocommerce-form-row--wide form-row form-row-wide">
                     <label for="reg_password"><?php esc_html_e( 'Password', 'woocommerce' ); ?>&nbsp;<span class="required" aria-hidden="true">*</span><span class="screen-reader-text"><?php esc_html_e( 'Required', 'woocommerce' ); ?></span></label>
