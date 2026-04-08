@@ -1,0 +1,91 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    color-scheme: light;
+  }
+
+  body {
+    @apply text-slate-900;
+  }
+}
+
+@layer components {
+  .joinotify-otp-login__panel {
+    @apply grid gap-6 rounded-[1.5rem] border border-slate-200 bg-white/90 p-6 shadow-card backdrop-blur;
+    background-image: radial-gradient(circle at top right, rgba(20, 184, 166, 0.08), transparent 28%);
+  }
+
+  .joinotify-otp-login__eyebrow {
+    @apply text-xs font-bold uppercase tracking-[0.18em] text-joinotify-600;
+  }
+
+  .joinotify-otp-login__title {
+    @apply text-3xl font-black tracking-tight text-slate-900;
+  }
+
+  .joinotify-otp-login__subtitle {
+    @apply text-xl font-bold text-slate-900;
+  }
+
+  .joinotify-otp-login__description {
+    @apply text-sm leading-6 text-slate-500;
+  }
+
+  .joinotify-otp-notice {
+    @apply rounded-2xl px-4 py-3 text-sm leading-6;
+  }
+
+  .joinotify-otp-notice--success {
+    @apply bg-emerald-50 text-emerald-800;
+  }
+
+  .joinotify-otp-notice--error {
+    @apply bg-rose-50 text-rose-800;
+  }
+
+  .joinotify-otp-notice--info {
+    @apply bg-teal-50 text-teal-800;
+  }
+
+  .joinotify-otp-code-grid {
+    @apply grid gap-2 sm:gap-3;
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+  }
+
+  .otp-input-item {
+    @apply h-14 w-full rounded-2xl border border-slate-200 bg-white text-center text-xl font-extrabold text-slate-900 outline-none transition;
+  }
+
+  .otp-input-item:focus {
+    @apply border-joinotify-600 ring-4 ring-joinotify-100;
+  }
+
+  .joinotify-otp-login__actions {
+    @apply flex flex-wrap items-center gap-3;
+  }
+
+  .joinotify-otp-login__actions--stacked {
+    @apply items-stretch;
+  }
+
+  .joinotify-otp-login__resend {
+    @apply flex flex-wrap items-center gap-2 text-sm text-slate-500;
+  }
+
+  .joinotify-phone-field {
+    @apply grid gap-2;
+  }
+
+  .joinotify-phone-field__helper {
+    @apply text-xs leading-5 text-slate-500;
+  }
+}
+
+@media (max-width: 767px) {
+  .joinotify-otp-code-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}

@@ -15,6 +15,14 @@ defined('ABSPATH') || exit;
 class Otp_Validation {
 
     /**
+     * OTP length used across the login flow.
+     *
+     * @since 1.0.0
+     * @var int
+     */
+    const OTP_LENGTH = 6;
+
+    /**
      * OTP code length.
      *
      * @since 1.0.0
@@ -45,7 +53,7 @@ class Otp_Validation {
      * @return void
      */
     public function __construct() {
-        $this->otp_length = 4;
+        $this->otp_length = (int) apply_filters( 'Joinotify/Otp_Login/Otp_Length', self::OTP_LENGTH );
         $this->otp_expiry_time = 300;
     }
 

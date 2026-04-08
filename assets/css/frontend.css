@@ -1,71 +1,138 @@
 .joinotify-otp-login,
 .joinotify-otp-register {
-    border: 1px solid #e5e7eb;
-    border-radius: 18px;
-    background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
-    padding: 24px;
+    --joinotify-surface: #ffffff;
+    --joinotify-surface-soft: #f8fafc;
+    --joinotify-border: rgba(15, 23, 42, 0.1);
+    --joinotify-text: #0f172a;
+    --joinotify-muted: #64748b;
+    --joinotify-accent: #0f766e;
+    --joinotify-accent-strong: #115e59;
+    --joinotify-danger: #b91c1c;
+    --joinotify-success: #166534;
+    border: 1px solid var(--joinotify-border);
+    border-radius: 24px;
+    background:
+        radial-gradient(circle at top right, rgba(15, 118, 110, 0.08), transparent 28%),
+        linear-gradient(180deg, var(--joinotify-surface) 0%, var(--joinotify-surface-soft) 100%);
+    padding: 28px;
     margin-bottom: 24px;
-    box-shadow: 0 10px 24px rgba(15, 23, 42, 0.06);
+    box-shadow: 0 24px 48px rgba(15, 23, 42, 0.08);
+    color: var(--joinotify-text);
+}
+
+.joinotify-otp-login__panel {
+    display: grid;
+    gap: 24px;
 }
 
 .joinotify-otp-login__header {
-    margin-bottom: 20px;
+    display: grid;
+    gap: 8px;
+}
+
+.joinotify-otp-login__eyebrow {
+    margin: 0;
+    color: var(--joinotify-accent);
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
 }
 
 .joinotify-otp-login__title {
-    margin: 0 0 8px;
-    font-size: 24px;
+    margin: 0;
+    font-size: 28px;
+    line-height: 1.1;
+    font-weight: 800;
+    letter-spacing: -0.03em;
+}
+
+.joinotify-otp-login__subtitle {
+    margin: 0;
+    font-size: 20px;
     line-height: 1.2;
+    font-weight: 700;
 }
 
 .joinotify-otp-login__description {
     margin: 0;
-    color: #475569;
+    color: var(--joinotify-muted);
+    line-height: 1.6;
+}
+
+.joinotify-otp-login__phone-preview {
+    margin: 0;
+    color: var(--joinotify-text);
+    font-weight: 700;
+}
+
+.joinotify-otp-login__otp-header {
+    display: grid;
+    gap: 8px;
 }
 
 .joinotify-otp-notice {
-    margin-bottom: 16px;
-    padding: 12px 14px;
-    border-radius: 12px;
+    margin: 0;
+    padding: 14px 16px;
+    border-radius: 14px;
     font-size: 14px;
+    line-height: 1.5;
 }
 
 .joinotify-otp-notice--success {
-    background: #ecfdf3;
-    color: #166534;
+    background: rgba(22, 101, 52, 0.08);
+    color: var(--joinotify-success);
 }
 
 .joinotify-otp-notice--error {
-    background: #fef2f2;
-    color: #991b1b;
+    background: rgba(185, 28, 28, 0.08);
+    color: var(--joinotify-danger);
 }
 
-.joinotify-otp-login__actions,
-.joinotify-otp-login__links {
+.joinotify-otp-notice--info {
+    background: rgba(15, 118, 110, 0.08);
+    color: var(--joinotify-accent-strong);
+}
+
+.joinotify-otp-step {
+    display: grid;
+    gap: 20px;
+}
+
+.joinotify-otp-login__form {
+    display: grid;
+    gap: 18px;
+}
+
+.joinotify-otp-login__actions {
     display: flex;
-    gap: 12px;
     flex-wrap: wrap;
+    gap: 12px;
     align-items: center;
 }
 
+.joinotify-otp-login__actions--stacked {
+    align-items: stretch;
+}
+
+.joinotify-otp-login__actions .button {
+    min-height: 48px;
+    padding-inline: 18px;
+}
+
 .joinotify-otp-login__separator {
-    margin: 20px 0;
-    color: #64748b;
+    margin: 0;
+    color: var(--joinotify-muted);
     font-size: 13px;
+    font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 0.08em;
 }
 
-.joinotify-otp-login .button,
-.joinotify-otp-register .button,
-.joinotify-otp-register .woocommerce-Button {
-    min-height: 46px;
-}
-
 .joinotify-otp-link {
-    color: #0f766e;
+    color: var(--joinotify-accent);
     text-decoration: none;
-    font-weight: 600;
+    font-weight: 700;
 }
 
 .joinotify-otp-link:hover {
@@ -73,43 +140,90 @@
 }
 
 .joinotify-otp-login .iti,
-.joinotify-otp-register .iti {
+.joinotify-otp-register .iti,
+.joinotify-phone-field__visible {
     width: 100%;
 }
 
 .joinotify-phone-field {
-    position: relative;
+    display: grid;
+    gap: 8px;
 }
 
 .joinotify-phone-field__helper {
-    display: block;
-    margin-top: 8px;
-    color: #64748b;
+    color: var(--joinotify-muted);
     font-size: 12px;
-    line-height: 1.4;
+    line-height: 1.5;
 }
 
-.joinotify-otp-register .iti {
-    margin-top: 4px;
+.joinotify-otp-code-grid {
+    display: grid;
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+    gap: 10px;
 }
 
+.otp-input-item {
+    height: 58px;
+    width: 100%;
+    text-align: center;
+    font-size: 22px;
+    font-weight: 800;
+    border-radius: 16px;
+    border: 1px solid rgba(100, 116, 139, 0.24);
+    background: #fff;
+    color: var(--joinotify-text);
+    box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
+    transition: border-color 0.15s ease, box-shadow 0.15s ease, transform 0.15s ease;
+}
+
+.otp-input-item:focus {
+    outline: none;
+    border-color: var(--joinotify-accent);
+    box-shadow: 0 0 0 4px rgba(15, 118, 110, 0.14);
+    transform: translateY(-1px);
+}
+
+.joinotify-otp-login__resend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    align-items: center;
+    color: var(--joinotify-muted);
+    font-size: 14px;
+}
+
+.joinotify-otp-login__resend-countdown {
+    color: var(--joinotify-text);
+    font-weight: 800;
+}
+
+.joinotify-otp-register .button,
+.joinotify-otp-register .woocommerce-Button {
+    min-height: 46px;
+}
+
+.joinotify-otp-register input[type="text"],
+.joinotify-otp-register input[type="email"],
+.joinotify-otp-register input[type="password"],
 .joinotify-otp-login input[type="text"],
 .joinotify-otp-login input[type="email"],
 .joinotify-otp-login input[type="password"],
-.joinotify-otp-register input[type="text"],
-.joinotify-otp-register input[type="email"],
-.joinotify-otp-register input[type="password"] {
+.joinotify-otp-login input[type="tel"] {
     width: 100%;
 }
 
 @media (max-width: 767px) {
     .joinotify-otp-login,
     .joinotify-otp-register {
-        padding: 18px;
-        border-radius: 14px;
+        padding: 20px;
+        border-radius: 20px;
     }
 
     .joinotify-otp-login__title {
-        font-size: 21px;
+        font-size: 24px;
+    }
+
+    .joinotify-otp-code-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
     }
 }

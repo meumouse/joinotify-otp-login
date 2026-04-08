@@ -1,86 +1,324 @@
 (function ($) {
     'use strict';
 
-    /**
-     * Global configuration injected by the plugin on the frontend.
-     *
-     * @type {Object}
-     * @since 1.0.0
-     */
     var config = window.joinotifyOtpLogin || {};
 
-    /**
-     * Initializes the phone input widget and keeps the hidden field synced with the formatted value.
-     *
-     * @since 1.0.0
-     * @param {Document|Element} context Container used to scope the query for phone inputs.
-     * @return {void}
-     */
-    function initIntlTelInputs(context) {
-        var telInputs = context.querySelectorAll('[data-phone-visible]');
+    function digitsOnly(value) {
+        return String(value || '').replace(/\D+/g, '');
+    }
 
-        function digitsOnly(value) {
-            return String(value || '').replace(/\D+/g, '');
+    function getOtpLength(scope) {
+        var parsed = parseInt(scope && scope.dataset ? scope.dataset.otpLength : '', 10);
+
+        if (Number.isFinite(parsed) && parsed > 0) {
+            return parsed;
         }
 
-        function getDefaultDialCode() {
-            var country = String(config.defaultCountry || 'br').toLowerCase();
-            var map = {
-                br: '55',
-                us: '1',
-                ca: '1',
-                pt: '351',
-                es: '34',
-                fr: '33',
-                de: '49',
-                it: '39',
-                gb: '44',
-                uk: '44',
-                ar: '54',
-                cl: '56',
-                co: '57',
-                mx: '52',
-                pe: '51',
-                uy: '598',
-                py: '595'
-            };
+        parsed = parseInt(config.otpLength || 6, 10);
 
-            return map[country] || '55';
-        }
+        return Number.isFinite(parsed) && parsed > 0 ? parsed : 6;
+    }
 
-        function getDefaultCountryCode() {
-            return String(config.defaultCountry || 'br').toLowerCase();
-        }
+    function getDefaultDialCode() {
+        var country = String(config.defaultCountry || 'br').toLowerCase();
+        var map = {
+            br: '55',
+            us: '1',
+            ca: '1',
+            pt: '351',
+            es: '34',
+            fr: '33',
+            de: '49',
+            it: '39',
+            gb: '44',
+            uk: '44',
+            ar: '54',
+            cl: '56',
+            co: '57',
+            mx: '52',
+            pe: '51',
+            uy: '598',
+            py: '595'
+        };
 
-        function buildPhoneValue(input, iti) {
-            var raw = String(input.value || '').trim();
-            var digits = digitsOnly(raw);
-            var defaultCountry = getDefaultCountryCode();
+        return map[country] || '55';
+    }
 
-            if (iti && typeof iti.getSelectedCountryData === 'function') {
-                var selectedCountry = iti.getSelectedCountryData() || {};
+    function buildPhoneValue(input, iti) {
+        var raw = String(input.value || '').trim();
+        var digits = digitsOnly(raw);
+        var defaultCountry = String(config.defaultCountry || 'br').toLowerCase();
 
-                if (selectedCountry.iso2 && String(selectedCountry.iso2).toLowerCase() === defaultCountry) {
-                    if (typeof iti.getNumber === 'function') {
-                        var intlValue = iti.getNumber(window.intlTelInputUtils ? window.intlTelInputUtils.numberFormat.E164 : undefined);
+        if (iti && typeof iti.getSelectedCountryData === 'function') {
+            var selectedCountry = iti.getSelectedCountryData() || {};
 
-                        if (intlValue) {
-                            return intlValue;
-                        }
+            if (selectedCountry.iso2 && String(selectedCountry.iso2).toLowerCase() === defaultCountry) {
+                if (typeof iti.getNumber === 'function') {
+                    var intlValue = iti.getNumber(window.intlTelInputUtils ? window.intlTelInputUtils.numberFormat.E164 : undefined);
+
+                    if (intlValue) {
+                        return intlValue;
                     }
                 }
             }
+        }
 
-            if (raw.charAt(0) === '+') {
-                return '+' + digits;
-            }
+        if (raw.charAt(0) === '+') {
+            return '+' + digits;
+        }
 
-            if (digits) {
-                return '+' + getDefaultDialCode() + digits;
-            }
+        if (digits) {
+            return '+' + getDefaultDialCode() + digits;
+        }
 
+        return '';
+    }
+
+    function setMessage(scope, type, message) {
+        var notice = scope.querySelector('[data-login-notice]');
+
+        if (!notice) {
+            return;
+        }
+
+        notice.className = 'joinotify-otp-notice joinotify-otp-notice--' + type;
+        notice.textContent = message || '';
+        notice.hidden = !message;
+    }
+
+    function setLoading(form, isLoading, label) {
+        var submit = form.querySelector('[type="submit"]');
+
+        if (!submit) {
+            return;
+        }
+
+        if (!submit.dataset.originalLabel) {
+            submit.dataset.originalLabel = submit.textContent;
+        }
+
+        submit.disabled = isLoading;
+        submit.textContent = isLoading ? label : submit.dataset.originalLabel;
+    }
+
+    function switchStep(scope, step) {
+        scope.querySelectorAll('[data-login-step]').forEach(function (panel) {
+            panel.hidden = panel.dataset.loginStep !== step;
+        });
+    }
+
+    function ajaxRequest(data) {
+        return $.ajax({
+            url: config.ajaxUrl,
+            method: 'POST',
+            dataType: 'json',
+            data: $.extend({}, data, {
+                nonce: config.nonce
+            })
+        });
+    }
+
+    function formatPhonePreview(phone) {
+        var raw = String(phone || '').trim();
+        var digits = digitsOnly(raw);
+
+        if (!digits) {
             return '';
         }
+
+        if (raw.charAt(0) === '+') {
+            return raw;
+        }
+
+        return '+' + digits;
+    }
+
+    function syncOtpHidden(form) {
+        var hidden = form.querySelector('[data-otp-hidden]');
+        var otp = '';
+
+        form.querySelectorAll('[data-otp-digit]').forEach(function (input) {
+            otp += digitsOnly(input.value).slice(0, 1);
+        });
+
+        if (hidden) {
+            hidden.value = otp;
+        }
+
+        return otp;
+    }
+
+    function focusOtpInput(inputs, index) {
+        if (inputs[index]) {
+            inputs[index].focus();
+            inputs[index].select();
+        }
+    }
+
+    function clearOtpInputs(form) {
+        form.querySelectorAll('[data-otp-digit]').forEach(function (input) {
+            input.value = '';
+        });
+
+        syncOtpHidden(form);
+    }
+
+    function updateResendState(scope, phone, secondsLeft) {
+        var container = scope.querySelector('[data-resend-otp]');
+
+        if (!container) {
+            return;
+        }
+
+        if (secondsLeft > 0) {
+            container.innerHTML = '<span class="joinotify-otp-login__resend-label">' + (config.i18n.resendOtpLabel || 'Resend code in') + '</span> <span class="joinotify-otp-login__resend-countdown countdown-otp-resend">' + secondsLeft + '</span> <span>' + (config.i18n.secondsLabel || 'seconds') + '</span>';
+            return;
+        }
+
+        container.innerHTML = '<button type="button" class="button button-link request-new-otp" data-phone="' + phone + '">' + (config.i18n.resendOtpButton || 'Resend code') + '</button>';
+    }
+
+    function startOtpCountdown(scope) {
+        var phone = scope.dataset.otpPhone || '';
+        var secondsLeft = 60;
+        var timerKey = 'otpCountdownTimer';
+
+        if (scope.dataset[timerKey]) {
+            window.clearInterval(parseInt(scope.dataset[timerKey], 10));
+        }
+
+        updateResendState(scope, phone, secondsLeft);
+
+        var interval = window.setInterval(function () {
+            secondsLeft--;
+            updateResendState(scope, phone, secondsLeft);
+
+            if (secondsLeft <= 0) {
+                window.clearInterval(interval);
+                delete scope.dataset[timerKey];
+            }
+        }, 1000);
+
+        scope.dataset[timerKey] = String(interval);
+    }
+
+    function validateOtpCode(form, scope) {
+        var phone = form.querySelector('[data-phone-hidden]') ? form.querySelector('[data-phone-hidden]').value : '';
+        var otpHidden = form.querySelector('[data-otp-hidden]');
+        var otpLength = getOtpLength(scope);
+        var otp = otpHidden ? otpHidden.value : syncOtpHidden(form);
+        var inputs = Array.prototype.slice.call(form.querySelectorAll('[data-otp-digit]'));
+        var firstEmptyIndex = inputs.findIndex(function (input) {
+            return !digitsOnly(input.value);
+        });
+
+        if (!phone || otp.length !== otpLength) {
+            setMessage(scope, 'error', config.i18n.invalidOtp);
+
+            if (firstEmptyIndex >= 0) {
+                focusOtpInput(inputs, firstEmptyIndex);
+            }
+
+            return;
+        }
+
+        if (form.dataset.pendingSubmit === '1') {
+            return;
+        }
+
+        form.dataset.pendingSubmit = '1';
+        setLoading(form, true, config.i18n.verifying);
+
+        ajaxRequest({
+            action: 'joinotify_otp_verify_code',
+            phone: phone,
+            otp: otp,
+            remember: form.querySelector('input[name="remember"]') && form.querySelector('input[name="remember"]').checked ? 1 : 0,
+            redirect: form.querySelector('input[name="redirect"]').value
+        }).done(function (response) {
+            if (!response.success) {
+                setMessage(scope, 'error', response.data && response.data.message ? response.data.message : config.i18n.unexpectedError);
+                return;
+            }
+
+            setMessage(scope, 'success', response.data.message);
+            window.location.href = response.data.redirect;
+        }).fail(function () {
+            setMessage(scope, 'error', config.i18n.unexpectedError);
+        }).always(function () {
+            delete form.dataset.pendingSubmit;
+            setLoading(form, false, config.i18n.verifying);
+        });
+    }
+
+    function bindOtpInputs(scope, form) {
+        var otpLength = getOtpLength(scope);
+        var inputs = Array.prototype.slice.call(form.querySelectorAll('[data-otp-digit]'));
+
+        if (!inputs.length) {
+            return;
+        }
+
+        form.dataset.otpBound = '1';
+
+        inputs.forEach(function (input, index) {
+            if (input.dataset.otpDigitBound === '1') {
+                return;
+            }
+
+            input.dataset.otpDigitBound = '1';
+            input.setAttribute('maxlength', '1');
+            input.setAttribute('inputmode', 'numeric');
+            input.setAttribute('pattern', '[0-9]*');
+
+            input.addEventListener('input', function () {
+                var value = digitsOnly(input.value).slice(-1);
+                input.value = value;
+                syncOtpHidden(form);
+
+                if (value && inputs[index + 1]) {
+                    inputs[index + 1].focus();
+                }
+
+                if (syncOtpHidden(form).length === otpLength) {
+                    validateOtpCode(form, scope);
+                }
+            });
+
+            input.addEventListener('keydown', function (event) {
+                if (event.key === 'Backspace' && !input.value && inputs[index - 1]) {
+                    inputs[index - 1].focus();
+                }
+            });
+
+            input.addEventListener('paste', function (event) {
+                var clipboard = event.clipboardData;
+                var pastedData = clipboard ? clipboard.getData('text') : '';
+                var digits = digitsOnly(pastedData).slice(0, otpLength);
+
+                if (!digits) {
+                    return;
+                }
+
+                event.preventDefault();
+
+                inputs.forEach(function (field, fieldIndex) {
+                    field.value = digits[fieldIndex] || '';
+                });
+
+                syncOtpHidden(form);
+
+                if (digits.length === otpLength) {
+                    validateOtpCode(form, scope);
+                } else {
+                    focusOtpInput(inputs, Math.min(digits.length, inputs.length - 1));
+                }
+            });
+        });
+    }
+
+    function initIntlTelInputs(context) {
+        var telInputs = context.querySelectorAll('[data-phone-visible]');
 
         telInputs.forEach(function (input) {
             if (input.dataset.intlReady === '1') {
@@ -89,8 +327,6 @@
 
             var form = input.closest('form');
             var hiddenInput = form ? form.querySelector('[data-phone-hidden]') : null;
-
-            // The intl-tel-input plugin is optional; use the raw input value if it is not present.
             var iti = window.intlTelInput ? window.intlTelInput(input, {
                 initialCountry: config.defaultCountry || 'br',
                 nationalMode: false,
@@ -116,99 +352,18 @@
         });
     }
 
-    /**
-     * Displays a notice message inside the current login/register scope.
-     *
-     * @since 1.0.0
-     * @param {Element} scope Container that owns the notice element.
-     * @param {string} type Notice modifier suffix, such as error, success, or info.
-     * @param {string} message Message to display. An empty value hides the notice.
-     * @return {void}
-     */
-    function setMessage(scope, type, message) {
-        var notice = scope.querySelector('[data-login-notice]');
-
-        if (!notice) {
-            return;
-        }
-
-        notice.className = 'joinotify-otp-notice joinotify-otp-notice--' + type;
-        notice.textContent = message || '';
-        notice.hidden = !message;
-    }
-
-    /**
-     * Toggles the submit button state and preserves the original label.
-     *
-     * @since 1.0.0
-     * @param {HTMLFormElement|Element} form Form that contains the submit button.
-     * @param {boolean} isLoading Whether the form is in a loading state.
-     * @param {string} label Label to show while the request is pending.
-     * @return {void}
-     */
-    function setLoading(form, isLoading, label) {
-        var submit = form.querySelector('[type="submit"]');
-
-        if (!submit) {
-            return;
-        }
-
-        if (!submit.dataset.originalLabel) {
-            submit.dataset.originalLabel = submit.textContent;
-        }
-
-        submit.disabled = isLoading;
-        submit.textContent = isLoading ? label : submit.dataset.originalLabel;
-    }
-
-    /**
-     * Shows a single step in the multi-step login flow.
-     *
-     * @since 1.0.0
-     * @param {Element} scope Current login container.
-     * @param {string} step Step name to reveal, for example phone, otp, or password.
-     * @return {void}
-     */
-    function switchStep(scope, step) {
-        scope.querySelectorAll('[data-login-step]').forEach(function (panel) {
-            panel.hidden = panel.dataset.loginStep !== step;
-        });
-    }
-
-    /**
-     * Sends a nonce-protected AJAX request to the WordPress backend.
-     *
-     * @since 1.0.0
-     * @param {Object} data Payload sent to admin-ajax.php.
-     * @return {jqXHR} jQuery AJAX promise.
-     */
-    function ajaxRequest(data) {
-        return $.ajax({
-            url: config.ajaxUrl,
-            method: 'POST',
-            dataType: 'json',
-            data: $.extend({}, data, {
-                nonce: config.nonce
-            })
-        });
-    }
-
-    /**
-     * Wires the login flow events for one login container.
-     *
-     * @since 1.0.0
-     * @param {Element} scope Login container that includes the phone, OTP, and password steps.
-     * @return {void}
-     */
     function bindPhoneFlow(scope) {
         var phoneForm = scope.querySelector('[data-phone-form]');
         var otpForm = scope.querySelector('[data-otp-form]');
         var passwordForm = scope.querySelector('[data-password-form]');
         var phoneHiddenInputs = scope.querySelectorAll('[data-phone-hidden]');
+        var otpPreview = scope.querySelector('[data-otp-phone-preview]');
 
         if (!phoneForm || !otpForm || !passwordForm) {
             return;
         }
+
+        bindOtpInputs(scope, otpForm);
 
         phoneForm.addEventListener('submit', function (event) {
             event.preventDefault();
@@ -227,7 +382,6 @@
                 return;
             }
 
-            // Prevent duplicate OTP requests while the backend is processing the phone number.
             setLoading(phoneForm, true, config.i18n.sending);
 
             ajaxRequest({
@@ -243,17 +397,30 @@
                     hidden.value = response.data.phone || phone;
                 });
 
-                setMessage(scope, response.data.nextStep === 'password' ? 'error' : 'success', response.data.message);
+                scope.dataset.otpPhone = response.data.phone || phone;
+
+                if (otpPreview) {
+                    otpPreview.textContent = formatPhonePreview(response.data.phone || phone);
+                }
+
+                setMessage(scope, response.data.nextStep === 'password' ? 'info' : 'success', response.data.message);
 
                 if (response.data.nextStep === 'otp') {
                     switchStep(scope, 'otp');
-                    if (otpForm.querySelector('input[name="otp"]')) {
-                        otpForm.querySelector('input[name="otp"]').focus();
+                    clearOtpInputs(otpForm);
+                    startOtpCountdown(scope);
+
+                    var firstOtpInput = otpForm.querySelector('[data-otp-digit]');
+
+                    if (firstOtpInput) {
+                        firstOtpInput.focus();
                     }
                 } else if (response.data.nextStep === 'password') {
                     switchStep(scope, 'password');
-                    if (passwordForm.querySelector('input[name="email"]')) {
-                        passwordForm.querySelector('input[name="email"]').focus();
+                    var emailInput = passwordForm.querySelector('input[name="email"]');
+
+                    if (emailInput) {
+                        emailInput.focus();
                     }
                 }
             }).fail(function () {
@@ -265,42 +432,12 @@
 
         otpForm.addEventListener('submit', function (event) {
             event.preventDefault();
-
-            var otpField = otpForm.querySelector('input[name="otp"]');
-            var otp = otpField ? otpField.value : '';
-
-            if (!otp) {
-                setMessage(scope, 'error', config.i18n.invalidOtp);
-                return;
-            }
-
-            // Verification can end in a redirect, so keep the form locked until the response returns.
-            setLoading(otpForm, true, config.i18n.verifying);
-
-            ajaxRequest({
-                action: 'joinotify_otp_verify_code',
-                phone: otpForm.querySelector('[data-phone-hidden]').value,
-                otp: otp,
-                remember: otpForm.querySelector('input[name="remember"]') && otpForm.querySelector('input[name="remember"]').checked ? 1 : 0,
-                redirect: otpForm.querySelector('input[name="redirect"]').value
-            }).done(function (response) {
-                if (!response.success) {
-                    setMessage(scope, 'error', response.data && response.data.message ? response.data.message : config.i18n.unexpectedError);
-                    return;
-                }
-
-                setMessage(scope, 'success', response.data.message);
-                window.location.href = response.data.redirect;
-            }).fail(function () {
-                setMessage(scope, 'error', config.i18n.unexpectedError);
-            }).always(function () {
-                setLoading(otpForm, false, config.i18n.verifying);
-            });
+            validateOtpCode(otpForm, scope);
         });
 
         passwordForm.addEventListener('submit', function (event) {
             event.preventDefault();
-            // Password login follows the same loading pattern as the OTP flow.
+
             setLoading(passwordForm, true, config.i18n.loading);
 
             ajaxRequest({
@@ -327,25 +464,21 @@
         scope.querySelectorAll('[data-switch-step]').forEach(function (button) {
             button.addEventListener('click', function (event) {
                 event.preventDefault();
-                // Switching between steps is handled entirely on the client side.
                 switchStep(scope, button.dataset.switchStep);
                 setMessage(scope, 'info', '');
+
+                if (button.dataset.switchStep === 'phone') {
+                    clearOtpInputs(otpForm);
+                }
             });
         });
+
     }
 
-    /**
-     * Binds registration submit handlers and reports backend feedback inline.
-     *
-     * @since 1.0.0
-     * @param {Document|Element} context Container used to find register forms.
-     * @return {void}
-     */
     function bindRegisterForms(context) {
         context.querySelectorAll('.joinotify-otp-register-form').forEach(function (form) {
             form.addEventListener('submit', function (event) {
                 event.preventDefault();
-                // Registration also disables the submit button while the request is pending.
                 setLoading(form, true, config.i18n.loading);
 
                 ajaxRequest({
@@ -384,16 +517,27 @@
         });
     }
 
-    /**
-     * Bootstraps the frontend UI after the DOM is ready.
-     *
-     * @since 1.0.0
-     * @return {void}
-     */
     document.addEventListener('DOMContentLoaded', function () {
         initIntlTelInputs(document);
 
-        document.querySelectorAll('.joinotify-otp-login').forEach(function (scope) {
+        document.addEventListener('click', function (event) {
+            var button = event.target.closest('.request-new-otp');
+
+            if (!button) {
+                return;
+            }
+
+            event.preventDefault();
+
+            var scope = button.closest('[data-joinotify-otp-login]');
+            var phoneForm = scope ? scope.querySelector('[data-phone-form]') : null;
+
+            if (phoneForm) {
+                phoneForm.dispatchEvent(new Event('submit', { cancelable: true, bubbles: true }));
+            }
+        });
+
+        document.querySelectorAll('[data-joinotify-otp-login]').forEach(function (scope) {
             bindPhoneFlow(scope);
         });
 
