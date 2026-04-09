@@ -21,6 +21,11 @@ const props = defineProps({
 const emit = defineEmits(['update:digits', 'complete']);
 
 const inputRefs = ref([]);
+const __ = window.wp?.i18n?.__ ?? ((text) => text);
+
+function t(text, domain = 'joinotify-otp-login') {
+  return window.joinotifyOtpLogin?.i18n?.[text] || __(text, domain);
+}
 
 /**
  * Focus the requested OTP input after the DOM update cycle.
@@ -121,7 +126,7 @@ function onPaste(targets, index, event) {
       inputmode="numeric"
       autocomplete="one-time-code"
       maxlength="1"
-      :aria-label="`Code digit ${index + 1}`"
+      :aria-label="t('Code digit %d').replace('%d', String(index + 1))"
       @input="onInput(inputRefs, index, $event)"
       @keydown="onKeydown(inputRefs, index, $event)"
       @paste="onPaste(inputRefs, index, $event)"

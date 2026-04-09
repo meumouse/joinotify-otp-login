@@ -37,6 +37,13 @@ function mountOtpLoginApp(root) {
   const redirectUrl = root.dataset.redirectUrl || window.location.href;
   const showHeader = root.dataset.showHeader === '1';
   const apiBaseUrl = window.joinotifyOtpLogin.restUrl || window.joinotifyOtpLogin.ajaxUrl;
+  let strings = {};
+
+  try {
+    strings = root.dataset.i18n ? JSON.parse(root.dataset.i18n) : {};
+  } catch (error) {
+    strings = {};
+  }
 
   const app = createApp(OtpLoginApp, {
     context,
@@ -47,6 +54,7 @@ function mountOtpLoginApp(root) {
     showHeader,
     title: root.dataset.title || readText(root, '.joinotify-otp-login__title'),
     description: root.dataset.description || readText(root, '.joinotify-otp-login__description'),
+    strings,
   });
 
   app.config.globalProperties.__ = __;

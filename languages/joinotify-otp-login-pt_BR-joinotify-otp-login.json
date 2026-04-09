@@ -121,6 +121,12 @@
       "Include the country code so the number is normalized correctly.": [
         "Inclua o código do país para que o número seja normalizado corretamente."
       ],
+      "Invalid country code": [
+        "Código de país inválido"
+      ],
+      "Invalid number": [
+        "Número inválido"
+      ],
       "Invalid request nonce.": [
         "Nonce de solicitação inválido."
       ],
@@ -139,8 +145,8 @@
       "No sender phone number was found in Joinotify. Add a number to enable OTP delivery.": [
         "Nenhum número de telefone do remetente foi encontrado no Joinotify. Adicione um número para habilitar o envio do código OTP."
       ],
-      "Or sign in with email or username": [
-        "Ou faça login com seu e-mail ou nome de usuário."
+      "Or sign in with email": [
+        "Ou faça login com e-mail"
       ],
       "OTP Login Settings": [
         "Configurações de login OTP"
@@ -151,20 +157,17 @@
       "Phone number": [
         "Número de telefone"
       ],
+      "Please enter a number": [
+        "Por favor, insira um número."
+      ],
       "Primary color": [
         "Cor primária"
-      ],
-      "Processing...": [
-        "Processamento..."
       ],
       "Register": [
         "Cadastre-se"
       ],
       "Remember me": [
         "Lembre de mim"
-      ],
-      "Request code": [
-        "Código de solicitação"
       ],
       "Required": [
         "Obrigatório"
@@ -208,11 +211,14 @@
       "This color automatically generates the full theme scale.": [
         "Essa cor gera automaticamente a escala completa do tema."
       ],
+      "Too long": [
+        "Muito longo"
+      ],
+      "Too short": [
+        "Muito curto"
+      ],
       "Use email and password": [
         "Use o e-mail e a senha."
-      ],
-      "Use your phone number to receive a code and sign in faster.": [
-        "Use seu número de telefone para receber um código e fazer login mais rapidamente."
       ],
       "Use your phone number to receive a login code and continue.": [
         "Use seu número de telefone para receber um código de acesso e continue."
@@ -222,9 +228,6 @@
       ],
       "Username": [
         "Nome de usuário"
-      ],
-      "Verify code": [
-        "Código de verificação"
       ],
       "Verifying...": [
         "Verificando..."

@@ -23,6 +23,7 @@ const props = defineProps({
   otpLength: { type: Number, default: 6 },
   redirectUrl: { type: String, default: '/' },
   title: { type: String, default: '' },
+  strings: { type: Object, default: () => ({}) },
   utilsUrl: { type: String, default: '' },
 });
 
@@ -66,7 +67,7 @@ const borderRadius = computed(() => `${theme.value.borderRadius || 6}px`);
  * @return {string} Localized string.
  */
 function t(text, domain = 'joinotify-otp-login') {
-  return window.joinotifyOtpLogin?.i18n?.[text] || __(text, domain);
+  return props.strings?.[text] || window.joinotifyOtpLogin?.i18n?.[text] || __(text, domain);
 }
 
 /**

@@ -25,7 +25,8 @@
     border-radius: 0.225rem;
   }
 
-  .joinotify-otp-login .iti__selected-country {
+  .joinotify-otp-login .iti__selected-country,
+  .joinotify-otp-login .iti__search-input {
     outline: none;
   }
 

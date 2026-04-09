@@ -169,6 +169,7 @@ class Assets {
 			'Secure access',
 			'Log in with WhatsApp',
 			'Enter a valid phone number. The country code will be detected automatically.',
+			'Code digit %d',
 			'Phone number',
 			'Sending...',
 			'Use email and password',
@@ -200,6 +201,12 @@ class Assets {
 			'We could not complete the request right now. Please try again.',
 			'Enter the verification code you received.',
 			'Fill in the email or username and password.',
+			'Or sign in with email',
+			'Please enter a number',
+			'Invalid number',
+			'Invalid country code',
+			'Too short',
+			'Too long',
 		);
 
 		$map = array();
