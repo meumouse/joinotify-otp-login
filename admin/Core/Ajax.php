@@ -93,7 +93,7 @@ class Ajax {
         $this->verify_request();
 
         $result = $this->auth_flow->login_with_password(
-            sanitize_email( wp_unslash( $_POST['email'] ?? '' ) ),
+            sanitize_text_field( wp_unslash( $_POST['identifier'] ?? '' ) ),
             (string) wp_unslash( $_POST['password'] ?? '' ),
             ! empty( $_POST['remember'] )
         );

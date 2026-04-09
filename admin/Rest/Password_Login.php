@@ -43,7 +43,7 @@ class Password_Login extends Abstract_Route {
 		}
 
 		$result = $this->auth_flow->login_with_password(
-			sanitize_email( $request->get_param( 'email' ) ),
+			sanitize_text_field( $request->get_param( 'identifier' ) ),
 			(string) $request->get_param( 'password' ),
 			! empty( $request->get_param( 'remember' ) )
 		);

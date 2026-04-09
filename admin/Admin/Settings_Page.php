@@ -72,7 +72,7 @@ class Settings_Page {
 		$senders = $this->get_available_senders();
 		$selected_sender = $this->get_selected_sender( $senders );
 
-		include trailingslashit( JOINOTIFY_OTP_LOGIN_DIR ) . 'inc/Views/Settings.php';
+		include trailingslashit( JOINOTIFY_OTP_LOGIN_DIR ) . 'admin/Views/Settings.php';
 	}
 
 	public function enqueue_assets() {

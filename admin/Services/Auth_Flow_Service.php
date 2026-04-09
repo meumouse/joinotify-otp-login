@@ -131,19 +131,19 @@ class Auth_Flow_Service {
 
 
     /**
-     * Authenticate a user using email and password credentials.
+     * Authenticate a user using username or email plus password credentials.
      *
      * @since 1.0.0
-     * @param string $email Submitted email address.
+     * @param string $identifier Submitted username or email address.
      * @param string $password Submitted password.
      * @param bool   $remember Whether the auth cookie should be persistent.
      * @return array|WP_Error Response payload or a WordPress error object.
      */
-    public function login_with_password( $email, $password, $remember = false ) {
-        $email = sanitize_email( $email );
+    public function login_with_password( $identifier, $password, $remember = false ) {
+        $identifier = sanitize_user( $identifier, true );
 
-        if ( ! is_email( $email ) ) {
-            return new WP_Error( 'invalid_email', __( 'Enter a valid email address.', 'joinotify-otp-login' ) );
+        if ( empty( $identifier ) ) {
+            return new WP_Error( 'invalid_identifier', __( 'Enter a valid username or email address.', 'joinotify-otp-login' ) );
         }
 
         if ( empty( $password ) ) {
@@ -152,7 +152,7 @@ class Auth_Flow_Service {
 
         $user = wp_signon(
             array(
-                'user_login' => $email,
+                'user_login' => $identifier,
                 'user_password' => $password,
                 'remember' => (bool) $remember,
             ),
@@ -160,7 +160,7 @@ class Auth_Flow_Service {
         );
 
         if ( is_wp_error( $user ) ) {
-            return new WP_Error( 'auth_failed', __( 'We could not authenticate with this email and password.', 'joinotify-otp-login' ) );
+            return new WP_Error( 'auth_failed', __( 'We could not authenticate with that username or email and password.', 'joinotify-otp-login' ) );
         }
 
         return array(

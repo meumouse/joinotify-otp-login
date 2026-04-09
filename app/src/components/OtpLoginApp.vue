@@ -2,6 +2,10 @@
 import intlTelInput from 'intl-tel-input';
 import 'intl-tel-input/build/css/intlTelInput.css';
 import { computed, nextTick, onBeforeUnmount, onMounted, ref } from 'vue';
+import BaseButton from './BaseButton.vue';
+import Field from './Field.vue';
+import PhoneField from './PhoneField.vue';
+import Loader from './Loader.vue';
 import FormCheckbox from './FormCheckbox.vue';
 
 const props = defineProps({
@@ -19,7 +23,7 @@ const props = defineProps({
 const steps = { phone: 'phone', otp: 'otp', password: 'password' };
 
 const scope = ref(null);
-const phoneInput = ref(null);
+const phoneField = ref(null);
 const otpInputs = ref([]);
 const otpPhone = ref('');
 const visiblePhone = ref('');
@@ -31,7 +35,7 @@ const resendEnabled = ref(false);
 const resendTimer = ref(null);
 const notice = ref({ type: 'info', message: '' });
 const remember = ref(false);
-const email = ref('');
+const identifier = ref('');
 const password = ref('');
 const showPassword = ref(false);
 const otpDigits = ref(Array.from({ length: props.otpLength }, () => ''));
@@ -90,12 +94,12 @@ function requestUrl(pathOrAction) {
 const otpJoined = computed(() => otpDigits.value.join(''));
 const phonePreview = computed(() => otpPhone.value || hiddenPhone.value || visiblePhone.value);
 const phoneFieldId = computed(() => `joinotify-phone-${props.context}`);
-const emailFieldId = computed(() => `joinotify-email-${props.context}`);
+const identifierFieldId = computed(() => `joinotify-identifier-${props.context}`);
 const passwordFieldId = computed(() => `joinotify-password-${props.context}`);
 const rememberFieldId = computed(() => `joinotify-remember-${props.context}`);
 
 const noticeClasses = computed(() => {
-  const base = 'rounded-2xl border px-4 py-3 text-sm leading-6';
+  const base = 'rounded-lg border px-4 py-3 text-sm leading-6';
 
   if (notice.value.type === 'success') {
     return `${base} border-emerald-200 bg-emerald-50 text-emerald-900`;
@@ -175,7 +179,7 @@ function focusOtp(index) {
 }
 
 function syncPhoneFromInput() {
-  const value = phoneInput.value ? phoneInput.value.value : visiblePhone.value;
+  const value = visiblePhone.value;
   visiblePhone.value = value;
   hiddenPhone.value = normalizePhone(value);
 }
@@ -185,7 +189,7 @@ function loadIntlUtils() {
 }
 
 function initPhoneInput() {
-  const input = phoneInput.value;
+  const input = phoneField.value?.inputEl;
 
   if (!input) {
     syncPhoneFromInput();
@@ -334,8 +338,8 @@ async function verifyOtp() {
 }
 
 async function loginWithPassword() {
-  if (!email.value || !password.value) {
-    setNotice('error', t('missingCredentials', 'Fill in the email and password.'));
+  if (!identifier.value || !password.value) {
+    setNotice('error', t('missingCredentials', 'Fill in the email or username and password.'));
     return;
   }
 
@@ -351,7 +355,7 @@ async function loginWithPassword() {
       body: new URLSearchParams({
         ...(useRestApi.value
           ? {
-              email: email.value,
+              identifier: identifier.value,
               password: password.value,
               remember: remember.value ? '1' : '0',
               redirect: props.redirectUrl,
@@ -359,7 +363,7 @@ async function loginWithPassword() {
           : {
               action: 'joinotify_otp_password_login',
               nonce: window.joinotifyOtpLogin.legacyNonce,
-              email: email.value,
+              identifier: identifier.value,
               password: password.value,
               remember: remember.value ? '1' : '0',
               redirect: props.redirectUrl,
@@ -488,43 +492,32 @@ onBeforeUnmount(() => {
 
       <section v-show="currentStep === steps.phone" class="space-y-5">
         <form class="space-y-5" @submit.prevent="requestOtp">
-          <div class="space-y-2">
-            <label :for="phoneFieldId" class="block text-sm font-semibold text-slate-700">
-              {{ t('phoneLabel', 'Phone number') }}
-            </label>
-            <input
-              :id="phoneFieldId"
-              ref="phoneInput"
-              v-model="visiblePhone"
-              type="tel"
-              class="joinotify-otp-login__input joinotify-otp-login__phone-input w-full border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-900 outline-none transition placeholder:text-slate-400"
-              autocomplete="tel"
-              inputmode="tel"
-              @blur="syncPhoneFromInput"
-              @change="syncPhoneFromInput"
-              @countrychange="syncPhoneFromInput"
-              @input="syncPhoneFromInput"
-            />
-            <p class="text-xs leading-5 text-slate-500">
-              {{ t('phoneHelper', 'Enter a valid phone number. The country code will be detected automatically.') }}
-            </p>
-          </div>
+          <PhoneField
+            ref="phoneField"
+            v-model="visiblePhone"
+            :field-id="phoneFieldId"
+            :helper="t('phoneHelper', 'Enter a valid phone number. The country code will be detected automatically.')"
+            :label="t('phoneLabel', 'Phone number')"
+            @blur="syncPhoneFromInput"
+            @change="syncPhoneFromInput"
+            @countrychange="syncPhoneFromInput"
+            @input="syncPhoneFromInput"
+          />
 
-          <div class="grid gap-3 sm:grid-cols-2">
-            <button
-              class="joinotify-otp-login__button inline-flex items-center justify-center px-5 py-3 text-sm font-semibold text-white transition focus:outline-none disabled:cursor-not-allowed disabled:opacity-60"
+          <div class="flex flex-col gap-3">
+            <BaseButton
               :disabled="loading"
               type="submit"
             >
               {{ loading ? t('requestCodeLoading', 'Sending...') : t('phoneAction', 'Log in with WhatsApp') }}
-            </button>
-            <button
-              class="joinotify-otp-login__button-secondary inline-flex items-center justify-center border border-slate-200 bg-white px-5 py-3 text-sm font-semibold text-slate-700 transition focus:outline-none"
+            </BaseButton>
+            <BaseButton
+              kind="secondary"
               type="button"
               @click="switchStep(steps.password)"
             >
               {{ t('useEmailPassword', 'Use email and password') }}
-            </button>
+            </BaseButton>
           </div>
         </form>
       </section>
@@ -589,20 +582,20 @@ onBeforeUnmount(() => {
           </div>
 
           <div class="grid gap-3">
-            <button
-              class="joinotify-otp-login__button inline-flex items-center justify-center px-5 py-3 text-sm font-semibold text-white transition focus:outline-none disabled:cursor-not-allowed disabled:opacity-60"
+            <BaseButton
               :disabled="loading"
               type="submit"
             >
-              {{ loading ? t('verifyCodeLoading', 'Verifying...') : t('verifyCode', 'Verify code') }}
-            </button>
-            <button
-              class="joinotify-otp-login__button-secondary inline-flex items-center justify-center border border-slate-200 bg-white px-5 py-3 text-sm font-semibold text-slate-700 transition focus:outline-none"
+              <Loader v-if="loading" />
+              <span v-else>{{ t('verifyCodeLoading', 'Verifying...') }}</span>
+            </BaseButton>
+            <BaseButton
+              kind="secondary"
               type="button"
               @click="switchStep(steps.phone)"
             >
               {{ t('changePhone', 'Change number') }}
-            </button>
+            </BaseButton>
           </div>
         </form>
       </section>
@@ -615,24 +608,18 @@ onBeforeUnmount(() => {
         </div>
 
         <form class="space-y-5" @submit.prevent="loginWithPassword">
-          <div class="space-y-2">
-            <label :for="emailFieldId" class="block text-sm font-semibold text-slate-700">
-              {{ t('emailLabel', 'Email') }}
-            </label>
+          <Field :for-id="identifierFieldId" :label="t('identifierLabel', 'Email or username')">
             <input
-              :id="emailFieldId"
-              v-model="email"
-              type="email"
+              :id="identifierFieldId"
+              v-model="identifier"
+              type="text"
               class="joinotify-otp-login__input w-full border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-900 outline-none transition placeholder:text-slate-400"
-              autocomplete="email"
-              :placeholder="t('emailPlaceholder', 'Enter your email')"
+              autocomplete="username"
+              :placeholder="t('identifierPlaceholder', 'Enter your email or username')"
             />
-          </div>
+          </Field>
 
-          <div class="space-y-2">
-            <label :for="passwordFieldId" class="block text-sm font-semibold text-slate-700">
-              {{ t('passwordLabel', 'Password') }}
-            </label>
+          <Field :for-id="passwordFieldId" :label="t('passwordLabel', 'Password')">
             <div class="relative">
               <input
                 :id="passwordFieldId"
@@ -643,7 +630,7 @@ onBeforeUnmount(() => {
                 :placeholder="t('passwordPlaceholder', 'Enter your password')"
               />
               <button
-                class="absolute inset-y-0 right-0 flex items-center px-4 text-slate-500 transition hover:text-slate-900"
+                class="absolute outline-none inset-y-0 right-0 flex items-center px-4 text-slate-500 transition hover:text-slate-900"
                 type="button"
                 :aria-label="showPassword ? t('hidePassword', 'Hide password') : t('showPassword', 'Show password')"
                 @click="showPassword = !showPassword"
@@ -704,37 +691,36 @@ onBeforeUnmount(() => {
                 </svg>
               </button>
             </div>
+          </Field>
+
+          <div class="flex flex-wrap items-center justify-between gap-3 text-sm text-slate-500">
+            <FormCheckbox
+              v-model="remember"
+              :id="rememberFieldId"
+              :label="t('rememberMe', 'Remember me')"
+              name="remember"
+            />
+            <a class="font-semibold text-indigo-600 transition hover:text-indigo-500" :href="lostPasswordUrl">
+              {{ t('forgotPassword', 'Forgot your password?') }}
+            </a>
           </div>
 
-          <FormCheckbox
-            v-model="remember"
-            :id="rememberFieldId"
-            :label="t('rememberMe', 'Remember me')"
-            name="remember"
-          />
-
-          <div class="grid gap-3 sm:grid-cols-2">
-            <button
-              class="joinotify-otp-login__button inline-flex items-center justify-center px-5 py-3 text-sm font-semibold text-white transition focus:outline-none disabled:cursor-not-allowed disabled:opacity-60"
+          <div class="flex flex-col gap-3">
+            <BaseButton
               :disabled="loading"
               type="submit"
             >
-              {{ loading ? t('signInLoading', 'Processing...') : t('signIn', 'Sign in') }}
-            </button>
-            <button
-              class="joinotify-otp-login__button-secondary inline-flex items-center justify-center border border-slate-200 bg-white px-5 py-3 text-sm font-semibold text-slate-700 transition focus:outline-none"
+              <Loader v-if="loading" />
+              <span v-else>{{ t('signIn', 'Sign in') }}</span>
+            </BaseButton>
+            <BaseButton
+              kind="secondary"
               type="button"
               @click="switchStep(steps.phone)"
             >
               {{ t('backToWhatsapp', 'Back to WhatsApp') }}
-            </button>
+            </BaseButton>
           </div>
-
-          <p class="text-center text-sm text-slate-500">
-            <a class="font-semibold text-indigo-600 transition hover:text-indigo-500" :href="lostPasswordUrl">
-              {{ t('forgotPassword', 'Forgot your password?') }}
-            </a>
-          </p>
         </form>
       </section>
     </div>

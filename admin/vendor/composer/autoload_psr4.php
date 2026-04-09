@@ -6,5 +6,5 @@ $vendorDir = dirname(__DIR__);
 $baseDir = dirname($vendorDir);
 
 return array(
-    'MeuMouse\\Joinotify\\Otp_Login\\' => array($baseDir . '/inc'),
+    'MeuMouse\\Joinotify\\Otp_Login\\' => array($baseDir . '/'),
 );

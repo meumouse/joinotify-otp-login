@@ -20,7 +20,7 @@ use MeuMouse\Joinotify\Otp_Login\Core\Plugin;
 
 defined('ABSPATH') || exit;
 
-$autoload = plugin_dir_path( __FILE__ ) . 'vendor/autoload.php';
+$autoload = plugin_dir_path( __FILE__ ) . 'admin/vendor/autoload.php';
 
 if ( file_exists( $autoload ) ) {
 	require_once $autoload;

@@ -1,6 +1,6 @@
 <?php
 
-namespace MeuMouse\Joinotify\Otp_Login\Core;
+namespace MeuMouse\Joinotify\Otp_Login\Views;
 
 use MeuMouse\Joinotify\Otp_Login\Views\Templates;
 

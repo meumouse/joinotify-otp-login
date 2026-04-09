@@ -173,7 +173,7 @@ final class Plugin {
 			'JOINOTIFY_OTP_LOGIN_BASENAME'           => plugin_basename( $base_file ),
 			'JOINOTIFY_OTP_LOGIN_FILE'               => $base_file,
 			'JOINOTIFY_OTP_LOGIN_DIR'                => $base_dir,
-			'JOINOTIFY_OTP_LOGIN_INC'                => $base_dir . 'inc/',
+			'JOINOTIFY_OTP_LOGIN_INC'                => $base_dir . 'admin/',
 			'JOINOTIFY_OTP_LOGIN_URL'                => $base_url,
 			'JOINOTIFY_OTP_LOGIN_ASSETS'             => $base_url . 'assets/',
 			'JOINOTIFY_OTP_LOGIN_ABSPATH'            => dirname( $base_file ) . '/',
@@ -202,7 +202,7 @@ final class Plugin {
 		$hook_classes = array(
 			'init' => array(
 				'MeuMouse\\Joinotify\\Otp_Login\\Core\\Assets',
-				'MeuMouse\\Joinotify\\Otp_Login\\Core\\Shortcodes',
+				'MeuMouse\\Joinotify\\Otp_Login\\Views\\Shortcodes',
 				'MeuMouse\\Joinotify\\Otp_Login\\Admin\\Settings_Page',
 				'MeuMouse\\Joinotify\\Otp_Login\\Integrations\\Woocommerce',
 			),
