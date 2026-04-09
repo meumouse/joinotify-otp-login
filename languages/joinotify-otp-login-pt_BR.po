@@ -1,0 +1,393 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: joinotify-otp-login\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"x-domain: joinotify-otp-login\n"
+
+#: admin/Core/Plugin.php:132
+msgid ""
+"<strong>Joinotify OTP Login</strong> requires PHP 7.4 or higher. Contact "
+"your hosting provider to upgrade PHP."
+msgstr ""
+"<strong>O login OTP do Joinotify</strong> requer PHP 7.4 ou superior. Entre "
+"em contato com seu provedor de hospedagem para atualizar o PHP."
+
+#: admin/Core/Plugin.php:149
+msgid ""
+"<strong>Joinotify OTP Login</strong> requires the "
+"<strong>Joinotify</strong> plugin to be active."
+msgstr ""
+"<strong>O login OTP do Joinotify</strong> requer que o plugin "
+"<strong>Joinotify</strong> esteja ativo."
+
+#: admin/Services/Auth_Flow_Service.php:229
+msgid "Account created successfully."
+msgstr "Conta criada com sucesso."
+
+#: templates/checkout/form-login.php:27
+msgid "Already have an account?"
+msgstr "Já tem uma conta?"
+
+#: admin/Services/Auth_Flow_Service.php:199
+msgid "An account is already registered with this email address."
+msgstr "Já existe uma conta registrada com este endereço de e-mail."
+
+#: admin/Services/Auth_Flow_Service.php:203
+msgid "An account is already registered with this phone number."
+msgstr "Já existe uma conta registrada com este número de telefone."
+
+#: admin/Views/Settings.php:87
+msgid "Automatically generated scale"
+msgstr "Escala gerada automaticamente"
+
+#: admin/Core/Assets.php:132
+msgid "Back to WhatsApp"
+msgstr "Voltar ao WhatsApp"
+
+#: admin/Views/Settings.php:55
+msgid "Border radius"
+msgstr "raio da fronteira"
+
+#: admin/Views/Settings.php:30
+msgid "Buttons, focus states, and highlights follow your brand."
+msgstr "Botões, estados de foco e destaques seguem a sua marca."
+
+#: admin/Core/Assets.php:143
+msgid "Change number"
+msgstr "Alterar número"
+
+#: templates/checkout/form-login.php:28
+msgid "Click here to log in"
+msgstr "Clique aqui para iniciar sessão"
+
+#: admin/Core/Assets.php:137
+msgid "Code digit %d"
+msgstr "Dígito de código %d"
+
+#: admin/Core/Plugin.php:307
+msgid "Configure"
+msgstr "Configurar"
+
+#: admin/Views/Settings.php:60
+msgid "Control the rounding of cards and form fields."
+msgstr "Controle o arredondamento de cartões e campos de formulário."
+
+#: admin/Views/Settings.php:18
+msgid "Define the primary color, border radius, and OTP sender phone number."
+msgstr ""
+"Defina a cor principal, o raio da borda e o número de telefone do remetente "
+"do OTP."
+
+#: admin/Core/Plugin.php:328
+msgid "Documentation"
+msgstr "Documentação"
+
+#: templates/myaccount/form-login.php:71
+msgid "Email"
+msgstr "E-mail"
+
+#: admin/Core/Assets.php:124
+msgid "Email or username"
+msgstr "E-mail ou nome de usuário"
+
+#: templates/shared/otp-login-form.php:43
+msgid "Enable JavaScript to use login with WhatsApp or email and password."
+msgstr "Habilite o JavaScript para usar o login com WhatsApp ou com e-mail e senha."
+
+#: admin/Services/Auth_Flow_Service.php:191
+msgid "Enter a password to create the account."
+msgstr "Digite uma senha para criar a conta."
+
+#: admin/Services/Auth_Flow_Service.php:187
+msgid "Enter a valid email address."
+msgstr "Insira um endereço de e-mail válido."
+
+#: admin/Core/Assets.php:147
+#: admin/Services/Auth_Flow_Service.php:64
+#: admin/Services/Auth_Flow_Service.php:195
+msgid "Enter a valid phone number with country code."
+msgstr "Insira um número de telefone válido com o código do país."
+
+#: admin/Core/Assets.php:120
+msgid "Enter a valid phone number. The country code will be detected automatically."
+msgstr ""
+"Digite um número de telefone válido. O código do país será detectado "
+"automaticamente."
+
+#: admin/Services/Auth_Flow_Service.php:146
+msgid "Enter a valid username or email address."
+msgstr "Insira um nome de usuário ou endereço de e-mail válido."
+
+#: admin/Core/Assets.php:136
+msgid "Enter the %d-digit code sent to your WhatsApp."
+msgstr "Digite o código de %d dígitos enviado para o seu WhatsApp."
+
+#: admin/Core/Assets.php:135
+msgid "Enter the access code"
+msgstr "Digite o código de acesso"
+
+#: admin/Core/Assets.php:148
+msgid "Enter the verification code you received."
+msgstr "Digite o código de verificação que você recebeu."
+
+#: admin/Core/Assets.php:125
+msgid "Enter your email or username"
+msgstr "Insira seu e-mail ou nome de usuário."
+
+#: admin/Core/Assets.php:127
+msgid "Enter your password"
+msgstr "Digite sua senha"
+
+#: admin/Services/Auth_Flow_Service.php:150
+msgid "Enter your password."
+msgstr "Digite sua senha."
+
+#: admin/Core/Assets.php:146
+msgid "Fill in the email or username and password."
+msgstr "Insira o e-mail ou nome de usuário e a senha."
+
+#: admin/Services/Auth_Flow_Service.php:110
+msgid "Fill in the phone number and the code you received."
+msgstr "Insira o número de telefone e o código que você recebeu."
+
+#: admin/Core/Assets.php:129
+msgid "Forgot your password?"
+msgstr "Esqueceu sua senha?"
+
+#: admin/Views/Settings.php:26
+msgid "Hero preview"
+msgstr "Prévia do herói"
+
+#: admin/Core/Assets.php:145
+msgid "Hide password"
+msgstr "Ocultar senha"
+
+#: admin/Views/Settings.php:17
+msgid "Highlighted theme colors"
+msgstr "Cores do tema em destaque"
+
+#: templates/myaccount/form-login.php:83
+msgid "Include the country code so the number is normalized correctly."
+msgstr "Inclua o código do país para que o número seja normalizado corretamente."
+
+#: admin/Rest/Abstract_Route.php:46
+msgid "Invalid request nonce."
+msgstr "Nonce de solicitação inválido."
+
+#: templates/myaccount/form-login.php:26
+msgid "Log in"
+msgstr "Conecte-se"
+
+#: templates/checkout/form-login.php:42
+msgid "Log in to continue"
+msgstr "Faça login para continuar"
+
+#: admin/Core/Assets.php:117
+#: admin/Core/Assets.php:121
+#: templates/myaccount/form-login.php:36
+#: templates/shared/otp-login-form.php:15
+msgid "Log in with WhatsApp"
+msgstr "Faça login com o WhatsApp"
+
+#: admin/Services/Auth_Flow_Service.php:128
+#: admin/Services/Auth_Flow_Service.php:168
+msgid "Login successful."
+msgstr "Login efetuado com sucesso."
+
+#: admin/Views/Settings.php:80
+msgid ""
+"No sender phone number was found in Joinotify. Add a number to enable OTP "
+"delivery."
+msgstr ""
+"Nenhum número de telefone do remetente foi encontrado no Joinotify. "
+"Adicione um número para habilitar o envio do código OTP."
+
+#: admin/Core/Assets.php:123
+msgid "Or sign in with email or username"
+msgstr "Ou faça login com seu e-mail ou nome de usuário."
+
+#: admin/Admin/Settings_Page.php:24
+#: admin/Admin/Settings_Page.php:25
+#: admin/Views/Settings.php:13
+msgid "OTP Login Settings"
+msgstr "Configurações de login OTP"
+
+#: admin/Core/Assets.php:126
+#: templates/myaccount/form-login.php:89
+msgid "Password"
+msgstr "Senha"
+
+#: admin/Core/Assets.php:119
+#: templates/myaccount/form-login.php:81
+#: templates/shared/intl-phone-field.php:16
+msgid "Phone number"
+msgstr "Número de telefone"
+
+#: admin/Views/Settings.php:46
+msgid "Primary color"
+msgstr "Cor primária"
+
+#: admin/Core/Assets.php:131
+msgid "Processing..."
+msgstr "Processamento..."
+
+#: templates/myaccount/form-login.php:52
+#: templates/myaccount/form-login.php:98
+msgid "Register"
+msgstr "Cadastre-se"
+
+#: admin/Core/Assets.php:128
+msgid "Remember me"
+msgstr "Lembre de mim"
+
+#: admin/Core/Assets.php:133
+msgid "Request code"
+msgstr "Código de solicitação"
+
+#: templates/myaccount/form-login.php:64
+#: templates/myaccount/form-login.php:71
+#: templates/myaccount/form-login.php:89
+msgid "Required"
+msgstr "Obrigatório"
+
+#: admin/Core/Assets.php:139
+msgid "Resend code"
+msgstr "Reenviar código"
+
+#: admin/Core/Assets.php:138
+msgid "Resend code in"
+msgstr "Reenviar código em"
+
+#: admin/Views/Settings.php:99
+msgid "Save settings"
+msgstr "Salvar configurações"
+
+#: admin/Core/Assets.php:140
+msgid "seconds"
+msgstr "segundos"
+
+#: admin/Core/Assets.php:116
+msgid "Secure access"
+msgstr "Acesso seguro"
+
+#: admin/Views/Settings.php:70
+msgid "Select which Joinotify number will be used to send OTP codes."
+msgstr "Selecione qual número Joinotify será usado para enviar os códigos OTP."
+
+#: admin/Views/Settings.php:67
+msgid "Sender phone number"
+msgstr "Número de telefone do remetente"
+
+#: admin/Core/Assets.php:134
+msgid "Sending..."
+msgstr "Enviando..."
+
+#: admin/Core/Assets.php:144
+msgid "Show password"
+msgstr "Mostrar senha"
+
+#: admin/Core/Assets.php:130
+msgid "Sign in"
+msgstr "Entrar"
+
+#: admin/Services/Auth_Flow_Service.php:120
+msgid "The code you entered is invalid or has expired."
+msgstr "O código que você inseriu é inválido ou expirou."
+
+#: admin/Views/Settings.php:19
+msgid ""
+"The palette is generated automatically from the base color to keep the "
+"login, buttons, and focus states visually consistent."
+msgstr ""
+"A paleta de cores é gerada automaticamente a partir da cor base para manter "
+"a consistência visual do login, dos botões e dos estados de foco."
+
+#: admin/Views/Settings.php:50
+msgid "This color automatically generates the full theme scale."
+msgstr "Essa cor gera automaticamente a escala completa do tema."
+
+#: admin/Core/Assets.php:122
+msgid "Use email and password"
+msgstr "Use o e-mail e a senha."
+
+#: admin/Core/Assets.php:118
+msgid "Use your phone number to receive a code and sign in faster."
+msgstr ""
+"Use seu número de telefone para receber um código e fazer login mais "
+"rapidamente."
+
+#: templates/myaccount/form-login.php:37
+msgid "Use your phone number to receive a login code and continue."
+msgstr "Use seu número de telefone para receber um código de acesso e continue."
+
+#: templates/checkout/form-login.php:43
+msgid ""
+"Use your phone number to receive the code on WhatsApp or sign in with email "
+"and password."
+msgstr ""
+"Use seu número de telefone para receber o código no WhatsApp ou faça login "
+"com seu e-mail e senha."
+
+#: templates/myaccount/form-login.php:64
+msgid "Username"
+msgstr "Nome de usuário"
+
+#: admin/Core/Assets.php:141
+msgid "Verify code"
+msgstr "Código de verificação"
+
+#: admin/Core/Assets.php:142
+msgid "Verifying..."
+msgstr "Verificando..."
+
+#: admin/Views/Settings.php:41
+msgid "Visual customization"
+msgstr "personalização visual"
+
+#: admin/Services/Auth_Flow_Service.php:163
+msgid "We could not authenticate with that username or email and password."
+msgstr "Não foi possível autenticar com esse nome de usuário, e-mail e senha."
+
+#: admin/Core/Assets.php:149
+msgid "We could not complete the request right now. Please try again."
+msgstr ""
+"Não foi possível concluir a solicitação neste momento. Por favor, tente "
+"novamente."
+
+#: admin/Services/Auth_Flow_Service.php:116
+msgid "We could not find an account for this phone number."
+msgstr "Não foi possível encontrar uma conta associada a este número de telefone."
+
+#: admin/Services/Auth_Flow_Service.php:72
+msgid ""
+"We could not find an account with this phone number. Use email and password "
+"to log in."
+msgstr ""
+"Não foi possível encontrar uma conta com este número de telefone. Utilize o "
+"seu e-mail e senha para iniciar sessão."
+
+#: admin/Services/Auth_Flow_Service.php:80
+msgid ""
+"We could not send the code via WhatsApp right now. Make sure there is an "
+"active sender and that Joinotify is connected."
+msgstr ""
+"Não foi possível enviar o código pelo WhatsApp neste momento. Certifique-se "
+"de que haja um remetente ativo e que o Joinotify esteja conectado."
+
+#: admin/Services/Auth_Flow_Service.php:87
+msgid "We sent a code to WhatsApp %s."
+msgstr "Enviamos um código para o WhatsApp %s."
+
+#: admin/Views/Settings.php:29
+msgid "WhatsApp Login"
+msgstr "Login do WhatsApp"
+
+#: admin/Admin/Settings_Page.php:66
+msgid "You do not have permission to access this page."
+msgstr "Você não tem permissão para acessar esta página."
+
+#: admin/Validations/Otp_Validation.php:106
+msgid "Your access code is: %s. This code expires in 5 minutes."
+msgstr "Seu código de acesso é: %s. Este código expira em 5 minutos."

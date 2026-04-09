@@ -1,0 +1,264 @@
+{
+  "domain": "joinotify-otp-login",
+  "locale_data": {
+    "joinotify-otp-login": {
+      "": {
+        "domain": "joinotify-otp-login",
+        "lang": "pt_BR",
+        "plural-forms": "nplurals=2; plural=(n != 1);"
+      },
+      "<strong>Joinotify OTP Login</strong> requires PHP 7.4 or higher. Contact your hosting provider to upgrade PHP.": [
+        "<strong>O login OTP do Joinotify</strong> requer PHP 7.4 ou superior. Entre em contato com seu provedor de hospedagem para atualizar o PHP."
+      ],
+      "<strong>Joinotify OTP Login</strong> requires the <strong>Joinotify</strong> plugin to be active.": [
+        "<strong>O login OTP do Joinotify</strong> requer que o plugin <strong>Joinotify</strong> esteja ativo."
+      ],
+      "Account created successfully.": [
+        "Conta criada com sucesso."
+      ],
+      "Already have an account?": [
+        "Já tem uma conta?"
+      ],
+      "An account is already registered with this email address.": [
+        "Já existe uma conta registrada com este endereço de e-mail."
+      ],
+      "An account is already registered with this phone number.": [
+        "Já existe uma conta registrada com este número de telefone."
+      ],
+      "Automatically generated scale": [
+        "Escala gerada automaticamente"
+      ],
+      "Back to WhatsApp": [
+        "Voltar ao WhatsApp"
+      ],
+      "Border radius": [
+        "raio da fronteira"
+      ],
+      "Buttons, focus states, and highlights follow your brand.": [
+        "Botões, estados de foco e destaques seguem a sua marca."
+      ],
+      "Change number": [
+        "Alterar número"
+      ],
+      "Click here to log in": [
+        "Clique aqui para iniciar sessão"
+      ],
+      "Code digit %d": [
+        "Dígito de código %d"
+      ],
+      "Configure": [
+        "Configurar"
+      ],
+      "Control the rounding of cards and form fields.": [
+        "Controle o arredondamento de cartões e campos de formulário."
+      ],
+      "Define the primary color, border radius, and OTP sender phone number.": [
+        "Defina a cor principal, o raio da borda e o número de telefone do remetente do OTP."
+      ],
+      "Documentation": [
+        "Documentação"
+      ],
+      "Email": [
+        "E-mail"
+      ],
+      "Email or username": [
+        "E-mail ou nome de usuário"
+      ],
+      "Enable JavaScript to use login with WhatsApp or email and password.": [
+        "Habilite o JavaScript para usar o login com WhatsApp ou com e-mail e senha."
+      ],
+      "Enter a password to create the account.": [
+        "Digite uma senha para criar a conta."
+      ],
+      "Enter a valid email address.": [
+        "Insira um endereço de e-mail válido."
+      ],
+      "Enter a valid phone number with country code.": [
+        "Insira um número de telefone válido com o código do país."
+      ],
+      "Enter a valid phone number. The country code will be detected automatically.": [
+        "Digite um número de telefone válido. O código do país será detectado automaticamente."
+      ],
+      "Enter a valid username or email address.": [
+        "Insira um nome de usuário ou endereço de e-mail válido."
+      ],
+      "Enter the %d-digit code sent to your WhatsApp.": [
+        "Digite o código de %d dígitos enviado para o seu WhatsApp."
+      ],
+      "Enter the access code": [
+        "Digite o código de acesso"
+      ],
+      "Enter the verification code you received.": [
+        "Digite o código de verificação que você recebeu."
+      ],
+      "Enter your email or username": [
+        "Insira seu e-mail ou nome de usuário."
+      ],
+      "Enter your password": [
+        "Digite sua senha"
+      ],
+      "Enter your password.": [
+        "Digite sua senha."
+      ],
+      "Fill in the email or username and password.": [
+        "Insira o e-mail ou nome de usuário e a senha."
+      ],
+      "Fill in the phone number and the code you received.": [
+        "Insira o número de telefone e o código que você recebeu."
+      ],
+      "Forgot your password?": [
+        "Esqueceu sua senha?"
+      ],
+      "Hero preview": [
+        "Prévia do herói"
+      ],
+      "Hide password": [
+        "Ocultar senha"
+      ],
+      "Highlighted theme colors": [
+        "Cores do tema em destaque"
+      ],
+      "Include the country code so the number is normalized correctly.": [
+        "Inclua o código do país para que o número seja normalizado corretamente."
+      ],
+      "Invalid request nonce.": [
+        "Nonce de solicitação inválido."
+      ],
+      "Log in": [
+        "Conecte-se"
+      ],
+      "Log in to continue": [
+        "Faça login para continuar"
+      ],
+      "Log in with WhatsApp": [
+        "Faça login com o WhatsApp"
+      ],
+      "Login successful.": [
+        "Login efetuado com sucesso."
+      ],
+      "No sender phone number was found in Joinotify. Add a number to enable OTP delivery.": [
+        "Nenhum número de telefone do remetente foi encontrado no Joinotify. Adicione um número para habilitar o envio do código OTP."
+      ],
+      "Or sign in with email or username": [
+        "Ou faça login com seu e-mail ou nome de usuário."
+      ],
+      "OTP Login Settings": [
+        "Configurações de login OTP"
+      ],
+      "Password": [
+        "Senha"
+      ],
+      "Phone number": [
+        "Número de telefone"
+      ],
+      "Primary color": [
+        "Cor primária"
+      ],
+      "Processing...": [
+        "Processamento..."
+      ],
+      "Register": [
+        "Cadastre-se"
+      ],
+      "Remember me": [
+        "Lembre de mim"
+      ],
+      "Request code": [
+        "Código de solicitação"
+      ],
+      "Required": [
+        "Obrigatório"
+      ],
+      "Resend code": [
+        "Reenviar código"
+      ],
+      "Resend code in": [
+        "Reenviar código em"
+      ],
+      "Save settings": [
+        "Salvar configurações"
+      ],
+      "seconds": [
+        "segundos"
+      ],
+      "Secure access": [
+        "Acesso seguro"
+      ],
+      "Select which Joinotify number will be used to send OTP codes.": [
+        "Selecione qual número Joinotify será usado para enviar os códigos OTP."
+      ],
+      "Sender phone number": [
+        "Número de telefone do remetente"
+      ],
+      "Sending...": [
+        "Enviando..."
+      ],
+      "Show password": [
+        "Mostrar senha"
+      ],
+      "Sign in": [
+        "Entrar"
+      ],
+      "The code you entered is invalid or has expired.": [
+        "O código que você inseriu é inválido ou expirou."
+      ],
+      "The palette is generated automatically from the base color to keep the login, buttons, and focus states visually consistent.": [
+        "A paleta de cores é gerada automaticamente a partir da cor base para manter a consistência visual do login, dos botões e dos estados de foco."
+      ],
+      "This color automatically generates the full theme scale.": [
+        "Essa cor gera automaticamente a escala completa do tema."
+      ],
+      "Use email and password": [
+        "Use o e-mail e a senha."
+      ],
+      "Use your phone number to receive a code and sign in faster.": [
+        "Use seu número de telefone para receber um código e fazer login mais rapidamente."
+      ],
+      "Use your phone number to receive a login code and continue.": [
+        "Use seu número de telefone para receber um código de acesso e continue."
+      ],
+      "Use your phone number to receive the code on WhatsApp or sign in with email and password.": [
+        "Use seu número de telefone para receber o código no WhatsApp ou faça login com seu e-mail e senha."
+      ],
+      "Username": [
+        "Nome de usuário"
+      ],
+      "Verify code": [
+        "Código de verificação"
+      ],
+      "Verifying...": [
+        "Verificando..."
+      ],
+      "Visual customization": [
+        "personalização visual"
+      ],
+      "We could not authenticate with that username or email and password.": [
+        "Não foi possível autenticar com esse nome de usuário, e-mail e senha."
+      ],
+      "We could not complete the request right now. Please try again.": [
+        "Não foi possível concluir a solicitação neste momento. Por favor, tente novamente."
+      ],
+      "We could not find an account for this phone number.": [
+        "Não foi possível encontrar uma conta associada a este número de telefone."
+      ],
+      "We could not find an account with this phone number. Use email and password to log in.": [
+        "Não foi possível encontrar uma conta com este número de telefone. Utilize o seu e-mail e senha para iniciar sessão."
+      ],
+      "We could not send the code via WhatsApp right now. Make sure there is an active sender and that Joinotify is connected.": [
+        "Não foi possível enviar o código pelo WhatsApp neste momento. Certifique-se de que haja um remetente ativo e que o Joinotify esteja conectado."
+      ],
+      "We sent a code to WhatsApp %s.": [
+        "Enviamos um código para o WhatsApp %s."
+      ],
+      "WhatsApp Login": [
+        "Login do WhatsApp"
+      ],
+      "You do not have permission to access this page.": [
+        "Você não tem permissão para acessar esta página."
+      ],
+      "Your access code is: %s. This code expires in 5 minutes.": [
+        "Seu código de acesso é: %s. Este código expira em 5 minutos."
+      ]
+    }
+  }
+}
