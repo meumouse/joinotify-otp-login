@@ -750,7 +750,7 @@ onBeforeUnmount(() => {
               type="submit"
             >
               <Loader v-if="loading" />
-              <span v-else>{{ t('Verifying...') }}</span>
+              <span v-else>{{ t('Verify OTP') }}</span>
             </BaseButton>
             <BaseButton
               kind="secondary"

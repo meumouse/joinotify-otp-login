@@ -48,7 +48,7 @@ class Settings_Page {
 			array(
 				'type' => 'string',
 				'sanitize_callback' => array( $this, 'sanitize_primary_color' ),
-				'default' => '#4f46e5',
+				'default' => '#008aff',
 			)
 		);
 

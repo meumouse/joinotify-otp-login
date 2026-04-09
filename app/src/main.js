@@ -1,4 +1,5 @@
 import { createApp } from 'vue';
+import AccountPhoneField from './components/AccountPhoneField.vue';
 import OtpLoginApp from './components/OtpLoginApp.vue';
 import './style.css';
 
@@ -38,6 +39,7 @@ function mountOtpLoginApp(root) {
   const showHeader = root.dataset.showHeader === '1';
   const apiBaseUrl = window.joinotifyOtpLogin.restUrl || window.joinotifyOtpLogin.ajaxUrl;
   let strings = {};
+  let initialPhone = root.dataset.initialPhone || '';
 
   try {
     strings = root.dataset.i18n ? JSON.parse(root.dataset.i18n) : {};
@@ -62,6 +64,26 @@ function mountOtpLoginApp(root) {
 }
 
 /**
+ * Mount the WooCommerce account phone field on a single DOM root.
+ *
+ * @since 1.0.0
+ * @param {HTMLElement} root Mount target.
+ * @return {void}
+ */
+function mountAccountPhoneField(root) {
+  const defaultCountry = root.dataset.defaultCountry || 'br';
+  const initialPhone = root.dataset.initialPhone || '';
+
+  const app = createApp(AccountPhoneField, {
+    defaultCountry,
+    initialPhone,
+  });
+
+  app.config.globalProperties.__ = __;
+  app.mount(root);
+}
+
+/**
  * Mount every OTP login instance present on the page.
  *
  * @since 1.0.0
@@ -69,4 +91,9 @@ function mountOtpLoginApp(root) {
  */
 document.addEventListener('DOMContentLoaded', () => {
   document.querySelectorAll('[data-joinotify-otp-login]').forEach(mountOtpLoginApp);
+  const accountPhoneRoot = document.getElementById('joinotify-account-phone');
+
+  if (accountPhoneRoot) {
+    mountAccountPhoneField(accountPhoneRoot);
+  }
 });

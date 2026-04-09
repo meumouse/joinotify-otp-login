@@ -111,6 +111,7 @@ class Assets {
 	 */
 	private function should_enqueue_frontend_assets() {
 		$is_account = function_exists( 'is_account_page' ) && is_account_page();
+		$is_edit_account = function_exists( 'is_wc_endpoint_url' ) && is_account_page() && is_wc_endpoint_url( 'edit-account' );
 		$is_checkout = function_exists( 'is_checkout' ) && is_checkout();
 		$has_shortcode = false;
 
@@ -122,7 +123,7 @@ class Assets {
 			}
 		}
 
-		return ! is_user_logged_in() && ( $is_account || $is_checkout || $has_shortcode );
+		return ( ! is_user_logged_in() && ( $is_account || $is_checkout || $has_shortcode ) ) || $is_edit_account;
 	}
 
 	/**
@@ -181,7 +182,7 @@ class Assets {
 			'Resend code in',
 			'seconds',
 			'Resend code',
-			'Verifying...',
+			'Verify OTP',
 			'Change number',
 			'Or sign in with email',
 			'Email or username',

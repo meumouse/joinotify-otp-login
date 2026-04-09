@@ -23,7 +23,7 @@ defineProps({
 
 <template>
   <div class="space-y-2">
-    <label :for="forId" class="block text-sm font-semibold text-slate-700">
+    <label :for="forId" class="mb-1 block text-sm font-semibold leading-none text-slate-700">
       {{ label }}
     </label>
     <slot />
