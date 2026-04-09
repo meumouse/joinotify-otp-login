@@ -15,10 +15,18 @@
 @layer components {
   .joinotify-otp-login .iti {
     @apply w-full;
+    --iti-flag-width: 32px;
+    --iti-border-radius: 0.375rem;
+    --iti-flag-height: 24px;
+  }
+
+  .joinotify-otp-login .iti__flag {
+    background-image: var(--iti-path-flags-2x);
+    border-radius: 0.225rem;
   }
 
   .joinotify-otp-login__surface {
-    border-radius: var(--joinotify-radius, 1.75rem);
+    border-radius: var(--joinotify-radius, 0.375rem);
     box-shadow: 0 24px 80px rgba(15, 23, 42, 0.12);
   }
 
@@ -31,7 +39,7 @@
   }
 
   .joinotify-otp-login__input {
-    border-radius: var(--joinotify-radius, 1.75rem);
+    border-radius: var(--joinotify-radius, 0.375rem);
   }
 
   .joinotify-otp-login__input:focus {
@@ -41,7 +49,7 @@
   }
 
   .joinotify-otp-login__button {
-    border-radius: var(--joinotify-radius, 1.75rem);
+    border-radius: var(--joinotify-radius, 0.375rem);
     background: var(--joinotify-primary);
     box-shadow: 0 18px 36px color-mix(in srgb, var(--joinotify-primary) 24%, transparent);
   }
@@ -55,7 +63,7 @@
   }
 
   .joinotify-otp-login__button-secondary {
-    border-radius: var(--joinotify-radius, 1.75rem);
+    border-radius: var(--joinotify-radius, 0.375rem);
   }
 
   .joinotify-otp-login__button-secondary:hover {

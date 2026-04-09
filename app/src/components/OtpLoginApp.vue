@@ -1,53 +1,22 @@
 <script setup>
+import intlTelInput from 'intl-tel-input';
+import 'intl-tel-input/build/css/intlTelInput.css';
 import { computed, nextTick, onBeforeUnmount, onMounted, ref } from 'vue';
 import FormCheckbox from './FormCheckbox.vue';
 
-let intlUtilsPromise = null;
-
 const props = defineProps({
-  context: {
-    type: String,
-    default: 'myaccount',
-  },
-  defaultCountry: {
-    type: String,
-    default: 'br',
-  },
-  apiBaseUrl: {
-    type: String,
-    default: '',
-  },
-  description: {
-    type: String,
-    default: '',
-  },
-  showHeader: {
-    type: Boolean,
-    default: true,
-  },
-  otpLength: {
-    type: Number,
-    default: 6,
-  },
-  redirectUrl: {
-    type: String,
-    default: '/',
-  },
-  title: {
-    type: String,
-    default: '',
-  },
-  utilsUrl: {
-    type: String,
-    default: '',
-  },
+  context: { type: String, default: 'myaccount' },
+  defaultCountry: { type: String, default: 'br' },
+  apiBaseUrl: { type: String, default: '' },
+  description: { type: String, default: '' },
+  showHeader: { type: Boolean, default: true },
+  otpLength: { type: Number, default: 6 },
+  redirectUrl: { type: String, default: '/' },
+  title: { type: String, default: '' },
+  utilsUrl: { type: String, default: '' },
 });
 
-const steps = {
-  phone: 'phone',
-  otp: 'otp',
-  password: 'password',
-};
+const steps = { phone: 'phone', otp: 'otp', password: 'password' };
 
 const scope = ref(null);
 const phoneInput = ref(null);
@@ -67,14 +36,14 @@ const password = ref('');
 const showPassword = ref(false);
 const otpDigits = ref(Array.from({ length: props.otpLength }, () => ''));
 const phoneIti = ref(null);
+
 const apiBaseUrl = computed(() => props.apiBaseUrl || window.joinotifyOtpLogin.restUrl || '');
 const useRestApi = computed(() => Boolean(window.joinotifyOtpLogin.restUrl));
 const i18n = computed(() => window.joinotifyOtpLogin?.i18n || {});
-const utilsUrl = computed(() => props.utilsUrl || window.joinotifyOtpLogin?.intlUtilsUrl || '');
 const lostPasswordUrl = computed(() => window.joinotifyOtpLogin?.lostPasswordUrl || '#');
 const theme = computed(() => window.joinotifyOtpLogin?.theme || {});
 const primaryColor = computed(() => theme.value.primaryColor || '#4f46e5');
-const borderRadius = computed(() => `${theme.value.borderRadius || 28}px`);
+const borderRadius = computed(() => `${theme.value.borderRadius || 6}px`);
 
 function hexToRgb(hex) {
   const value = String(hex || '').replace('#', '');
@@ -207,39 +176,29 @@ function focusOtp(index) {
 
 function syncPhoneFromInput() {
   const value = phoneInput.value ? phoneInput.value.value : visiblePhone.value;
-
   visiblePhone.value = value;
   hiddenPhone.value = normalizePhone(value);
 }
 
 function loadIntlUtils() {
-  if (!utilsUrl.value) {
-    return Promise.resolve();
-  }
-
-  if (!intlUtilsPromise) {
-    intlUtilsPromise = import(/* @vite-ignore */ utilsUrl.value);
-  }
-
-  return intlUtilsPromise;
+  return import('intl-tel-input/utils');
 }
 
 function initPhoneInput() {
   const input = phoneInput.value;
 
-  if (!input || typeof window.intlTelInput !== 'function') {
+  if (!input) {
     syncPhoneFromInput();
     return;
   }
 
-  phoneIti.value = window.intlTelInput(input, {
+  phoneIti.value = intlTelInput(input, {
     initialCountry: props.defaultCountry || 'br',
     nationalMode: false,
     formatOnDisplay: true,
     autoPlaceholder: 'aggressive',
     placeholderNumberType: 'MOBILE',
     containerClass: 'w-full',
-    customPlaceholder: (selectedCountryPlaceholder) => selectedCountryPlaceholder || '',
     loadUtils: loadIntlUtils,
   });
 
@@ -247,10 +206,8 @@ function initPhoneInput() {
 }
 
 function readPhoneValue() {
-  const intlUtils = window.intlTelInput?.utils || window.intlTelInputUtils;
-
-  if (phoneIti.value && typeof phoneIti.value.getNumber === 'function' && intlUtils?.numberFormat) {
-    const number = phoneIti.value.getNumber(intlUtils.numberFormat.E164);
+  if (phoneIti.value && typeof phoneIti.value.getNumber === 'function') {
+    const number = phoneIti.value.getNumber();
 
     if (number) {
       return number;
@@ -262,7 +219,6 @@ function readPhoneValue() {
 
 function fillOtpDigits(value) {
   const digits = String(value || '').replace(/\D+/g, '').slice(0, props.otpLength);
-
   otpDigits.value = Array.from({ length: props.otpLength }, (_, index) => digits[index] || '');
 
   if (digits.length < props.otpLength) {
@@ -275,7 +231,7 @@ async function requestOtp() {
   const phone = readPhoneValue();
 
   if (!phone) {
-    setNotice('error', t('invalidPhone', 'Digite um telefone válido com DDI.'));
+    setNotice('error', t('invalidPhone', 'Enter a valid phone number with country code.'));
     return;
   }
 
@@ -290,14 +246,16 @@ async function requestOtp() {
         'X-WP-Nonce': window.joinotifyOtpLogin.nonce,
       },
       body: new URLSearchParams({
-        ...(useRestApi.value ? { phone } : { action: 'joinotify_otp_request_code', nonce: window.joinotifyOtpLogin.legacyNonce, phone }),
+        ...(useRestApi.value
+          ? { phone }
+          : { action: 'joinotify_otp_request_code', nonce: window.joinotifyOtpLogin.legacyNonce, phone }),
       }),
     });
 
     const payload = await response.json();
 
     if (!payload.success) {
-      setNotice('error', payload.data?.message || t('unexpectedError', 'Não foi possível concluir a solicitação agora. Tente novamente.'));
+      setNotice('error', payload.data?.message || t('unexpectedError', 'We could not complete the request right now. Please try again.'));
       return;
     }
 
@@ -317,7 +275,7 @@ async function requestOtp() {
     await nextTick();
     focusOtp(0);
   } catch (error) {
-    setNotice('error', t('unexpectedError', 'Não foi possível concluir a solicitação agora. Tente novamente.'));
+    setNotice('error', t('unexpectedError', 'We could not complete the request right now. Please try again.'));
   } finally {
     setLoadingState(false);
   }
@@ -328,7 +286,7 @@ async function verifyOtp() {
   const phone = hiddenPhone.value || otpPhone.value;
 
   if (!phone || otp.length !== props.otpLength) {
-    setNotice('error', t('invalidOtp', 'Digite o código de verificação recebido.'));
+    setNotice('error', t('invalidOtp', 'Enter the verification code you received.'));
     focusOtp(otpDigits.value.findIndex((digit) => !digit));
     return;
   }
@@ -363,13 +321,13 @@ async function verifyOtp() {
     const payload = await response.json();
 
     if (!payload.success) {
-      setNotice('error', payload.data?.message || t('unexpectedError', 'Não foi possível concluir a solicitação agora. Tente novamente.'));
+      setNotice('error', payload.data?.message || t('unexpectedError', 'We could not complete the request right now. Please try again.'));
       return;
     }
 
     window.location.href = payload.data.redirect;
   } catch (error) {
-    setNotice('error', t('unexpectedError', 'Não foi possível concluir a solicitação agora. Tente novamente.'));
+    setNotice('error', t('unexpectedError', 'We could not complete the request right now. Please try again.'));
   } finally {
     setLoadingState(false);
   }
@@ -377,7 +335,7 @@ async function verifyOtp() {
 
 async function loginWithPassword() {
   if (!email.value || !password.value) {
-    setNotice('error', t('missingCredentials', 'Preencha o e-mail e a senha.'));
+    setNotice('error', t('missingCredentials', 'Fill in the email and password.'));
     return;
   }
 
@@ -412,13 +370,13 @@ async function loginWithPassword() {
     const payload = await response.json();
 
     if (!payload.success) {
-      setNotice('error', payload.data?.message || t('unexpectedError', 'Não foi possível concluir a solicitação agora. Tente novamente.'));
+      setNotice('error', payload.data?.message || t('unexpectedError', 'We could not complete the request right now. Please try again.'));
       return;
     }
 
     window.location.href = payload.data.redirect;
   } catch (error) {
-    setNotice('error', t('unexpectedError', 'Não foi possível concluir a solicitação agora. Tente novamente.'));
+    setNotice('error', t('unexpectedError', 'We could not complete the request right now. Please try again.'));
   } finally {
     setLoadingState(false);
   }
@@ -471,7 +429,6 @@ function handleOtpPaste(index, event) {
   }
 
   event.preventDefault();
-
   otpDigits.value = Array.from({ length: props.otpLength }, (_, position) => pasted[position] || '');
 
   if (pasted.length === props.otpLength) {
@@ -505,7 +462,7 @@ onBeforeUnmount(() => {
   <div
     ref="scope"
     :style="rootStyle"
-    class="joinotify-otp-login__surface relative isolate w-full overflow-hidden border border-slate-200 bg-white/95 px-6 py-7 backdrop-blur sm:px-8 sm:py-9"
+    class="joinotify-otp-login__surface relative isolate w-full border border-slate-200 bg-white/95 px-6 py-7 backdrop-blur sm:px-8 sm:py-9"
   >
     <div class="pointer-events-none absolute inset-0 overflow-hidden">
       <div class="joinotify-otp-login__orb joinotify-otp-login__orb--primary absolute -right-24 -top-24 h-56 w-56 rounded-full blur-3xl"></div>
@@ -515,10 +472,10 @@ onBeforeUnmount(() => {
     <div class="relative z-10 mx-auto flex w-full max-w-md flex-col gap-6">
       <div v-if="showHeader" class="space-y-2 text-center">
         <p class="text-xs font-semibold uppercase tracking-[0.22em] text-slate-500">
-          {{ t('panelEyebrow', 'Acesso seguro') }}
+          {{ t('panelEyebrow', 'Secure access') }}
         </p>
         <h2 class="joinotify-otp-login__title text-3xl font-semibold tracking-tight text-slate-900 sm:text-4xl">
-          {{ title || t('phoneTitle', 'Entrar com WhatsApp') }}
+          {{ title || t('phoneTitle', 'Log in with WhatsApp') }}
         </h2>
         <p v-if="description" class="joinotify-otp-login__description text-sm leading-6 text-slate-500 sm:text-base">
           {{ description }}
@@ -533,14 +490,14 @@ onBeforeUnmount(() => {
         <form class="space-y-5" @submit.prevent="requestOtp">
           <div class="space-y-2">
             <label :for="phoneFieldId" class="block text-sm font-semibold text-slate-700">
-              {{ t('phoneLabel', 'Telefone') }}
+              {{ t('phoneLabel', 'Phone number') }}
             </label>
             <input
               :id="phoneFieldId"
               ref="phoneInput"
               v-model="visiblePhone"
               type="tel"
-              class="joinotify-otp-login__input w-full border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-900 outline-none transition placeholder:text-slate-400"
+              class="joinotify-otp-login__input joinotify-otp-login__phone-input w-full border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-900 outline-none transition placeholder:text-slate-400"
               autocomplete="tel"
               inputmode="tel"
               @blur="syncPhoneFromInput"
@@ -549,7 +506,7 @@ onBeforeUnmount(() => {
               @input="syncPhoneFromInput"
             />
             <p class="text-xs leading-5 text-slate-500">
-              {{ t('phoneHelper', 'Digite um telefone válido. O DDI será exibido automaticamente.') }}
+              {{ t('phoneHelper', 'Enter a valid phone number. The country code will be detected automatically.') }}
             </p>
           </div>
 
@@ -559,14 +516,14 @@ onBeforeUnmount(() => {
               :disabled="loading"
               type="submit"
             >
-              {{ loading ? t('requestCodeLoading', 'Enviando...') : t('phoneAction', 'Entrar com WhatsApp') }}
+              {{ loading ? t('requestCodeLoading', 'Sending...') : t('phoneAction', 'Log in with WhatsApp') }}
             </button>
             <button
               class="joinotify-otp-login__button-secondary inline-flex items-center justify-center border border-slate-200 bg-white px-5 py-3 text-sm font-semibold text-slate-700 transition focus:outline-none"
               type="button"
               @click="switchStep(steps.password)"
             >
-              {{ t('useEmailPassword', 'Usar e-mail e senha') }}
+              {{ t('useEmailPassword', 'Use email and password') }}
             </button>
           </div>
         </form>
@@ -580,10 +537,10 @@ onBeforeUnmount(() => {
 
           <div class="space-y-2 text-center">
             <h3 class="text-xl font-semibold tracking-tight text-slate-900">
-              {{ t('enterCodeTitle', 'Digite o código de acesso') }}
+              {{ t('enterCodeTitle', 'Enter the access code') }}
             </h3>
             <p class="text-sm leading-6 text-slate-500">
-              {{ tWithCount('enterCodeDescription', 'Informe o código de %d dígitos enviado para o seu WhatsApp.', props.otpLength) }}
+              {{ tWithCount('enterCodeDescription', 'Enter the %d-digit code sent to your WhatsApp.', props.otpLength) }}
             </p>
             <p class="text-sm font-medium text-slate-700">
               {{ phonePreview }}
@@ -601,7 +558,7 @@ onBeforeUnmount(() => {
               inputmode="numeric"
               autocomplete="one-time-code"
               maxlength="1"
-              :aria-label="tWithCount('otpDigitLabel', 'Dígito %d do código', index + 1)"
+              :aria-label="tWithCount('otpDigitLabel', 'Code digit %d', index + 1)"
               @input="handleOtpInput(index, $event)"
               @keydown="handleOtpKeydown(index, $event)"
               @paste="handleOtpPaste(index, $event)"
@@ -611,15 +568,15 @@ onBeforeUnmount(() => {
           <FormCheckbox
             v-model="remember"
             :id="rememberFieldId"
-            :label="t('rememberMe', 'Lembrar de mim')"
+            :label="t('rememberMe', 'Remember me')"
             name="remember"
           />
 
           <div class="flex flex-wrap items-center gap-2 text-sm text-slate-500">
             <template v-if="!resendEnabled">
-              <span>{{ t('resendOtpLabel', 'Reenviar código em') }}</span>
+              <span>{{ t('resendOtpLabel', 'Resend code in') }}</span>
               <span class="font-semibold text-slate-700">{{ countdown }}</span>
-              <span>{{ t('secondsLabel', 'segundos') }}</span>
+              <span>{{ t('secondsLabel', 'seconds') }}</span>
             </template>
             <button
               v-else
@@ -627,7 +584,7 @@ onBeforeUnmount(() => {
               type="button"
               @click="resendOtp"
             >
-              {{ t('resendOtpButton', 'Reenviar código') }}
+              {{ t('resendOtpButton', 'Resend code') }}
             </button>
           </div>
 
@@ -637,14 +594,14 @@ onBeforeUnmount(() => {
               :disabled="loading"
               type="submit"
             >
-              {{ loading ? t('verifyCodeLoading', 'Verificando...') : t('verifyCode', 'Verificar código') }}
+              {{ loading ? t('verifyCodeLoading', 'Verifying...') : t('verifyCode', 'Verify code') }}
             </button>
             <button
               class="joinotify-otp-login__button-secondary inline-flex items-center justify-center border border-slate-200 bg-white px-5 py-3 text-sm font-semibold text-slate-700 transition focus:outline-none"
               type="button"
               @click="switchStep(steps.phone)"
             >
-              {{ t('changePhone', 'Alterar número') }}
+              {{ t('changePhone', 'Change number') }}
             </button>
           </div>
         </form>
@@ -653,14 +610,14 @@ onBeforeUnmount(() => {
       <section v-show="currentStep === steps.password" class="space-y-5">
         <div class="text-center">
           <div class="text-sm font-semibold uppercase tracking-[0.18em] text-slate-500">
-            {{ t('emailSeparator', 'Ou entre com e-mail') }}
+            {{ t('emailSeparator', 'Or sign in with email') }}
           </div>
         </div>
 
         <form class="space-y-5" @submit.prevent="loginWithPassword">
           <div class="space-y-2">
             <label :for="emailFieldId" class="block text-sm font-semibold text-slate-700">
-              {{ t('emailLabel', 'E-mail') }}
+              {{ t('emailLabel', 'Email') }}
             </label>
             <input
               :id="emailFieldId"
@@ -668,13 +625,13 @@ onBeforeUnmount(() => {
               type="email"
               class="joinotify-otp-login__input w-full border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-900 outline-none transition placeholder:text-slate-400"
               autocomplete="email"
-              :placeholder="t('emailPlaceholder', 'Digite seu e-mail')"
+              :placeholder="t('emailPlaceholder', 'Enter your email')"
             />
           </div>
 
           <div class="space-y-2">
             <label :for="passwordFieldId" class="block text-sm font-semibold text-slate-700">
-              {{ t('passwordLabel', 'Senha') }}
+              {{ t('passwordLabel', 'Password') }}
             </label>
             <div class="relative">
               <input
@@ -683,12 +640,12 @@ onBeforeUnmount(() => {
                 :type="showPassword ? 'text' : 'password'"
                 class="joinotify-otp-login__input w-full border border-slate-200 bg-slate-50 px-4 py-3 pr-12 text-sm text-slate-900 outline-none transition placeholder:text-slate-400"
                 autocomplete="current-password"
-                :placeholder="t('passwordPlaceholder', 'Digite sua senha')"
+                :placeholder="t('passwordPlaceholder', 'Enter your password')"
               />
               <button
                 class="absolute inset-y-0 right-0 flex items-center px-4 text-slate-500 transition hover:text-slate-900"
                 type="button"
-                :aria-label="showPassword ? t('hidePassword', 'Ocultar senha') : t('showPassword', 'Mostrar senha')"
+                :aria-label="showPassword ? t('hidePassword', 'Hide password') : t('showPassword', 'Show password')"
                 @click="showPassword = !showPassword"
               >
                 <svg
@@ -722,12 +679,7 @@ onBeforeUnmount(() => {
                   viewBox="0 0 24 24"
                   xmlns="http://www.w3.org/2000/svg"
                 >
-                  <path
-                    d="M3 3L21 21"
-                    stroke="currentColor"
-                    stroke-linecap="round"
-                    stroke-width="1.5"
-                  />
+                  <path d="M3 3L21 21" stroke="currentColor" stroke-linecap="round" stroke-width="1.5" />
                   <path
                     d="M10.58 10.58A3 3 0 0013.42 13.42"
                     stroke="currentColor"
@@ -757,7 +709,7 @@ onBeforeUnmount(() => {
           <FormCheckbox
             v-model="remember"
             :id="rememberFieldId"
-            :label="t('rememberMe', 'Lembrar de mim')"
+            :label="t('rememberMe', 'Remember me')"
             name="remember"
           />
 
@@ -767,23 +719,20 @@ onBeforeUnmount(() => {
               :disabled="loading"
               type="submit"
             >
-              {{ loading ? t('signInLoading', 'Processando...') : t('signIn', 'Entrar') }}
+              {{ loading ? t('signInLoading', 'Processing...') : t('signIn', 'Sign in') }}
             </button>
             <button
               class="joinotify-otp-login__button-secondary inline-flex items-center justify-center border border-slate-200 bg-white px-5 py-3 text-sm font-semibold text-slate-700 transition focus:outline-none"
               type="button"
               @click="switchStep(steps.phone)"
             >
-              {{ t('backToWhatsapp', 'Voltar ao WhatsApp') }}
+              {{ t('backToWhatsapp', 'Back to WhatsApp') }}
             </button>
           </div>
 
           <p class="text-center text-sm text-slate-500">
-            <a
-              class="font-semibold text-indigo-600 transition hover:text-indigo-500"
-              :href="lostPasswordUrl"
-            >
-              {{ t('forgotPassword', 'Esqueceu a senha?') }}
+            <a class="font-semibold text-indigo-600 transition hover:text-indigo-500" :href="lostPasswordUrl">
+              {{ t('forgotPassword', 'Forgot your password?') }}
             </a>
           </p>
         </form>
