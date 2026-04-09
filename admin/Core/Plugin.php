@@ -86,16 +86,16 @@ final class Plugin {
 		$this->directory = JOINOTIFY_OTP_LOGIN_DIR;
 		$this->basename = JOINOTIFY_OTP_LOGIN_BASENAME;
 
-		// Add settings link on plugins list.
-	//	add_filter( 'plugin_action_links_' . $this->basename, array( $this, 'add_action_plugin_links' ), 10, 4 );
+		// Keep the plugin list links disabled until the settings UI is finalized.
+		// add_filter( 'plugin_action_links_' . $this->basename, array( $this, 'add_action_plugin_links' ), 10, 4 );
 
-		// Add docs link on plugins list.
-	//	add_filter( 'plugin_row_meta', array( $this, 'add_row_meta_links' ), 10, 4 );
+		// Keep the plugin row meta links disabled until the docs destination is confirmed.
+		// add_filter( 'plugin_row_meta', array( $this, 'add_row_meta_links' ), 10, 4 );
 
 		// Load plugin text domain.
 		add_action( 'init', array( $this, 'load_text_domain' ) );
 
-		// Instance classes after Joinotify initialized
+		// Register runtime classes only after the Joinotify plugin is ready.
 		add_action( 'joinotify_init', array( $this, 'register_classes' ) );
 
 		/**
@@ -219,6 +219,7 @@ final class Plugin {
 				continue;
 			}
 
+			// Instantiate the hook-specific classes lazily to avoid unnecessary work on every request.
 			add_action( $hook, function() use ( $classes ) {
 				foreach ( $classes as $class ) {
 					$this->safe_instance_class( $class );

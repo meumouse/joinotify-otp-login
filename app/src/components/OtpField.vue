@@ -1,6 +1,12 @@
 <script setup>
 import { nextTick, ref } from 'vue';
 
+/**
+ * OTP input grid with keyboard navigation and paste support.
+ *
+ * @since 1.0.0
+ * @type {Object}
+ */
 const props = defineProps({
   digits: {
     type: Array,
@@ -16,6 +22,14 @@ const emit = defineEmits(['update:digits', 'complete']);
 
 const inputRefs = ref([]);
 
+/**
+ * Focus the requested OTP input after the DOM update cycle.
+ *
+ * @since 1.0.0
+ * @param {HTMLElement[]} targets Input references.
+ * @param {number} index Input index.
+ * @return {void}
+ */
 function focusRef(targets, index) {
   nextTick(() => {
     const target = targets[index];
@@ -26,6 +40,15 @@ function focusRef(targets, index) {
   });
 }
 
+/**
+ * Handle a digit input and advance focus when appropriate.
+ *
+ * @since 1.0.0
+ * @param {HTMLElement[]} targets Input references.
+ * @param {number} index Input index.
+ * @param {Event} event Native input event.
+ * @return {void}
+ */
 function onInput(targets, index, event) {
   const value = String(event.target.value || '').replace(/\D+/g, '').slice(-1);
   const nextDigits = [...props.digits];
@@ -42,12 +65,30 @@ function onInput(targets, index, event) {
   }
 }
 
+/**
+ * Move focus back on backspace when the current digit is empty.
+ *
+ * @since 1.0.0
+ * @param {HTMLElement[]} targets Input references.
+ * @param {number} index Input index.
+ * @param {KeyboardEvent} event Native keyboard event.
+ * @return {void}
+ */
 function onKeydown(targets, index, event) {
   if (event.key === 'Backspace' && !props.digits[index] && index > 0) {
     focusRef(targets, index - 1);
   }
 }
 
+/**
+ * Paste a full or partial OTP into the digit grid.
+ *
+ * @since 1.0.0
+ * @param {HTMLElement[]} targets Input references.
+ * @param {number} index Input index.
+ * @param {ClipboardEvent} event Native paste event.
+ * @return {void}
+ */
 function onPaste(targets, index, event) {
   const pasted = String(event.clipboardData?.getData('text') || '').replace(/\D+/g, '').slice(0, props.length);
 

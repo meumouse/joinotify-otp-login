@@ -20,6 +20,15 @@ use MeuMouse\Joinotify\Otp_Login\Core\Plugin;
 
 defined('ABSPATH') || exit;
 
+/**
+ * Bootstrap the plugin with the main file path and version.
+ *
+ * The core Plugin class is responsible for loading dependencies,
+ * registering hooks, and validating runtime requirements.
+ *
+ * @since 1.0.0
+ * @var string $autoload Absolute path to the Composer autoloader.
+ */
 $autoload = plugin_dir_path( __FILE__ ) . 'admin/vendor/autoload.php';
 
 if ( file_exists( $autoload ) ) {
@@ -28,4 +37,12 @@ if ( file_exists( $autoload ) ) {
 
 $plugin_version = '1.0.0';
 
+/**
+ * Instantiate the plugin bootstrap class.
+ *
+ * @since 1.0.0
+ * @param string $plugin_file Absolute path to the main plugin file.
+ * @param string $plugin_version Current plugin version.
+ * @return void
+ */
 new Plugin( __FILE__, $plugin_version );

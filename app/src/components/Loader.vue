@@ -1,3 +1,7 @@
+<!--
+  Loading indicator used while submitting OTP, password, or registration forms.
+  @since 1.0.0
+-->
 <template>
   <span
     aria-hidden="true"

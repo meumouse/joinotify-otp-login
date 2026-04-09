@@ -6,8 +6,21 @@ defined('ABSPATH') || exit;
 
 class Color_Scheme {
 
+    /**
+     * Tailwind-style steps used to generate the palette scale.
+     *
+     * @since 1.0.0
+     * @var int[]
+     */
     public static $steps = array( 0, 50, 100, 200, 300, 400, 500, 600, 700, 800, 900, 950 );
 
+    /**
+     * Generate a luminance-based palette from a single base color.
+     *
+     * @since 1.0.0
+     * @param string $hex_color Base hex color.
+     * @return array<int,array{step:string,color:string}> Generated palette rows.
+     */
     public static function generate_palette( $hex_color ) {
         $hex_color = self::sanitize_hex( $hex_color );
 
@@ -53,12 +66,26 @@ class Color_Scheme {
         return $colors;
     }
 
+    /**
+     * Normalize a hex color value to the format expected by the palette builder.
+     *
+     * @since 1.0.0
+     * @param string $hex_color Submitted color.
+     * @return string Sanitized hex color or an empty string.
+     */
     public static function sanitize_hex( $hex_color ) {
         $hex_color = sanitize_hex_color( $hex_color );
 
         return $hex_color ? $hex_color : '';
     }
 
+    /**
+     * Convert a hex color to RGB channels.
+     *
+     * @since 1.0.0
+     * @param string $hex_color Hex color value.
+     * @return int[] RGB channels.
+     */
     private static function hex_to_rgb( $hex_color ) {
         $hex_color = ltrim( (string) $hex_color, '#' );
 
@@ -69,6 +96,15 @@ class Color_Scheme {
         );
     }
 
+    /**
+     * Calculate relative luminance for an RGB color.
+     *
+     * @since 1.0.0
+     * @param int $r Red channel.
+     * @param int $g Green channel.
+     * @param int $b Blue channel.
+     * @return float Relative luminance.
+     */
     private static function luminance( $r, $g, $b ) {
         $channels = array( $r, $g, $b );
         $adjusted = array_map(
@@ -82,6 +118,15 @@ class Color_Scheme {
         return $adjusted[0] * 0.2126 + $adjusted[1] * 0.7152 + $adjusted[2] * 0.0722;
     }
 
+    /**
+     * Interpolate between two colors by a bounded factor.
+     *
+     * @since 1.0.0
+     * @param int[] $color1 Source color.
+     * @param int[] $color2 Target color.
+     * @param float $factor Interpolation factor from 0 to 1.
+     * @return int[] Interpolated RGB color.
+     */
     private static function interpolate_color( array $color1, array $color2, $factor ) {
         $factor = max( 0, min( 1, (float) $factor ) );
         $result = array();
@@ -93,6 +138,13 @@ class Color_Scheme {
         return $result;
     }
 
+    /**
+     * Convert RGB channels back to a hex string.
+     *
+     * @since 1.0.0
+     * @param int[] $color RGB channels.
+     * @return string Hex color string.
+     */
     private static function rgb_to_hex( array $color ) {
         $color = array_map(
             function( $value ) {

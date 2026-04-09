@@ -1,4 +1,10 @@
 <script setup>
+/**
+ * Shared button component with consistent primary and secondary styling.
+ *
+ * @since 1.0.0
+ * @type {Object}
+ */
 defineProps({
   kind: {
     type: String,
@@ -18,6 +24,12 @@ defineProps({
   },
 });
 
+/**
+ * Variant class map used by the button template.
+ *
+ * @since 1.0.0
+ * @type {Object<string,string>}
+ */
 const classes = {
   primary: 'joinotify-otp-login__button text-white disabled:cursor-not-allowed disabled:opacity-60',
   secondary: 'joinotify-otp-login__button-secondary border border-slate-200 bg-white text-slate-700',

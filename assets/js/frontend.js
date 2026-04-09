@@ -1,12 +1,32 @@
 (function ($) {
     'use strict';
 
+    /**
+     * Shared runtime configuration injected by WordPress.
+     *
+     * @since 1.0.0
+     * @type {Object}
+     */
     var config = window.joinotifyOtpLogin || {};
 
+    /**
+     * Strip everything except digits from a phone or OTP string.
+     *
+     * @since 1.0.0
+     * @param {string} value Input value.
+     * @return {string} Digits-only string.
+     */
     function digitsOnly(value) {
         return String(value || '').replace(/\D+/g, '');
     }
 
+    /**
+     * Resolve the OTP length from the current scope or the global config.
+     *
+     * @since 1.0.0
+     * @param {HTMLElement} scope Login widget root element.
+     * @return {number} OTP length.
+     */
     function getOtpLength(scope) {
         var parsed = parseInt(scope && scope.dataset ? scope.dataset.otpLength : '', 10);
 
@@ -19,6 +39,12 @@
         return Number.isFinite(parsed) && parsed > 0 ? parsed : 6;
     }
 
+    /**
+     * Map a country code to a default dial prefix.
+     *
+     * @since 1.0.0
+     * @return {string} Dial prefix without the plus sign.
+     */
     function getDefaultDialCode() {
         var country = String(config.defaultCountry || 'br').toLowerCase();
         var map = {
@@ -44,6 +70,14 @@
         return map[country] || '55';
     }
 
+    /**
+     * Build the phone value that should be submitted to the backend.
+     *
+     * @since 1.0.0
+     * @param {HTMLInputElement} input Phone input element.
+     * @param {Object|null} iti Intl-tel-input instance.
+     * @return {string} Normalized phone value.
+     */
     function buildPhoneValue(input, iti) {
         var raw = String(input.value || '').trim();
         var digits = digitsOnly(raw);
@@ -74,6 +108,15 @@
         return '';
     }
 
+    /**
+     * Display a feedback message inside the current login scope.
+     *
+     * @since 1.0.0
+     * @param {HTMLElement} scope Login widget root element.
+     * @param {string} type Notice type.
+     * @param {string} message Message to render.
+     * @return {void}
+     */
     function setMessage(scope, type, message) {
         var notice = scope.querySelector('[data-login-notice]');
 
@@ -86,6 +129,15 @@
         notice.hidden = !message;
     }
 
+    /**
+     * Toggle the submit button while an async action is running.
+     *
+     * @since 1.0.0
+     * @param {HTMLFormElement} form Current form.
+     * @param {boolean} isLoading Loading state.
+     * @param {string} label Loading label.
+     * @return {void}
+     */
     function setLoading(form, isLoading, label) {
         var submit = form.querySelector('[type="submit"]');
 
@@ -101,12 +153,27 @@
         submit.textContent = isLoading ? label : submit.dataset.originalLabel;
     }
 
+    /**
+     * Show only the panel that matches the current step.
+     *
+     * @since 1.0.0
+     * @param {HTMLElement} scope Login widget root element.
+     * @param {string} step Active step name.
+     * @return {void}
+     */
     function switchStep(scope, step) {
         scope.querySelectorAll('[data-login-step]').forEach(function (panel) {
             panel.hidden = panel.dataset.loginStep !== step;
         });
     }
 
+    /**
+     * Submit a POST request to the plugin AJAX endpoint.
+     *
+     * @since 1.0.0
+     * @param {Object} data Request payload.
+     * @return {jQuery.jqXHR} jQuery request handle.
+     */
     function ajaxRequest(data) {
         return $.ajax({
             url: config.ajaxUrl,
@@ -118,6 +185,13 @@
         });
     }
 
+    /**
+     * Format a phone number for display in the UI.
+     *
+     * @since 1.0.0
+     * @param {string} phone Phone number.
+     * @return {string} Formatted preview.
+     */
     function formatPhonePreview(phone) {
         var raw = String(phone || '').trim();
         var digits = digitsOnly(raw);
@@ -133,6 +207,13 @@
         return '+' + digits;
     }
 
+    /**
+     * Sync the hidden OTP field with the visible one-digit inputs.
+     *
+     * @since 1.0.0
+     * @param {HTMLFormElement} form Current form.
+     * @return {string} Combined OTP value.
+     */
     function syncOtpHidden(form) {
         var hidden = form.querySelector('[data-otp-hidden]');
         var otp = '';
@@ -148,6 +229,14 @@
         return otp;
     }
 
+    /**
+     * Focus a specific OTP input.
+     *
+     * @since 1.0.0
+     * @param {HTMLInputElement[]} inputs OTP input list.
+     * @param {number} index Input index.
+     * @return {void}
+     */
     function focusOtpInput(inputs, index) {
         if (inputs[index]) {
             inputs[index].focus();
@@ -155,6 +244,13 @@
         }
     }
 
+    /**
+     * Clear all OTP digit inputs and hidden values.
+     *
+     * @since 1.0.0
+     * @param {HTMLFormElement} form Current form.
+     * @return {void}
+     */
     function clearOtpInputs(form) {
         form.querySelectorAll('[data-otp-digit]').forEach(function (input) {
             input.value = '';
@@ -163,6 +259,15 @@
         syncOtpHidden(form);
     }
 
+    /**
+     * Update the resend code UI according to the remaining countdown.
+     *
+     * @since 1.0.0
+     * @param {HTMLElement} scope Login widget root element.
+     * @param {string} phone Phone number associated with the request.
+     * @param {number} secondsLeft Remaining seconds.
+     * @return {void}
+     */
     function updateResendState(scope, phone, secondsLeft) {
         var container = scope.querySelector('[data-resend-otp]');
 
@@ -178,6 +283,13 @@
         container.innerHTML = '<button type="button" class="button button-link request-new-otp" data-phone="' + phone + '">' + (config.i18n.resendOtpButton || 'Resend code') + '</button>';
     }
 
+    /**
+     * Start or restart the resend countdown for the active login scope.
+     *
+     * @since 1.0.0
+     * @param {HTMLElement} scope Login widget root element.
+     * @return {void}
+     */
     function startOtpCountdown(scope) {
         var phone = scope.dataset.otpPhone || '';
         var secondsLeft = 60;
@@ -202,6 +314,14 @@
         scope.dataset[timerKey] = String(interval);
     }
 
+    /**
+     * Verify the OTP code currently entered in the form.
+     *
+     * @since 1.0.0
+     * @param {HTMLFormElement} form Current form.
+     * @param {HTMLElement} scope Login widget root element.
+     * @return {void}
+     */
     function validateOtpCode(form, scope) {
         var phone = form.querySelector('[data-phone-hidden]') ? form.querySelector('[data-phone-hidden]').value : '';
         var otpHidden = form.querySelector('[data-otp-hidden]');
@@ -251,6 +371,14 @@
         });
     }
 
+    /**
+     * Bind OTP input navigation and auto-submit behavior.
+     *
+     * @since 1.0.0
+     * @param {HTMLElement} scope Login widget root element.
+     * @param {HTMLFormElement} form Current form.
+     * @return {void}
+     */
     function bindOtpInputs(scope, form) {
         var otpLength = getOtpLength(scope);
         var inputs = Array.prototype.slice.call(form.querySelectorAll('[data-otp-digit]'));

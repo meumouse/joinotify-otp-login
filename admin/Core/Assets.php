@@ -21,6 +21,12 @@ class Assets {
 		add_filter( 'script_loader_tag', array( $this, 'filter_script_loader_tag' ), 10, 3 );
 	}
 
+	/**
+	 * Register and enqueue the frontend assets needed by the login widget.
+	 *
+	 * @since 1.0.0
+	 * @return void
+	 */
 	public function register_frontend_assets() {
 		if ( ! $this->should_enqueue_frontend_assets() ) {
 			return;
@@ -39,7 +45,7 @@ class Assets {
 			wp_register_script(
 				self::SCRIPT_HANDLE,
 				$bundle['script_src'],
-				array(),
+				array( 'wp-i18n' ),
 				$bundle['version'],
 				true
 			);
@@ -56,7 +62,7 @@ class Assets {
 			wp_register_script(
 				self::SCRIPT_HANDLE,
 				JOINOTIFY_OTP_LOGIN_ASSETS . 'js/frontend.js',
-				array(),
+				array( 'wp-i18n' ),
 				JOINOTIFY_OTP_LOGIN_VERSION,
 				true
 			);
@@ -68,6 +74,15 @@ class Assets {
 		wp_enqueue_script( self::SCRIPT_HANDLE );
 	}
 
+	/**
+	 * Ensure the compiled frontend bundle is printed as an ES module.
+	 *
+	 * @since 1.0.0
+	 * @param string $tag Generated script tag.
+	 * @param string $handle Registered script handle.
+	 * @param string $src Script source URL.
+	 * @return string Filtered script tag.
+	 */
 	public function filter_script_loader_tag( $tag, $handle, $src ) {
 		if ( self::SCRIPT_HANDLE !== $handle ) {
 			return $tag;
@@ -76,6 +91,12 @@ class Assets {
 		return sprintf( '<script type="module" src="%s" id="%s-js"></script>', esc_url( $src ), esc_attr( $handle ) );
 	}
 
+	/**
+	 * Decide whether the frontend bundle should be loaded for the current request.
+	 *
+	 * @since 1.0.0
+	 * @return bool True when the OTP login UI is relevant to the page.
+	 */
 	private function should_enqueue_frontend_assets() {
 		$is_account = function_exists( 'is_account_page' ) && is_account_page();
 		$is_checkout = function_exists( 'is_checkout' ) && is_checkout();
@@ -92,6 +113,12 @@ class Assets {
 		return ! is_user_logged_in() && ( $is_account || $is_checkout || $has_shortcode );
 	}
 
+	/**
+	 * Build the JavaScript localization payload consumed by the frontend app.
+	 *
+	 * @since 1.0.0
+	 * @return array<string,mixed> Script parameters.
+	 */
 	private function get_script_params() {
 		$default_country = 'br';
 
@@ -112,45 +139,15 @@ class Assets {
 			'lostPasswordUrl' => esc_url_raw( wp_lostpassword_url() ),
 			'otpLength' => (int) apply_filters( 'Joinotify/Otp_Login/Otp_Length', 6 ),
 			'theme' => $this->get_theme_config(),
-			'i18n' => array(
-				'panelEyebrow' => __( 'Secure access', 'joinotify-otp-login' ),
-				'phoneTitle' => __( 'Log in with WhatsApp', 'joinotify-otp-login' ),
-				'phoneDescription' => __( 'Use your phone number to receive a code and sign in faster.', 'joinotify-otp-login' ),
-				'phoneLabel' => __( 'Phone number', 'joinotify-otp-login' ),
-				'phoneHelper' => __( 'Enter a valid phone number. The country code will be detected automatically.', 'joinotify-otp-login' ),
-				'phoneAction' => __( 'Log in with WhatsApp', 'joinotify-otp-login' ),
-				'useEmailPassword' => __( 'Use email and password', 'joinotify-otp-login' ),
-				'emailSeparator' => __( 'Or sign in with email or username', 'joinotify-otp-login' ),
-				'identifierLabel' => __( 'Email or username', 'joinotify-otp-login' ),
-				'identifierPlaceholder' => __( 'Enter your email or username', 'joinotify-otp-login' ),
-				'passwordLabel' => __( 'Password', 'joinotify-otp-login' ),
-				'passwordPlaceholder' => __( 'Enter your password', 'joinotify-otp-login' ),
-				'rememberMe' => __( 'Remember me', 'joinotify-otp-login' ),
-				'forgotPassword' => __( 'Forgot your password?', 'joinotify-otp-login' ),
-				'signIn' => __( 'Sign in', 'joinotify-otp-login' ),
-				'signInLoading' => __( 'Processing...', 'joinotify-otp-login' ),
-				'backToWhatsapp' => __( 'Back to WhatsApp', 'joinotify-otp-login' ),
-				'requestCode' => __( 'Request code', 'joinotify-otp-login' ),
-				'requestCodeLoading' => __( 'Sending...', 'joinotify-otp-login' ),
-				'enterCodeTitle' => __( 'Enter the access code', 'joinotify-otp-login' ),
-				'enterCodeDescription' => __( 'Enter the %d-digit code sent to your WhatsApp.', 'joinotify-otp-login' ),
-				'otpDigitLabel' => __( 'Code digit %d', 'joinotify-otp-login' ),
-				'resendOtpLabel' => __( 'Resend code in', 'joinotify-otp-login' ),
-				'resendOtpButton' => __( 'Resend code', 'joinotify-otp-login' ),
-				'secondsLabel' => __( 'seconds', 'joinotify-otp-login' ),
-				'verifyCode' => __( 'Verify code', 'joinotify-otp-login' ),
-				'verifyCodeLoading' => __( 'Verifying...', 'joinotify-otp-login' ),
-				'changePhone' => __( 'Change number', 'joinotify-otp-login' ),
-				'showPassword' => __( 'Show password', 'joinotify-otp-login' ),
-				'hidePassword' => __( 'Hide password', 'joinotify-otp-login' ),
-				'missingCredentials' => __( 'Fill in the email or username and password.', 'joinotify-otp-login' ),
-				'invalidPhone' => __( 'Enter a valid phone number with country code.', 'joinotify-otp-login' ),
-				'invalidOtp' => __( 'Enter the verification code you received.', 'joinotify-otp-login' ),
-				'unexpectedError' => __( 'We could not complete the request right now. Please try again.', 'joinotify-otp-login' ),
-			),
 		);
 	}
 
+	/**
+	 * Resolve the Vite build manifest when the compiled bundle exists.
+	 *
+	 * @since 1.0.0
+	 * @return array<string,mixed> Bundle metadata or a fallback flag.
+	 */
 	private function get_frontend_asset_bundle() {
 		$manifest_path = trailingslashit( JOINOTIFY_OTP_LOGIN_DIR ) . 'dist/.vite/manifest.json';
 
@@ -193,6 +190,13 @@ class Assets {
 		);
 	}
 
+	/**
+	 * Convert the generated color palette into an associative map for JS.
+	 *
+	 * @since 1.0.0
+	 * @param array<int,array<string,string>> $palette Palette rows.
+	 * @return array<string,string> Palette indexed by token step.
+	 */
 	private function get_theme_config() {
 		$primary_color = get_option( 'joinotify_otp_login_primary_color', '#4f46e5' );
 		$border_radius = (int) get_option( 'joinotify_otp_login_border_radius', 6 );
@@ -209,6 +213,13 @@ class Assets {
 		);
 	}
 
+	/**
+	 * Map palette rows to a key/value object for easier consumption in Vue.
+	 *
+	 * @since 1.0.0
+	 * @param array<int,array<string,string>> $palette Palette rows.
+	 * @return array<string,string> Palette map keyed by step.
+	 */
 	private function palette_to_map( array $palette ) {
 		$map = array();
 

@@ -1,4 +1,10 @@
 <script setup>
+/**
+ * Styled checkbox with v-model support for the "remember me" option.
+ *
+ * @since 1.0.0
+ * @type {Object}
+ */
 const props = defineProps({
   id: {
     type: String,
@@ -24,6 +30,13 @@ const props = defineProps({
 
 const emit = defineEmits(['update:modelValue']);
 
+/**
+ * Synchronize the checkbox state with the parent v-model.
+ *
+ * @since 1.0.0
+ * @param {Event} event Native change event.
+ * @return {void}
+ */
 function onChange(event) {
   emit('update:modelValue', event.target.checked);
 }

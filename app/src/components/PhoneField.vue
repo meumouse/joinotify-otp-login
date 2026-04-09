@@ -2,6 +2,12 @@
 import { ref } from 'vue';
 import Field from './Field.vue';
 
+/**
+ * Phone number input wrapper with validation messaging support.
+ *
+ * @since 1.0.0
+ * @type {Object}
+ */
 defineProps({
   fieldId: {
     type: String,
@@ -10,6 +16,14 @@ defineProps({
   helper: {
     type: String,
     default: '',
+  },
+  validationMessage: {
+    type: String,
+    default: '',
+  },
+  showValidation: {
+    type: Boolean,
+    default: false,
   },
   label: {
     type: String,
@@ -22,6 +36,12 @@ const emit = defineEmits(['blur', 'change', 'countrychange', 'input']);
 
 const inputEl = ref(null);
 
+/**
+ * Expose the raw input element so intl-tel-input can attach to it.
+ *
+ * @since 1.0.0
+ * @return {void}
+ */
 defineExpose({ inputEl });
 </script>
 
@@ -41,4 +61,10 @@ defineExpose({ inputEl });
       @input="emit('input', $event)"
     />
   </Field>
+  <p
+    v-if="showValidation && validationMessage"
+    class="mt-2 text-xs leading-5 text-rose-600"
+  >
+    {{ validationMessage }}
+  </p>
 </template>

@@ -1,4 +1,10 @@
 <script setup>
+/**
+ * Generic labeled field wrapper used across the login forms.
+ *
+ * @since 1.0.0
+ * @type {Object}
+ */
 defineProps({
   forId: {
     type: String,

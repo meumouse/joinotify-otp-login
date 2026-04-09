@@ -8,6 +8,12 @@ import PhoneField from './PhoneField.vue';
 import Loader from './Loader.vue';
 import FormCheckbox from './FormCheckbox.vue';
 
+/**
+ * Root login widget that orchestrates phone, OTP, and password flows.
+ *
+ * @since 1.0.0
+ * @type {Object}
+ */
 const props = defineProps({
   context: { type: String, default: 'myaccount' },
   defaultCountry: { type: String, default: 'br' },
@@ -21,6 +27,7 @@ const props = defineProps({
 });
 
 const steps = { phone: 'phone', otp: 'otp', password: 'password' };
+const __ = window.wp?.i18n?.__ ?? ((text) => text);
 
 const scope = ref(null);
 const phoneField = ref(null);
@@ -40,15 +47,48 @@ const password = ref('');
 const showPassword = ref(false);
 const otpDigits = ref(Array.from({ length: props.otpLength }, () => ''));
 const phoneIti = ref(null);
+const phoneValidationMessage = ref('');
+const showPhoneValidation = ref(false);
 
 const apiBaseUrl = computed(() => props.apiBaseUrl || window.joinotifyOtpLogin.restUrl || '');
 const useRestApi = computed(() => Boolean(window.joinotifyOtpLogin.restUrl));
-const i18n = computed(() => window.joinotifyOtpLogin?.i18n || {});
 const lostPasswordUrl = computed(() => window.joinotifyOtpLogin?.lostPasswordUrl || '#');
 const theme = computed(() => window.joinotifyOtpLogin?.theme || {});
 const primaryColor = computed(() => theme.value.primaryColor || '#4f46e5');
 const borderRadius = computed(() => `${theme.value.borderRadius || 6}px`);
 
+/**
+ * Resolve a translated string from the WordPress i18n helper.
+ *
+ * @since 1.0.0
+ * @param {string} text Translation string.
+ * @param {string} domain Translation domain.
+ * @return {string} Localized string.
+ */
+function t(text, domain = 'joinotify-otp-login') {
+  return __(text, domain);
+}
+
+/**
+ * Resolve a translated string containing a single numeric placeholder.
+ *
+ * @since 1.0.0
+ * @param {string} text Translation string.
+ * @param {number} value Numeric value to inject.
+ * @param {string} domain Translation domain.
+ * @return {string} Localized string with the count applied.
+ */
+function tWithCount(text, value, domain = 'joinotify-otp-login') {
+  return String(t(text, domain)).replace('%d', String(value));
+}
+
+/**
+ * Convert a hex color string into an RGB triplet string.
+ *
+ * @since 1.0.0
+ * @param {string} hex Hex color value.
+ * @return {string} Comma-separated RGB channels.
+ */
 function hexToRgb(hex) {
   const value = String(hex || '').replace('#', '');
 
@@ -75,14 +115,13 @@ const rootStyle = computed(() => ({
   '--joinotify-soft-900': theme.value.palette?.['900'] || '#312e81',
 }));
 
-function t(key, fallback = '') {
-  return i18n.value[key] || fallback;
-}
-
-function tWithCount(key, fallback, value) {
-  return String(t(key, fallback)).replace('%d', String(value));
-}
-
+/**
+ * Resolve the request endpoint for either REST or AJAX transport.
+ *
+ * @since 1.0.0
+ * @param {string} pathOrAction REST path or AJAX action.
+ * @return {string} Endpoint URL.
+ */
 function requestUrl(pathOrAction) {
   if (useRestApi.value) {
     return `${apiBaseUrl.value}/${pathOrAction}`;
@@ -112,6 +151,13 @@ const noticeClasses = computed(() => {
   return `${base} border-sky-200 bg-sky-50 text-sky-900`;
 });
 
+/**
+ * Normalize a phone number into a plus-prefixed string.
+ *
+ * @since 1.0.0
+ * @param {string} raw Raw phone input.
+ * @return {string} Normalized phone number.
+ */
 function normalizePhone(raw) {
   const value = String(raw || '').trim();
   const digits = value.replace(/\D+/g, '');
@@ -147,26 +193,67 @@ function normalizePhone(raw) {
   return `+${dialCodeMap[props.defaultCountry.toLowerCase()] || '55'}${digits}`;
 }
 
+/**
+ * Store a feedback message in reactive state.
+ *
+ * @since 1.0.0
+ * @param {string} type Notice type.
+ * @param {string} message Notice text.
+ * @return {void}
+ */
 function setNotice(type, message) {
   notice.value = { type, message };
 }
 
+/**
+ * Clear the current notice message.
+ *
+ * @since 1.0.0
+ * @return {void}
+ */
 function clearNotice() {
   notice.value = { type: 'info', message: '' };
 }
 
+/**
+ * Toggle the loading indicator for the active request.
+ *
+ * @since 1.0.0
+ * @param {boolean} value Loading state.
+ * @return {void}
+ */
 function setLoadingState(value) {
   loading.value = value;
 }
 
+/**
+ * Move the widget to the requested step.
+ *
+ * @since 1.0.0
+ * @param {string} step Step name.
+ * @return {void}
+ */
 function switchStep(step) {
   currentStep.value = step;
 }
 
+/**
+ * Reset the OTP digit array to empty values.
+ *
+ * @since 1.0.0
+ * @return {void}
+ */
 function resetOtpDigits() {
   otpDigits.value = Array.from({ length: props.otpLength }, () => '');
 }
 
+/**
+ * Focus a specific OTP input after the DOM has updated.
+ *
+ * @since 1.0.0
+ * @param {number} index Input index.
+ * @return {void}
+ */
 function focusOtp(index) {
   nextTick(() => {
     const target = otpInputs.value[index];
@@ -178,12 +265,68 @@ function focusOtp(index) {
   });
 }
 
+/**
+ * Sync the visible phone field into the hidden normalized field.
+ *
+ * @since 1.0.0
+ * @return {void}
+ */
 function syncPhoneFromInput() {
   const value = visiblePhone.value;
   visiblePhone.value = value;
   hiddenPhone.value = normalizePhone(value);
 }
 
+/**
+ * Translate the intl-tel-input validation state into a user message.
+ *
+ * @since 1.0.0
+ * @param {string} number Normalized number.
+ * @param {number|null} errorCode Validation error code.
+ * @return {string} Validation message.
+ */
+function getPhoneErrorMessage(number, errorCode) {
+  if (!number) {
+    return t('Please enter a number');
+  }
+
+  const genericError = t('Invalid number');
+  const validationError = intlTelInput.utils?.validationError || {};
+  const errorMap = {
+    [validationError.INVALID_COUNTRY_CODE]: t('Invalid country code'),
+    [validationError.TOO_SHORT]: t('Too short'),
+    [validationError.TOO_LONG]: t('Too long'),
+    [validationError.INVALID_LENGTH]: genericError,
+  };
+
+  return errorMap[errorCode] || genericError;
+}
+
+/**
+ * Validate the current phone input before requesting a code.
+ *
+ * @since 1.0.0
+ * @return {boolean} True when the phone number is valid.
+ */
+function validatePhone() {
+  showPhoneValidation.value = true;
+
+  const number = phoneIti.value?.getNumber?.() || hiddenPhone.value || visiblePhone.value;
+  const isValid = Boolean(phoneIti.value?.isValidNumber?.());
+  const errorCode = phoneIti.value?.getValidationError?.() ?? null;
+
+  phoneValidationMessage.value = !isValid ? getPhoneErrorMessage(number, errorCode) : '';
+  syncPhoneFromInput();
+
+  return isValid;
+}
+
+/**
+ * Load the shared utils bundle used by intl-tel-input.
+ *
+ * @since 1.0.0
+ * @return {Promise<unknown>} Dynamic import promise.
+ */
 function loadIntlUtils() {
   return import('intl-tel-input/utils');
 }
@@ -231,11 +374,15 @@ function fillOtpDigits(value) {
 }
 
 async function requestOtp() {
-  syncPhoneFromInput();
+  if (!validatePhone()) {
+    setNotice('error', phoneValidationMessage.value || t('Enter a valid phone number with country code.'));
+    return;
+  }
+
   const phone = readPhoneValue();
 
   if (!phone) {
-    setNotice('error', t('invalidPhone', 'Enter a valid phone number with country code.'));
+    setNotice('error', t('Enter a valid phone number with country code.'));
     return;
   }
 
@@ -259,7 +406,7 @@ async function requestOtp() {
     const payload = await response.json();
 
     if (!payload.success) {
-      setNotice('error', payload.data?.message || t('unexpectedError', 'We could not complete the request right now. Please try again.'));
+      setNotice('error', payload.data?.message || t('We could not complete the request right now. Please try again.'));
       return;
     }
 
@@ -279,7 +426,7 @@ async function requestOtp() {
     await nextTick();
     focusOtp(0);
   } catch (error) {
-    setNotice('error', t('unexpectedError', 'We could not complete the request right now. Please try again.'));
+    setNotice('error', t('We could not complete the request right now. Please try again.'));
   } finally {
     setLoadingState(false);
   }
@@ -290,7 +437,7 @@ async function verifyOtp() {
   const phone = hiddenPhone.value || otpPhone.value;
 
   if (!phone || otp.length !== props.otpLength) {
-    setNotice('error', t('invalidOtp', 'Enter the verification code you received.'));
+    setNotice('error', t('Enter the verification code you received.'));
     focusOtp(otpDigits.value.findIndex((digit) => !digit));
     return;
   }
@@ -325,13 +472,13 @@ async function verifyOtp() {
     const payload = await response.json();
 
     if (!payload.success) {
-      setNotice('error', payload.data?.message || t('unexpectedError', 'We could not complete the request right now. Please try again.'));
+      setNotice('error', payload.data?.message || t('We could not complete the request right now. Please try again.'));
       return;
     }
 
     window.location.href = payload.data.redirect;
   } catch (error) {
-    setNotice('error', t('unexpectedError', 'We could not complete the request right now. Please try again.'));
+    setNotice('error', t('We could not complete the request right now. Please try again.'));
   } finally {
     setLoadingState(false);
   }
@@ -339,7 +486,7 @@ async function verifyOtp() {
 
 async function loginWithPassword() {
   if (!identifier.value || !password.value) {
-    setNotice('error', t('missingCredentials', 'Fill in the email or username and password.'));
+    setNotice('error', t('Fill in the email or username and password.'));
     return;
   }
 
@@ -374,13 +521,13 @@ async function loginWithPassword() {
     const payload = await response.json();
 
     if (!payload.success) {
-      setNotice('error', payload.data?.message || t('unexpectedError', 'We could not complete the request right now. Please try again.'));
+      setNotice('error', payload.data?.message || t('We could not complete the request right now. Please try again.'));
       return;
     }
 
     window.location.href = payload.data.redirect;
   } catch (error) {
-    setNotice('error', t('unexpectedError', 'We could not complete the request right now. Please try again.'));
+    setNotice('error', t('We could not complete the request right now. Please try again.'));
   } finally {
     setLoadingState(false);
   }
@@ -476,10 +623,10 @@ onBeforeUnmount(() => {
     <div class="relative z-10 mx-auto flex w-full max-w-md flex-col gap-6">
       <div v-if="showHeader" class="space-y-2 text-center">
         <p class="text-xs font-semibold uppercase tracking-[0.22em] text-slate-500">
-          {{ t('panelEyebrow', 'Secure access') }}
+          {{ t('Secure access') }}
         </p>
         <h2 class="joinotify-otp-login__title text-3xl font-semibold tracking-tight text-slate-900 sm:text-4xl">
-          {{ title || t('phoneTitle', 'Log in with WhatsApp') }}
+          {{ title || t('Log in with WhatsApp') }}
         </h2>
         <p v-if="description" class="joinotify-otp-login__description text-sm leading-6 text-slate-500 sm:text-base">
           {{ description }}
@@ -496,9 +643,11 @@ onBeforeUnmount(() => {
             ref="phoneField"
             v-model="visiblePhone"
             :field-id="phoneFieldId"
-            :helper="t('phoneHelper', 'Enter a valid phone number. The country code will be detected automatically.')"
-            :label="t('phoneLabel', 'Phone number')"
-            @blur="syncPhoneFromInput"
+            :helper="t('Enter a valid phone number. The country code will be detected automatically.')"
+            :label="t('Phone number')"
+            :show-validation="showPhoneValidation"
+            :validation-message="phoneValidationMessage"
+            @blur="validatePhone"
             @change="syncPhoneFromInput"
             @countrychange="syncPhoneFromInput"
             @input="syncPhoneFromInput"
@@ -509,14 +658,14 @@ onBeforeUnmount(() => {
               :disabled="loading"
               type="submit"
             >
-              {{ loading ? t('requestCodeLoading', 'Sending...') : t('phoneAction', 'Log in with WhatsApp') }}
+              {{ loading ? t('Sending...') : t('Log in with WhatsApp') }}
             </BaseButton>
             <BaseButton
               kind="secondary"
               type="button"
               @click="switchStep(steps.password)"
             >
-              {{ t('useEmailPassword', 'Use email and password') }}
+              {{ t('Use email and password') }}
             </BaseButton>
           </div>
         </form>
@@ -530,10 +679,10 @@ onBeforeUnmount(() => {
 
           <div class="space-y-2 text-center">
             <h3 class="text-xl font-semibold tracking-tight text-slate-900">
-              {{ t('enterCodeTitle', 'Enter the access code') }}
+              {{ t('Enter the access code') }}
             </h3>
             <p class="text-sm leading-6 text-slate-500">
-              {{ tWithCount('enterCodeDescription', 'Enter the %d-digit code sent to your WhatsApp.', props.otpLength) }}
+              {{ tWithCount('Enter the %d-digit code sent to your WhatsApp.', props.otpLength) }}
             </p>
             <p class="text-sm font-medium text-slate-700">
               {{ phonePreview }}
@@ -551,7 +700,7 @@ onBeforeUnmount(() => {
               inputmode="numeric"
               autocomplete="one-time-code"
               maxlength="1"
-              :aria-label="tWithCount('otpDigitLabel', 'Code digit %d', index + 1)"
+              :aria-label="tWithCount('Code digit %d', index + 1)"
               @input="handleOtpInput(index, $event)"
               @keydown="handleOtpKeydown(index, $event)"
               @paste="handleOtpPaste(index, $event)"
@@ -561,15 +710,15 @@ onBeforeUnmount(() => {
           <FormCheckbox
             v-model="remember"
             :id="rememberFieldId"
-            :label="t('rememberMe', 'Remember me')"
+            :label="t('Remember me')"
             name="remember"
           />
 
           <div class="flex flex-wrap items-center gap-2 text-sm text-slate-500">
             <template v-if="!resendEnabled">
-              <span>{{ t('resendOtpLabel', 'Resend code in') }}</span>
+              <span>{{ t('Resend code in') }}</span>
               <span class="font-semibold text-slate-700">{{ countdown }}</span>
-              <span>{{ t('secondsLabel', 'seconds') }}</span>
+              <span>{{ t('seconds') }}</span>
             </template>
             <button
               v-else
@@ -577,7 +726,7 @@ onBeforeUnmount(() => {
               type="button"
               @click="resendOtp"
             >
-              {{ t('resendOtpButton', 'Resend code') }}
+              {{ t('Resend code') }}
             </button>
           </div>
 
@@ -587,14 +736,14 @@ onBeforeUnmount(() => {
               type="submit"
             >
               <Loader v-if="loading" />
-              <span v-else>{{ t('verifyCodeLoading', 'Verifying...') }}</span>
+              <span v-else>{{ t('Verifying...') }}</span>
             </BaseButton>
             <BaseButton
               kind="secondary"
               type="button"
               @click="switchStep(steps.phone)"
             >
-              {{ t('changePhone', 'Change number') }}
+              {{ t('Change number') }}
             </BaseButton>
           </div>
         </form>
@@ -603,23 +752,23 @@ onBeforeUnmount(() => {
       <section v-show="currentStep === steps.password" class="space-y-5">
         <div class="text-center">
           <div class="text-sm font-semibold uppercase tracking-[0.18em] text-slate-500">
-            {{ t('emailSeparator', 'Or sign in with email') }}
+            {{ t('Or sign in with email') }}
           </div>
         </div>
 
         <form class="space-y-5" @submit.prevent="loginWithPassword">
-          <Field :for-id="identifierFieldId" :label="t('identifierLabel', 'Email or username')">
+          <Field :for-id="identifierFieldId" :label="t('Email or username')">
             <input
               :id="identifierFieldId"
               v-model="identifier"
               type="text"
               class="joinotify-otp-login__input w-full border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-900 outline-none transition placeholder:text-slate-400"
               autocomplete="username"
-              :placeholder="t('identifierPlaceholder', 'Enter your email or username')"
+              :placeholder="t('Enter your email or username')"
             />
           </Field>
 
-          <Field :for-id="passwordFieldId" :label="t('passwordLabel', 'Password')">
+          <Field :for-id="passwordFieldId" :label="t('Password')">
             <div class="relative">
               <input
                 :id="passwordFieldId"
@@ -627,12 +776,12 @@ onBeforeUnmount(() => {
                 :type="showPassword ? 'text' : 'password'"
                 class="joinotify-otp-login__input w-full border border-slate-200 bg-slate-50 px-4 py-3 pr-12 text-sm text-slate-900 outline-none transition placeholder:text-slate-400"
                 autocomplete="current-password"
-                :placeholder="t('passwordPlaceholder', 'Enter your password')"
+                :placeholder="t('Enter your password')"
               />
               <button
                 class="absolute outline-none inset-y-0 right-0 flex items-center px-4 text-slate-500 transition hover:text-slate-900"
                 type="button"
-                :aria-label="showPassword ? t('hidePassword', 'Hide password') : t('showPassword', 'Show password')"
+                :aria-label="showPassword ? t('Hide password') : t('Show password')"
                 @click="showPassword = !showPassword"
               >
                 <svg
@@ -697,11 +846,11 @@ onBeforeUnmount(() => {
             <FormCheckbox
               v-model="remember"
               :id="rememberFieldId"
-              :label="t('rememberMe', 'Remember me')"
+              :label="t('Remember me')"
               name="remember"
             />
             <a class="font-semibold text-indigo-600 transition hover:text-indigo-500" :href="lostPasswordUrl">
-              {{ t('forgotPassword', 'Forgot your password?') }}
+              {{ t('Forgot your password?') }}
             </a>
           </div>
 
@@ -711,14 +860,14 @@ onBeforeUnmount(() => {
               type="submit"
             >
               <Loader v-if="loading" />
-              <span v-else>{{ t('signIn', 'Sign in') }}</span>
+              <span v-else>{{ t('Sign in') }}</span>
             </BaseButton>
             <BaseButton
               kind="secondary"
               type="button"
               @click="switchStep(steps.phone)"
             >
-              {{ t('backToWhatsapp', 'Back to WhatsApp') }}
+              {{ t('Back to WhatsApp') }}
             </BaseButton>
           </div>
         </form>
