@@ -13,7 +13,7 @@ defined('ABSPATH') || exit;
  */
 class Assets {
 
-	const SCRIPT_HANDLE = 'joinotify-otp-login-frontend';
+	const SCRIPT_HANDLE = 'joinotify-otp-login';
 	const STYLE_HANDLE = 'joinotify-otp-login-frontend';
 
 	public function __construct() {
@@ -50,6 +50,12 @@ class Assets {
 				true
 			);
 
+			wp_set_script_translations(
+				self::SCRIPT_HANDLE,
+				'joinotify-otp-login',
+				trailingslashit( JOINOTIFY_OTP_LOGIN_DIR ) . 'languages'
+			);
+
 			wp_script_add_data( self::SCRIPT_HANDLE, 'type', 'module' );
 		} else {
 			wp_register_style(
@@ -65,6 +71,12 @@ class Assets {
 				array( 'wp-i18n' ),
 				JOINOTIFY_OTP_LOGIN_VERSION,
 				true
+			);
+
+			wp_set_script_translations(
+				self::SCRIPT_HANDLE,
+				'joinotify-otp-login',
+				trailingslashit( JOINOTIFY_OTP_LOGIN_DIR ) . 'languages'
 			);
 		}
 
@@ -139,7 +151,64 @@ class Assets {
 			'lostPasswordUrl' => esc_url_raw( wp_lostpassword_url() ),
 			'otpLength' => (int) apply_filters( 'Joinotify/Otp_Login/Otp_Length', 6 ),
 			'theme' => $this->get_theme_config(),
+			'i18n' => $this->get_frontend_i18n_map(),
 		);
+	}
+
+	/**
+	 * Build a translated string map for the frontend Vue app.
+	 *
+	 * This acts as a runtime fallback when wp_set_script_translations is not
+	 * available or when the module bundle executes before wp.i18n is ready.
+	 *
+	 * @since 1.0.0
+	 * @return array<string,string> Translated strings indexed by source text.
+	 */
+	private function get_frontend_i18n_map() {
+		$strings = array(
+			'Secure access',
+			'Log in with WhatsApp',
+			'Enter a valid phone number. The country code will be detected automatically.',
+			'Phone number',
+			'Sending...',
+			'Use email and password',
+			'Enter the access code',
+			'Enter the %d-digit code sent to your WhatsApp.',
+			'Code digit %d',
+			'Remember me',
+			'Resend code in',
+			'seconds',
+			'Resend code',
+			'Verifying...',
+			'Change number',
+			'Or sign in with email',
+			'Email or username',
+			'Enter your email or username',
+			'Password',
+			'Enter your password',
+			'Hide password',
+			'Show password',
+			'Forgot your password?',
+			'Sign in',
+			'Back to WhatsApp',
+			'Please enter a number',
+			'Invalid number',
+			'Invalid country code',
+			'Too short',
+			'Too long',
+			'Enter a valid phone number with country code.',
+			'We could not complete the request right now. Please try again.',
+			'Enter the verification code you received.',
+			'Fill in the email or username and password.',
+		);
+
+		$map = array();
+
+		foreach ( $strings as $string ) {
+			$map[ $string ] = __( $string, 'joinotify-otp-login' );
+		}
+
+		return $map;
 	}
 
 	/**

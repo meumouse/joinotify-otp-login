@@ -66,7 +66,7 @@ const borderRadius = computed(() => `${theme.value.borderRadius || 6}px`);
  * @return {string} Localized string.
  */
 function t(text, domain = 'joinotify-otp-login') {
-  return __(text, domain);
+  return window.joinotifyOtpLogin?.i18n?.[text] || __(text, domain);
 }
 
 /**
@@ -613,13 +613,8 @@ onBeforeUnmount(() => {
   <div
     ref="scope"
     :style="rootStyle"
-    class="joinotify-otp-login__surface relative isolate w-full border border-slate-200 bg-white/95 px-6 py-7 backdrop-blur sm:px-8 sm:py-9"
+    class="joinotify-otp-login__surface relative isolate w-full shadow-none bg-white/95 px-6 py-8 sm:px-8 sm:py-9"
   >
-    <div class="pointer-events-none absolute inset-0 overflow-hidden">
-      <div class="joinotify-otp-login__orb joinotify-otp-login__orb--primary absolute -right-24 -top-24 h-56 w-56 rounded-full blur-3xl"></div>
-      <div class="joinotify-otp-login__orb joinotify-otp-login__orb--secondary absolute -bottom-24 -left-24 h-56 w-56 rounded-full blur-3xl"></div>
-    </div>
-
     <div class="relative z-10 mx-auto flex w-full max-w-md flex-col gap-6">
       <div v-if="showHeader" class="space-y-2 text-center">
         <p class="text-xs font-semibold uppercase tracking-[0.22em] text-slate-500">
