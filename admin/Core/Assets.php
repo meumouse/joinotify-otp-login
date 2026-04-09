@@ -148,6 +148,7 @@ class Assets {
 			'nonce' => wp_create_nonce( 'wp_rest' ),
 			'legacyNonce' => wp_create_nonce( 'joinotify_otp_login_nonce' ),
 			'defaultCountry' => $default_country,
+			'siteLocale' => function_exists( 'determine_locale' ) ? determine_locale() : get_locale(),
 			'lostPasswordUrl' => esc_url_raw( wp_lostpassword_url() ),
 			'otpLength' => (int) apply_filters( 'Joinotify/Otp_Login/Otp_Length', 6 ),
 			'theme' => $this->get_theme_config(),

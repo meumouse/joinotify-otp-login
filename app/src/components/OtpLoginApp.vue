@@ -1,5 +1,6 @@
 <script setup>
 import intlTelInput from 'intl-tel-input';
+import ptI18n from 'intl-tel-input/build/js/i18n/pt/index.js';
 import 'intl-tel-input/build/css/intlTelInput.css';
 import { computed, nextTick, onBeforeUnmount, onMounted, ref } from 'vue';
 import BaseButton from './BaseButton.vue';
@@ -81,6 +82,22 @@ function t(text, domain = 'joinotify-otp-login') {
  */
 function tWithCount(text, value, domain = 'joinotify-otp-login') {
   return String(t(text, domain)).replace('%d', String(value));
+}
+
+function getIntlTelInputLocale() {
+  const locale = String(window.joinotifyOtpLogin?.siteLocale || 'en').toLowerCase();
+
+  if (locale.startsWith('pt')) {
+    return {
+      countryNameLocale: 'pt',
+      i18n: ptI18n,
+    };
+  }
+
+  return {
+    countryNameLocale: locale.split('-')[0] || 'en',
+    i18n: {},
+  };
 }
 
 /**
@@ -347,6 +364,7 @@ function initPhoneInput() {
     autoPlaceholder: 'aggressive',
     placeholderNumberType: 'MOBILE',
     containerClass: 'w-full',
+    ...getIntlTelInputLocale(),
     loadUtils: loadIntlUtils,
   });
 
