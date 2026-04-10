@@ -2,6 +2,8 @@
 
 namespace MeuMouse\Joinotify\Otp_Login\Core;
 
+use MeuMouse\Joinotify\Otp_Login\Support\Settings;
+
 defined('ABSPATH') || exit;
 
 /**
@@ -123,7 +125,15 @@ class Assets {
 			}
 		}
 
-		return ( ! is_user_logged_in() && ( $is_account || $is_checkout || $has_shortcode ) ) || $is_edit_account;
+		if ( $is_edit_account ) {
+			return true;
+		}
+
+		if ( ! Settings::is_enabled() ) {
+			return false;
+		}
+
+		return ! is_user_logged_in() && ( $is_account || $is_checkout || $has_shortcode );
 	}
 
 	/**
@@ -276,39 +286,14 @@ class Assets {
 	 * @return array<string,string> Palette indexed by token step.
 	 */
 	private function get_theme_config() {
-		$primary_color = get_option( 'joinotify_otp_login_primary_color', '#4f46e5' );
-		$border_radius = (int) get_option( 'joinotify_otp_login_border_radius', 6 );
-		$palette = array();
-
-		if ( class_exists( '\\MeuMouse\\Joinotify\\Otp_Login\\Support\\Color_Scheme' ) ) {
-			$palette = \MeuMouse\Joinotify\Otp_Login\Support\Color_Scheme::generate_palette( $primary_color );
-		}
+		$primary_color = Settings::get_primary_color();
+		$border_radius = Settings::get_border_radius();
+		$palette = Settings::get_palette_map();
 
 		return array(
 			'primaryColor' => $primary_color,
-			'borderRadius' => max( 0, min( 80, $border_radius ) ),
-			'palette' => $this->palette_to_map( $palette ),
+			'borderRadius' => $border_radius,
+			'palette' => $palette,
 		);
-	}
-
-	/**
-	 * Map palette rows to a key/value object for easier consumption in Vue.
-	 *
-	 * @since 1.0.0
-	 * @param array<int,array<string,string>> $palette Palette rows.
-	 * @return array<string,string> Palette map keyed by step.
-	 */
-	private function palette_to_map( array $palette ) {
-		$map = array();
-
-		foreach ( $palette as $token ) {
-			if ( ! is_array( $token ) || empty( $token['step'] ) || empty( $token['color'] ) ) {
-				continue;
-			}
-
-			$map[ (string) $token['step'] ] = (string) $token['color'];
-		}
-
-		return $map;
 	}
 }

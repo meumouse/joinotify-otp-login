@@ -57,7 +57,15 @@ const useRestApi = computed(() => Boolean(window.joinotifyOtpLogin.restUrl));
 const lostPasswordUrl = computed(() => window.joinotifyOtpLogin?.lostPasswordUrl || '#');
 const theme = computed(() => window.joinotifyOtpLogin?.theme || {});
 const primaryColor = computed(() => theme.value.primaryColor || '#4f46e5');
-const borderRadius = computed(() => `${theme.value.borderRadius || 6}px`);
+const borderRadius = computed(() => {
+  const value = String(theme.value.borderRadius || '0.375rem').trim();
+
+  if (/^-?\d+(\.\d+)?$/.test(value)) {
+    return `${value}px`;
+  }
+
+  return value || '0.375rem';
+});
 
 /**
  * Resolve a translated string from the WordPress i18n helper.
@@ -863,7 +871,7 @@ onBeforeUnmount(() => {
               :label="t('Remember me')"
               name="remember"
             />
-            <a class="font-semibold text-indigo-600 transition hover:text-indigo-500" :href="lostPasswordUrl">
+            <a class="joinotify-otp-login__forgot-link font-semibold transition" :href="lostPasswordUrl">
               {{ t('Forgot your password?') }}
             </a>
           </div>

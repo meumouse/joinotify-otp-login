@@ -4,6 +4,7 @@ namespace MeuMouse\Joinotify\Otp_Login\Integrations;
 
 use MeuMouse\Joinotify\Otp_Login\Repositories\User_Repository;
 use MeuMouse\Joinotify\Otp_Login\Support\Phone_Utils;
+use MeuMouse\Joinotify\Otp_Login\Support\Settings;
 use MeuMouse\Joinotify\Otp_Login\Views\Templates;
 
 defined('ABSPATH') || exit;
@@ -52,6 +53,10 @@ class Woocommerce {
      * @return string Template path to load.
      */
     public function locate_template( $template, $template_name, $template_path ) {
+        if ( ! Settings::is_enabled() ) {
+            return $template;
+        }
+
         $supported_templates = array(
             'myaccount/form-login.php',
             'checkout/form-login.php',
@@ -106,7 +111,7 @@ class Woocommerce {
      * @return void
      */
     public function render_checkout_login_form() {
-        if ( ! function_exists( 'is_checkout' ) || ! is_checkout() || is_user_logged_in() ) {
+        if ( ! Settings::is_enabled() || ! function_exists( 'is_checkout' ) || ! is_checkout() || is_user_logged_in() ) {
             return;
         }
 
@@ -138,7 +143,7 @@ class Woocommerce {
      * @return void
      */
     public function disable_flexify_native_login_form() {
-        if ( ! function_exists( 'is_checkout' ) || ! is_checkout() || is_user_logged_in() ) {
+        if ( ! Settings::is_enabled() || ! function_exists( 'is_checkout' ) || ! is_checkout() || is_user_logged_in() ) {
             return;
         }
 

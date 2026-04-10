@@ -4,6 +4,7 @@ namespace MeuMouse\Joinotify\Otp_Login\Services;
 
 use MeuMouse\Joinotify\Otp_Login\Repositories\User_Repository;
 use MeuMouse\Joinotify\Otp_Login\Support\Phone_Utils;
+use MeuMouse\Joinotify\Otp_Login\Support\Settings;
 use MeuMouse\Joinotify\Otp_Login\Validations\Otp_Validation;
 
 use WP_Error;
@@ -58,6 +59,10 @@ class Auth_Flow_Service {
      * @return array|WP_Error Response payload or a WordPress error object.
      */
     public function request_otp_login( $phone ) {
+        if ( ! Settings::is_enabled() ) {
+            return new WP_Error( 'otp_login_disabled', __( 'The OTP login form is currently disabled.', 'joinotify-otp-login' ) );
+        }
+
         $normalized_phone = Phone_Utils::normalize( $phone );
 
         if ( empty( $normalized_phone ) ) {
@@ -103,6 +108,10 @@ class Auth_Flow_Service {
      * @return array|WP_Error Response payload or a WordPress error object.
      */
     public function verify_otp_login( $phone, $otp, $remember = false ) {
+        if ( ! Settings::is_enabled() ) {
+            return new WP_Error( 'otp_login_disabled', __( 'The OTP login form is currently disabled.', 'joinotify-otp-login' ) );
+        }
+
         $normalized_phone = Phone_Utils::normalize( $phone );
         $otp = preg_replace( '/\D+/', '', (string) $otp );
 
@@ -140,6 +149,10 @@ class Auth_Flow_Service {
      * @return array|WP_Error Response payload or a WordPress error object.
      */
     public function login_with_password( $identifier, $password, $remember = false ) {
+        if ( ! Settings::is_enabled() ) {
+            return new WP_Error( 'otp_login_disabled', __( 'The OTP login form is currently disabled.', 'joinotify-otp-login' ) );
+        }
+
         $identifier = sanitize_user( $identifier, true );
 
         if ( empty( $identifier ) ) {
@@ -178,6 +191,10 @@ class Auth_Flow_Service {
      * @return array|WP_Error Response payload or a WordPress error object.
      */
     public function register_user( array $payload ) {
+        if ( ! Settings::is_enabled() ) {
+            return new WP_Error( 'otp_login_disabled', __( 'The OTP login form is currently disabled.', 'joinotify-otp-login' ) );
+        }
+
         $email = sanitize_email( $payload['email'] ?? '' );
         $password = (string) ( $payload['password'] ?? '' );
         $username = sanitize_user( $payload['username'] ?? '', true );

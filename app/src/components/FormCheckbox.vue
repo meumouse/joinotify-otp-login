@@ -44,7 +44,7 @@ function onChange(event) {
 
 <template>
   <label
-    class="group flex cursor-pointer items-center gap-3 select-none aria-disabled:cursor-not-allowed"
+    class="joinotify-otp-login__checkbox group flex cursor-pointer items-center gap-3 select-none aria-disabled:cursor-not-allowed"
     :for="props.id"
   >
     <div>
@@ -58,10 +58,7 @@ function onChange(event) {
         @change="onChange"
       />
       <div
-        class="grid size-5 place-items-center rounded-md border border-slate-200 bg-white transition
-               peer-focus:border-indigo-300 peer-focus:ring-4 peer-focus:ring-indigo-500/20
-               group-hover:border-indigo-300 peer-checked:border-indigo-600 peer-checked:bg-indigo-600
-               peer-disabled:border-slate-100 peer-disabled:bg-slate-50
+        class="joinotify-otp-login__checkbox-box grid size-5 place-items-center rounded-md border bg-white transition
                [&>svg]:hidden [&>svg]:size-3.5 [&>svg]:text-white peer-checked:[&>svg]:block"
       >
         <svg

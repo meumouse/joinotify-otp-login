@@ -3,6 +3,7 @@
 namespace MeuMouse\Joinotify\Otp_Login\Views;
 
 use MeuMouse\Joinotify\Otp_Login\Views\Templates;
+use MeuMouse\Joinotify\Otp_Login\Support\Settings;
 
 defined('ABSPATH') || exit;
 
@@ -13,6 +14,10 @@ class Shortcodes {
     }
 
     public function render_shortcode( $atts ) {
+        if ( ! Settings::is_enabled() ) {
+            return '';
+        }
+
         $atts = shortcode_atts(
             array(
                 'redirect' => '',

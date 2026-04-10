@@ -203,9 +203,9 @@ final class Plugin {
 			'init' => array(
 				'MeuMouse\\Joinotify\\Otp_Login\\Core\\Assets',
 				'MeuMouse\\Joinotify\\Otp_Login\\Views\\Shortcodes',
-				'MeuMouse\\Joinotify\\Otp_Login\\Admin\\Settings_Page',
 				'MeuMouse\\Joinotify\\Otp_Login\\Integrations\\Joinotify',
 				'MeuMouse\\Joinotify\\Otp_Login\\Integrations\\Woocommerce',
+				'MeuMouse\\Joinotify\\Otp_Login\\Admin\\Default_Options',
 			),
 			'wp_loaded' => array(
 				'MeuMouse\\Joinotify\\Otp_Login\\Core\\Ajax',

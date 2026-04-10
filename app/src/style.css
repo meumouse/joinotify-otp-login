@@ -88,6 +88,38 @@
   .joinotify-otp-login__button-secondary:focus {
     box-shadow: 0 0 0 4px color-mix(in srgb, var(--joinotify-primary) 10%, transparent);
   }
+
+  .joinotify-otp-login__checkbox-box {
+    border-color: color-mix(in srgb, var(--joinotify-primary) 18%, #cbd5e1);
+  }
+
+  .joinotify-otp-login__checkbox .peer:focus-visible + .joinotify-otp-login__checkbox-box,
+  .joinotify-otp-login__checkbox .peer:focus + .joinotify-otp-login__checkbox-box {
+    border-color: var(--joinotify-primary);
+    box-shadow: 0 0 0 4px color-mix(in srgb, var(--joinotify-primary) 20%, transparent);
+  }
+
+  .joinotify-otp-login__checkbox:hover .joinotify-otp-login__checkbox-box {
+    border-color: color-mix(in srgb, var(--joinotify-primary) 35%, #cbd5e1);
+  }
+
+  .joinotify-otp-login__checkbox .peer:checked + .joinotify-otp-login__checkbox-box {
+    border-color: var(--joinotify-primary);
+    background-color: var(--joinotify-primary);
+  }
+
+  .joinotify-otp-login__checkbox .peer:disabled + .joinotify-otp-login__checkbox-box {
+    border-color: #f1f5f9;
+    background-color: #f8fafc;
+  }
+
+  .joinotify-otp-login__forgot-link {
+    color: var(--joinotify-primary);
+  }
+
+  .joinotify-otp-login__forgot-link:hover {
+    color: color-mix(in srgb, var(--joinotify-primary) 84%, black);
+  }
 }
 
 .joinotify-otp-settings {
