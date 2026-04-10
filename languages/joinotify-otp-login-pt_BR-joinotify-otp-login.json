@@ -7,6 +7,9 @@
         "lang": "pt_BR",
         "plural-forms": "nplurals=2; plural=(n != 1);"
       },
+      "%": [
+        "%"
+      ],
       "<strong>Joinotify OTP Login</strong> requires PHP 7.4 or higher. Contact your hosting provider to upgrade PHP.": [
         "<strong>O login OTP do Joinotify</strong> requer PHP 7.4 ou superior. Entre em contato com seu provedor de hospedagem para atualizar o PHP."
       ],
@@ -31,6 +34,12 @@
       "Back to WhatsApp": [
         "Voltar ao WhatsApp"
       ],
+      "Base": [
+        "Base"
+      ],
+      "Base color": [
+        "Cor base"
+      ],
       "Border radius": [
         "raio da fronteira"
       ],
@@ -40,11 +49,17 @@
       "Change number": [
         "Alterar número"
       ],
+      "Choose a registered Joinotify number to send OTPs.": [
+        "Escolha um número Joinotify registrado para enviar os códigos OTP."
+      ],
       "Click here to log in": [
         "Clique aqui para iniciar sessão"
       ],
       "Code digit %d": [
         "Dígito de código %d"
+      ],
+      "Color palette": [
+        "Paleta de cores"
       ],
       "Configure": [
         "Configurar"
@@ -52,11 +67,23 @@
       "Control the rounding of cards and form fields.": [
         "Controle o arredondamento de cartões e campos de formulário."
       ],
+      "Current sender: %s": [
+        "Remetente atual: %s"
+      ],
       "Define the primary color, border radius, and OTP sender phone number.": [
         "Defina a cor principal, o raio da borda e o número de telefone do remetente do OTP."
       ],
+      "Defines the rounding applied to fields, buttons, and other login elements.": [
+        "Define o arredondamento aplicado a campos, botões e outros elementos de login."
+      ],
       "Documentation": [
         "Documentação"
+      ],
+      "Element border radius": [
+        "raio da borda do elemento"
+      ],
+      "EM": [
+        "EM"
       ],
       "Email": [
         "E-mail"
@@ -66,6 +93,12 @@
       ],
       "Enable JavaScript to use login with WhatsApp or email and password.": [
         "Habilite o JavaScript para usar o login com WhatsApp ou com e-mail e senha."
+      ],
+      "Enable OTP login form display": [
+        "Ativar a exibição do formulário de login OTP"
+      ],
+      "Enable this option to show the OTP login form on Joinotify-integrated screens.": [
+        "Ative esta opção para exibir o formulário de login OTP nas telas integradas ao Joinotify."
       ],
       "Enter a password to create the account.": [
         "Digite uma senha para criar a conta."
@@ -100,6 +133,9 @@
       "Enter your password.": [
         "Digite sua senha."
       ],
+      "Fechar": [
+        "Fechar"
+      ],
       "Fill in the email or username and password.": [
         "Insira o e-mail ou nome de usuário e a senha."
       ],
@@ -130,6 +166,12 @@
       "Invalid request nonce.": [
         "Nonce de solicitação inválido."
       ],
+      "Joinotify OTP Login - Passwordless authentication": [
+        "Login OTP do Joinotify - Autenticação sem senha"
+      ],
+      "Let your users log in securely with a verification code sent via WhatsApp through Joinotify, offering a fast passwordless experience.": [
+        "Permita que seus usuários façam login com segurança usando um código de verificação enviado via WhatsApp através do Joinotify, oferecendo uma experiência rápida e sem senha."
+      ],
       "Log in": [
         "Conecte-se"
       ],
@@ -148,6 +190,12 @@
       "Or sign in with email": [
         "Ou faça login com e-mail"
       ],
+      "OTP Login - Passwordless authentication": [
+        "Login OTP - Autenticação sem senha"
+      ],
+      "OTP Login integration settings": [
+        "Configurações de integração de login OTP"
+      ],
       "OTP Login Settings": [
         "Configurações de login OTP"
       ],
@@ -157,6 +205,9 @@
       "Phone number": [
         "Número de telefone"
       ],
+      "Pixel": [
+        "Pixel"
+      ],
       "Please enter a number": [
         "Por favor, insira um número."
       ],
@@ -165,6 +216,9 @@
       ],
       "Register": [
         "Cadastre-se"
+      ],
+      "REM": [
+        "REM"
       ],
       "Remember me": [
         "Lembre de mim"
@@ -187,6 +241,12 @@
       "Secure access": [
         "Acesso seguro"
       ],
+      "Select primary color": [
+        "Selecione a cor primária."
+      ],
+      "Select sender phone": [
+        "Selecione o telefone do remetente"
+      ],
       "Select which Joinotify number will be used to send OTP codes.": [
         "Selecione qual número Joinotify será usado para enviar os códigos OTP."
       ],
@@ -195,6 +255,9 @@
       ],
       "Sending...": [
         "Enviando..."
+      ],
+      "Shade %s": [
+        "Sombra %s"
       ],
       "Show password": [
         "Mostrar senha"
@@ -205,8 +268,14 @@
       "The code you entered is invalid or has expired.": [
         "O código que você inseriu é inválido ou expirou."
       ],
+      "The OTP login form is currently disabled.": [
+        "O formulário de login OTP está temporariamente desativado."
+      ],
       "The palette is generated automatically from the base color to keep the login, buttons, and focus states visually consistent.": [
         "A paleta de cores é gerada automaticamente a partir da cor base para manter a consistência visual do login, dos botões e dos estados de foco."
+      ],
+      "The primary color generates the base palette. You can manually adjust each saved shade.": [
+        "A cor primária gera a paleta base. Você pode ajustar manualmente cada tonalidade salva."
       ],
       "This color automatically generates the full theme scale.": [
         "Essa cor gera automaticamente a escala completa do tema."
@@ -219,6 +288,9 @@
       ],
       "Use email and password": [
         "Use o e-mail e a senha."
+      ],
+      "Use the first available sender": [
+        "Use o primeiro remetente disponível."
       ],
       "Use your phone number to receive a login code and continue.": [
         "Use seu número de telefone para receber um código de acesso e continue."

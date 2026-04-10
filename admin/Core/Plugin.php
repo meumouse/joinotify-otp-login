@@ -92,6 +92,9 @@ final class Plugin {
 		// Keep the plugin row meta links disabled until the docs destination is confirmed.
 		// add_filter( 'plugin_row_meta', array( $this, 'add_row_meta_links' ), 10, 4 );
 
+		// Translate the plugin header metadata shown in the Plugins screen.
+		add_filter( 'all_plugins', array( $this, 'translate_plugin_header_data' ) );
+
 		// Load plugin text domain.
 		add_action( 'init', array( $this, 'load_text_domain' ) );
 
@@ -334,5 +337,28 @@ final class Plugin {
 		}
 
 		return $plugin_meta;
+	}
+
+
+	/**
+	 * Translate the plugin name and description shown in the Plugins screen.
+	 *
+	 * WordPress reads these values from the plugin header, but the header itself
+	 * cannot call translation functions. This filter injects translated values
+	 * at runtime so the strings can still be included in the manual string map.
+	 *
+	 * @since 1.0.0
+	 * @param array<string,array<string,mixed>> $plugins All plugins indexed by basename.
+	 * @return array<string,array<string,mixed>> Filtered plugins list.
+	 */
+	public function translate_plugin_header_data( $plugins ) {
+		if ( ! isset( $plugins[ $this->basename ] ) || ! is_array( $plugins[ $this->basename ] ) ) {
+			return $plugins;
+		}
+
+		$plugins[ $this->basename ]['Name'] = __( 'Joinotify OTP Login - Passwordless authentication', 'joinotify-otp-login' );
+		$plugins[ $this->basename ]['Description'] = __( 'Let your users log in securely with a verification code sent via WhatsApp through Joinotify, offering a fast passwordless experience.', 'joinotify-otp-login' );
+
+		return $plugins;
 	}
 }

@@ -6,7 +6,11 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "x-domain: joinotify-otp-login\n"
 
-#: admin/Core/Plugin.php:132
+#: admin/Integrations/Joinotify.php:190
+msgid "%"
+msgstr "%"
+
+#: admin/Core/Plugin.php:135
 msgid ""
 "<strong>Joinotify OTP Login</strong> requires PHP 7.4 or higher. Contact "
 "your hosting provider to upgrade PHP."
@@ -14,7 +18,7 @@ msgstr ""
 "<strong>O login OTP do Joinotify</strong> requer PHP 7.4 ou superior. Entre "
 "em contato com seu provedor de hospedagem para atualizar o PHP."
 
-#: admin/Core/Plugin.php:149
+#: admin/Core/Plugin.php:152
 msgid ""
 "<strong>Joinotify OTP Login</strong> requires the "
 "<strong>Joinotify</strong> plugin to be active."
@@ -22,19 +26,19 @@ msgstr ""
 "<strong>O login OTP do Joinotify</strong> requer que o plugin "
 "<strong>Joinotify</strong> esteja ativo."
 
-#: admin/Services/Auth_Flow_Service.php:229
+#: admin/Services/Auth_Flow_Service.php:246
 msgid "Account created successfully."
 msgstr "Conta criada com sucesso."
 
-#: templates/checkout/form-login.php:27
+#: templates/checkout/form-login.php:31
 msgid "Already have an account?"
 msgstr "Já tem uma conta?"
 
-#: admin/Services/Auth_Flow_Service.php:199
+#: admin/Services/Auth_Flow_Service.php:216
 msgid "An account is already registered with this email address."
 msgstr "Já existe uma conta registrada com este endereço de e-mail."
 
-#: admin/Services/Auth_Flow_Service.php:203
+#: admin/Services/Auth_Flow_Service.php:220
 msgid "An account is already registered with this phone number."
 msgstr "Já existe uma conta registrada com este número de telefone."
 
@@ -42,9 +46,17 @@ msgstr "Já existe uma conta registrada com este número de telefone."
 msgid "Automatically generated scale"
 msgstr "Escala gerada automaticamente"
 
-#: templates/shared/otp-login-form.php:44
+#: templates/shared/otp-login-form.php:48
 msgid "Back to WhatsApp"
 msgstr "Voltar ao WhatsApp"
+
+#: admin/Integrations/Joinotify.php:153
+msgid "Base"
+msgstr "Base"
+
+#: admin/Integrations/Joinotify.php:128
+msgid "Base color"
+msgstr "Cor base"
 
 #: admin/Views/Settings.php:55
 msgid "Border radius"
@@ -54,19 +66,28 @@ msgstr "raio da fronteira"
 msgid "Buttons, focus states, and highlights follow your brand."
 msgstr "Botões, estados de foco e destaques seguem a sua marca."
 
-#: templates/shared/otp-login-form.php:34
+#: templates/shared/otp-login-form.php:38
 msgid "Change number"
 msgstr "Alterar número"
 
-#: templates/checkout/form-login.php:28
+#: admin/Integrations/Joinotify.php:200
+msgid "Choose a registered Joinotify number to send OTPs."
+msgstr "Escolha um número Joinotify registrado para enviar os códigos OTP."
+
+#: templates/checkout/form-login.php:32
 msgid "Click here to log in"
 msgstr "Clique aqui para iniciar sessão"
 
-#: templates/shared/otp-login-form.php:28
+#: templates/shared/otp-login-form.php:32
 msgid "Code digit %d"
 msgstr "Dígito de código %d"
 
-#: admin/Core/Plugin.php:308
+#: admin/Integrations/Joinotify.php:117
+msgid "Color palette"
+msgstr "Paleta de cores"
+
+#: admin/Core/Plugin.php:312
+#: admin/Integrations/Joinotify.php:91
 msgid "Configure"
 msgstr "Configurar"
 
@@ -74,85 +95,119 @@ msgstr "Configurar"
 msgid "Control the rounding of cards and form fields."
 msgstr "Controle o arredondamento de cartões e campos de formulário."
 
+#: admin/Integrations/Joinotify.php:213
+msgid "Current sender: %s"
+msgstr "Remetente atual: %s"
+
 #: admin/Views/Settings.php:18
 msgid "Define the primary color, border radius, and OTP sender phone number."
 msgstr ""
 "Defina a cor principal, o raio da borda e o número de telefone do remetente "
 "do OTP."
 
-#: admin/Core/Plugin.php:329
+#: admin/Integrations/Joinotify.php:173
+msgid "Defines the rounding applied to fields, buttons, and other login elements."
+msgstr ""
+"Define o arredondamento aplicado a campos, botões e outros elementos de "
+"login."
+
+#: admin/Core/Plugin.php:333
 msgid "Documentation"
 msgstr "Documentação"
+
+#: admin/Integrations/Joinotify.php:172
+msgid "Element border radius"
+msgstr "raio da borda do elemento"
+
+#: admin/Integrations/Joinotify.php:188
+msgid "EM"
+msgstr "EM"
 
 #: templates/myaccount/form-login.php:71
 msgid "Email"
 msgstr "E-mail"
 
-#: templates/shared/otp-login-form.php:36
+#: templates/shared/otp-login-form.php:40
 msgid "Email or username"
 msgstr "E-mail ou nome de usuário"
 
-#: templates/shared/otp-login-form.php:80
+#: templates/shared/otp-login-form.php:86
 msgid "Enable JavaScript to use login with WhatsApp or email and password."
 msgstr "Habilite o JavaScript para usar o login com WhatsApp ou com e-mail e senha."
 
-#: admin/Services/Auth_Flow_Service.php:191
+#: admin/Integrations/Joinotify.php:105
+msgid "Enable OTP login form display"
+msgstr "Ativar a exibição do formulário de login OTP"
+
+#: admin/Integrations/Joinotify.php:106
+msgid ""
+"Enable this option to show the OTP login form on Joinotify-integrated "
+"screens."
+msgstr ""
+"Ative esta opção para exibir o formulário de login OTP nas telas integradas "
+"ao Joinotify."
+
+#: admin/Services/Auth_Flow_Service.php:208
 msgid "Enter a password to create the account."
 msgstr "Digite uma senha para criar a conta."
 
-#: admin/Services/Auth_Flow_Service.php:187
+#: admin/Services/Auth_Flow_Service.php:204
 msgid "Enter a valid email address."
 msgstr "Insira um endereço de e-mail válido."
 
-#: admin/Services/Auth_Flow_Service.php:64
-#: admin/Services/Auth_Flow_Service.php:195
-#: templates/shared/otp-login-form.php:50
+#: admin/Services/Auth_Flow_Service.php:69
+#: admin/Services/Auth_Flow_Service.php:212
+#: templates/shared/otp-login-form.php:54
 msgid "Enter a valid phone number with country code."
 msgstr "Insira um número de telefone válido com o código do país."
 
-#: templates/shared/otp-login-form.php:22
+#: templates/shared/otp-login-form.php:26
 msgid "Enter a valid phone number. The country code will be detected automatically."
 msgstr ""
 "Digite um número de telefone válido. O código do país será detectado "
 "automaticamente."
 
-#: admin/Services/Auth_Flow_Service.php:146
+#: admin/Services/Auth_Flow_Service.php:159
 msgid "Enter a valid username or email address."
 msgstr "Insira um nome de usuário ou endereço de e-mail válido."
 
-#: templates/shared/otp-login-form.php:27
+#: templates/shared/otp-login-form.php:31
 msgid "Enter the %d-digit code sent to your WhatsApp."
 msgstr "Digite o código de %d dígitos enviado para o seu WhatsApp."
 
-#: templates/shared/otp-login-form.php:26
+#: templates/shared/otp-login-form.php:30
 msgid "Enter the access code"
 msgstr "Digite o código de acesso"
 
-#: templates/shared/otp-login-form.php:52
+#: templates/shared/otp-login-form.php:56
 msgid "Enter the verification code you received."
 msgstr "Digite o código de verificação que você recebeu."
 
-#: templates/shared/otp-login-form.php:37
+#: templates/shared/otp-login-form.php:41
 msgid "Enter your email or username"
 msgstr "Insira seu e-mail ou nome de usuário."
 
-#: templates/shared/otp-login-form.php:39
+#: templates/shared/otp-login-form.php:43
 msgid "Enter your password"
 msgstr "Digite sua senha"
 
-#: admin/Services/Auth_Flow_Service.php:150
+#: admin/Services/Auth_Flow_Service.php:163
 msgid "Enter your password."
 msgstr "Digite sua senha."
 
-#: templates/shared/otp-login-form.php:53
+#: admin/Integrations/Joinotify.php:97
+msgid "Fechar"
+msgstr "Fechar"
+
+#: templates/shared/otp-login-form.php:57
 msgid "Fill in the email or username and password."
 msgstr "Insira o e-mail ou nome de usuário e a senha."
 
-#: admin/Services/Auth_Flow_Service.php:110
+#: admin/Services/Auth_Flow_Service.php:119
 msgid "Fill in the phone number and the code you received."
 msgstr "Insira o número de telefone e o código que você recebeu."
 
-#: templates/shared/otp-login-form.php:42
+#: templates/shared/otp-login-form.php:46
 msgid "Forgot your password?"
 msgstr "Esqueceu sua senha?"
 
@@ -160,7 +215,7 @@ msgstr "Esqueceu sua senha?"
 msgid "Hero preview"
 msgstr "Prévia do herói"
 
-#: templates/shared/otp-login-form.php:40
+#: templates/shared/otp-login-form.php:44
 msgid "Hide password"
 msgstr "Ocultar senha"
 
@@ -172,11 +227,11 @@ msgstr "Cores do tema em destaque"
 msgid "Include the country code so the number is normalized correctly."
 msgstr "Inclua o código do país para que o número seja normalizado corretamente."
 
-#: templates/shared/otp-login-form.php:47
+#: templates/shared/otp-login-form.php:51
 msgid "Invalid country code"
 msgstr "Código de país inválido"
 
-#: templates/shared/otp-login-form.php:46
+#: templates/shared/otp-login-form.php:50
 msgid "Invalid number"
 msgstr "Número inválido"
 
@@ -184,22 +239,36 @@ msgstr "Número inválido"
 msgid "Invalid request nonce."
 msgstr "Nonce de solicitação inválido."
 
+#: admin/Core/Plugin.php:359
+msgid "Joinotify OTP Login - Passwordless authentication"
+msgstr "Joinotify OTP Login - Autenticação sem senha"
+
+#: admin/Core/Plugin.php:360
+#: admin/Integrations/Joinotify.php:39
+msgid ""
+"Let your users log in securely with a verification code sent via WhatsApp "
+"through Joinotify, offering a fast passwordless experience."
+msgstr ""
+"Permita que seus usuários façam login com segurança usando um código de "
+"verificação enviado via WhatsApp através do Joinotify, oferecendo uma "
+"experiência rápida e sem senha."
+
 #: templates/myaccount/form-login.php:26
 msgid "Log in"
 msgstr "Conecte-se"
 
-#: templates/checkout/form-login.php:42
+#: admin/Integrations/Woocommerce.php:127
 msgid "Log in to continue"
 msgstr "Faça login para continuar"
 
 #: templates/myaccount/form-login.php:36
-#: templates/shared/otp-login-form.php:15
-#: templates/shared/otp-login-form.php:21
+#: templates/shared/otp-login-form.php:16
+#: templates/shared/otp-login-form.php:25
 msgid "Log in with WhatsApp"
 msgstr "Faça login com o WhatsApp"
 
-#: admin/Services/Auth_Flow_Service.php:128
-#: admin/Services/Auth_Flow_Service.php:168
+#: admin/Services/Auth_Flow_Service.php:137
+#: admin/Services/Auth_Flow_Service.php:181
 msgid "Login successful."
 msgstr "Login efetuado com sucesso."
 
@@ -211,9 +280,17 @@ msgstr ""
 "Nenhum número de telefone do remetente foi encontrado no Joinotify. "
 "Adicione um número para habilitar o envio do código OTP."
 
-#: templates/shared/otp-login-form.php:35
+#: templates/shared/otp-login-form.php:39
 msgid "Or sign in with email"
 msgstr "Ou faça login com e-mail"
+
+#: admin/Integrations/Joinotify.php:38
+msgid "OTP Login - Passwordless authentication"
+msgstr "Login OTP - Autenticação sem senha"
+
+#: admin/Integrations/Joinotify.php:96
+msgid "OTP Login integration settings"
+msgstr "Configurações de integração de login OTP"
 
 #: admin/Admin/Settings_Page.php:30
 #: admin/Admin/Settings_Page.php:31
@@ -222,17 +299,21 @@ msgid "OTP Login Settings"
 msgstr "Configurações de login OTP"
 
 #: templates/myaccount/form-login.php:89
-#: templates/shared/otp-login-form.php:38
+#: templates/shared/otp-login-form.php:42
 msgid "Password"
 msgstr "Senha"
 
 #: templates/myaccount/form-login.php:81
 #: templates/shared/intl-phone-field.php:16
-#: templates/shared/otp-login-form.php:23
+#: templates/shared/otp-login-form.php:27
 msgid "Phone number"
 msgstr "Número de telefone"
 
-#: templates/shared/otp-login-form.php:45
+#: admin/Integrations/Joinotify.php:187
+msgid "Pixel"
+msgstr "Pixel"
+
+#: templates/shared/otp-login-form.php:49
 msgid "Please enter a number"
 msgstr "Por favor, insira um número."
 
@@ -245,7 +326,11 @@ msgstr "Cor primária"
 msgid "Register"
 msgstr "Cadastre-se"
 
-#: templates/shared/otp-login-form.php:29
+#: admin/Integrations/Joinotify.php:189
+msgid "REM"
+msgstr "REM"
+
+#: templates/shared/otp-login-form.php:33
 msgid "Remember me"
 msgstr "Lembre de mim"
 
@@ -255,11 +340,11 @@ msgstr "Lembre de mim"
 msgid "Required"
 msgstr "Obrigatório"
 
-#: templates/shared/otp-login-form.php:32
+#: templates/shared/otp-login-form.php:36
 msgid "Resend code"
 msgstr "Reenviar código"
 
-#: templates/shared/otp-login-form.php:30
+#: templates/shared/otp-login-form.php:34
 msgid "Resend code in"
 msgstr "Reenviar código em"
 
@@ -267,13 +352,21 @@ msgstr "Reenviar código em"
 msgid "Save settings"
 msgstr "Salvar configurações"
 
-#: templates/shared/otp-login-form.php:31
+#: templates/shared/otp-login-form.php:35
 msgid "seconds"
 msgstr "segundos"
 
-#: templates/shared/otp-login-form.php:20
+#: templates/shared/otp-login-form.php:24
 msgid "Secure access"
 msgstr "Acesso seguro"
+
+#: admin/Integrations/Joinotify.php:146
+msgid "Select primary color"
+msgstr "Selecione a cor primária."
+
+#: admin/Integrations/Joinotify.php:199
+msgid "Select sender phone"
+msgstr "Selecione o telefone do remetente"
 
 #: admin/Views/Settings.php:70
 msgid "Select which Joinotify number will be used to send OTP codes."
@@ -283,21 +376,32 @@ msgstr "Selecione qual número Joinotify será usado para enviar os códigos OTP
 msgid "Sender phone number"
 msgstr "Número de telefone do remetente"
 
-#: templates/shared/otp-login-form.php:24
+#: templates/shared/otp-login-form.php:28
 msgid "Sending..."
 msgstr "Enviando..."
 
-#: templates/shared/otp-login-form.php:41
+#: admin/Integrations/Joinotify.php:153
+msgid "Shade %s"
+msgstr "Sombra %s"
+
+#: templates/shared/otp-login-form.php:45
 msgid "Show password"
 msgstr "Mostrar senha"
 
-#: templates/shared/otp-login-form.php:43
+#: templates/shared/otp-login-form.php:47
 msgid "Sign in"
 msgstr "Entrar"
 
-#: admin/Services/Auth_Flow_Service.php:120
+#: admin/Services/Auth_Flow_Service.php:129
 msgid "The code you entered is invalid or has expired."
 msgstr "O código que você inseriu é inválido ou expirou."
+
+#: admin/Services/Auth_Flow_Service.php:63
+#: admin/Services/Auth_Flow_Service.php:112
+#: admin/Services/Auth_Flow_Service.php:153
+#: admin/Services/Auth_Flow_Service.php:195
+msgid "The OTP login form is currently disabled."
+msgstr "O formulário de login OTP está temporariamente desativado."
 
 #: admin/Views/Settings.php:19
 msgid ""
@@ -307,27 +411,39 @@ msgstr ""
 "A paleta de cores é gerada automaticamente a partir da cor base para manter "
 "a consistência visual do login, dos botões e dos estados de foco."
 
+#: admin/Integrations/Joinotify.php:118
+msgid ""
+"The primary color generates the base palette. You can manually adjust each "
+"saved shade."
+msgstr ""
+"A cor primária gera a paleta base. Você pode ajustar manualmente cada "
+"tonalidade salva."
+
 #: admin/Views/Settings.php:50
 msgid "This color automatically generates the full theme scale."
 msgstr "Essa cor gera automaticamente a escala completa do tema."
 
-#: templates/shared/otp-login-form.php:49
+#: templates/shared/otp-login-form.php:53
 msgid "Too long"
 msgstr "Muito longo"
 
-#: templates/shared/otp-login-form.php:48
+#: templates/shared/otp-login-form.php:52
 msgid "Too short"
 msgstr "Muito curto"
 
-#: templates/shared/otp-login-form.php:25
+#: templates/shared/otp-login-form.php:29
 msgid "Use email and password"
 msgstr "Use o e-mail e a senha."
+
+#: admin/Integrations/Joinotify.php:204
+msgid "Use the first available sender"
+msgstr "Use o primeiro remetente disponível."
 
 #: templates/myaccount/form-login.php:37
 msgid "Use your phone number to receive a login code and continue."
 msgstr "Use seu número de telefone para receber um código de acesso e continue."
 
-#: templates/checkout/form-login.php:43
+#: admin/Integrations/Woocommerce.php:128
 msgid ""
 "Use your phone number to receive the code on WhatsApp or sign in with email "
 "and password."
@@ -339,7 +455,7 @@ msgstr ""
 msgid "Username"
 msgstr "Nome de usuário"
 
-#: templates/shared/otp-login-form.php:33
+#: templates/shared/otp-login-form.php:37
 msgid "Verifying..."
 msgstr "Verificando..."
 
@@ -347,21 +463,21 @@ msgstr "Verificando..."
 msgid "Visual customization"
 msgstr "personalização visual"
 
-#: admin/Services/Auth_Flow_Service.php:163
+#: admin/Services/Auth_Flow_Service.php:176
 msgid "We could not authenticate with that username or email and password."
 msgstr "Não foi possível autenticar com esse nome de usuário, e-mail e senha."
 
-#: templates/shared/otp-login-form.php:51
+#: templates/shared/otp-login-form.php:55
 msgid "We could not complete the request right now. Please try again."
 msgstr ""
 "Não foi possível concluir a solicitação neste momento. Por favor, tente "
 "novamente."
 
-#: admin/Services/Auth_Flow_Service.php:116
+#: admin/Services/Auth_Flow_Service.php:125
 msgid "We could not find an account for this phone number."
 msgstr "Não foi possível encontrar uma conta associada a este número de telefone."
 
-#: admin/Services/Auth_Flow_Service.php:72
+#: admin/Services/Auth_Flow_Service.php:77
 msgid ""
 "We could not find an account with this phone number. Use email and password "
 "to log in."
@@ -369,7 +485,7 @@ msgstr ""
 "Não foi possível encontrar uma conta com este número de telefone. Utilize o "
 "seu e-mail e senha para iniciar sessão."
 
-#: admin/Services/Auth_Flow_Service.php:80
+#: admin/Services/Auth_Flow_Service.php:85
 msgid ""
 "We could not send the code via WhatsApp right now. Make sure there is an "
 "active sender and that Joinotify is connected."
@@ -377,7 +493,7 @@ msgstr ""
 "Não foi possível enviar o código pelo WhatsApp neste momento. Certifique-se "
 "de que haja um remetente ativo e que o Joinotify esteja conectado."
 
-#: admin/Services/Auth_Flow_Service.php:87
+#: admin/Services/Auth_Flow_Service.php:92
 msgid "We sent a code to WhatsApp %s."
 msgstr "Enviamos um código para o WhatsApp %s."
 
@@ -389,6 +505,6 @@ msgstr "Login do WhatsApp"
 msgid "You do not have permission to access this page."
 msgstr "Você não tem permissão para acessar esta página."
 
-#: admin/Validations/Otp_Validation.php:106
+#: admin/Validations/Otp_Validation.php:120
 msgid "Your access code is: %s. This code expires in 5 minutes."
 msgstr "Seu código de acesso é: %s. Este código expira em 5 minutos."
