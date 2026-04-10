@@ -6,6 +6,7 @@
  * @var string $redirect_url
  * @var string $title
  * @var string $description
+ * @var string $root_class
  */
 
 defined('ABSPATH') || exit;
@@ -15,6 +16,9 @@ $redirect_url = $redirect_url ?? home_url( '/' );
 $title = $title ?? __( 'Log in with WhatsApp', 'joinotify-otp-login' );
 $description = $description ?? '';
 $show_header = isset( $show_header ) ? (bool) $show_header : true;
+$hide_until_modal = 'checkout' === $context;
+$root_class = trim( (string) ( $root_class ?? '' ) );
+$root_class = $root_class ? ' ' . $root_class : '';
 $otp_length = (int) apply_filters( 'Joinotify/Otp_Login/Otp_Length', 6 );
 $i18n = array(
 	'Secure access' => __( 'Secure access', 'joinotify-otp-login' ),
@@ -55,8 +59,9 @@ $i18n = array(
 ?>
 
 <div
-	class="joinotify-otp-login mx-auto w-full max-w-2xl"
+	class="joinotify-otp-login mx-auto w-full max-w-2xl<?php echo esc_attr( $root_class ); ?>"
 	data-joinotify-otp-login
+	data-hidden-until-modal="<?php echo esc_attr( $hide_until_modal ? '1' : '0' ); ?>"
 	data-context="<?php echo esc_attr( $context ); ?>"
 	data-otp-length="<?php echo esc_attr( $otp_length ); ?>"
 	data-default-country="<?php echo esc_attr( apply_filters( 'Joinotify/Otp_Login/Default_Country', 'br' ) ); ?>"
@@ -65,6 +70,7 @@ $i18n = array(
 	data-title="<?php echo esc_attr( $title ); ?>"
 	data-description="<?php echo esc_attr( $description ); ?>"
 	data-i18n="<?php echo esc_attr( wp_json_encode( $i18n ) ); ?>"
+	style="<?php echo esc_attr( $hide_until_modal ? 'display:none;' : '' ); ?>"
 >
 	<noscript>
 		<div class="rounded-[0.375rem] border border-slate-200 bg-white p-6 text-slate-700 shadow-[0_24px_80px_rgba(15,23,42,0.12)]">

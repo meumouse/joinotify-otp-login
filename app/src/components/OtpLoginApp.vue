@@ -632,7 +632,7 @@ onBeforeUnmount(() => {
   <div
     ref="scope"
     :style="rootStyle"
-    class="joinotify-otp-login__surface relative isolate w-full shadow-none bg-white/95 px-6 py-8 sm:px-8 sm:py-9"
+    class="joinotify-otp-login__surface relative isolate w-full shadow-none bg-white/95"
   >
     <div class="relative z-10 mx-auto flex w-full max-w-md flex-col gap-6">
       <div v-if="showHeader" class="space-y-2 text-center">
@@ -667,7 +667,7 @@ onBeforeUnmount(() => {
             @input="syncPhoneFromInput"
           />
 
-          <div class="flex flex-col gap-3">
+          <div class="flex flex-col gap-5">
             <BaseButton
               :disabled="loading"
               type="submit"

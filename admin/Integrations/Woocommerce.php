@@ -4,6 +4,7 @@ namespace MeuMouse\Joinotify\Otp_Login\Integrations;
 
 use MeuMouse\Joinotify\Otp_Login\Repositories\User_Repository;
 use MeuMouse\Joinotify\Otp_Login\Support\Phone_Utils;
+use MeuMouse\Joinotify\Otp_Login\Views\Templates;
 
 defined('ABSPATH') || exit;
 
@@ -33,8 +34,10 @@ class Woocommerce {
     public function __construct() {
         $this->users = new User_Repository();
 
-        add_filter( 'woocommerce_locate_template', array( $this, 'locate_template' ), 10, 3 );
-        add_action( 'woocommerce_edit_account_form', array( $this, 'render_account_phone_field' ), 5 );
+        add_filter( 'woocommerce_locate_template', array( $this, 'locate_template' ), 99, 3 );
+        add_action( 'flexify_checkout_before_layout', array( $this, 'disable_flexify_native_login_form' ), 1 );
+        add_action( 'woocommerce_login_form_start', array( $this, 'render_checkout_login_form' ) );
+        add_action( 'woocommerce_edit_account_form', array( $this, 'render_account_phone_field' ) );
         add_action( 'woocommerce_save_account_details', array( $this, 'save_account_phone_field' ), 20, 1 );
     }
 
@@ -93,6 +96,57 @@ class Woocommerce {
             data-initial-phone="<?php echo esc_attr( $current_phone ); ?>"
         ></div>
         <?php
+    }
+
+
+    /**
+     * Render the OTP login form on the WooCommerce checkout login hook.
+     *
+     * @since 1.0.0
+     * @return void
+     */
+    public function render_checkout_login_form() {
+        if ( ! function_exists( 'is_checkout' ) || ! is_checkout() || is_user_logged_in() ) {
+            return;
+        }
+
+        if ( ! class_exists( 'WC_Checkout' ) ) {
+            return;
+        }
+
+        Templates::render(
+            'shared/otp-login-form.php',
+            array(
+                'context' => 'checkout',
+                'redirect_url' => wc_get_checkout_url(),
+                'title' => __( 'Log in to continue', 'joinotify-otp-login' ),
+                'description' => __( 'Use your phone number to receive the code on WhatsApp or sign in with email and password.', 'joinotify-otp-login' ),
+                'show_header' => true,
+                'root_class' => 'woocommerce-form-login',
+            )
+        );
+    }
+
+
+    /**
+     * Remove the native Flexify checkout login template before it renders.
+     *
+     * This prevents Flexify from outputting its own login modal/template when
+     * our OTP login form is used on checkout.
+     *
+     * @since 1.0.0
+     * @return void
+     */
+    public function disable_flexify_native_login_form() {
+        if ( ! function_exists( 'is_checkout' ) || ! is_checkout() || is_user_logged_in() ) {
+            return;
+        }
+
+        if ( ! function_exists( 'remove_filters_with_method_name' ) ) {
+            return;
+        }
+
+        remove_filters_with_method_name( 'flexify_checkout_before_layout', 'load_form_login_template', 10 );
     }
 
 

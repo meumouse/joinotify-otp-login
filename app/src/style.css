@@ -44,7 +44,7 @@
   }
 
   .joinotify-otp-login__input.joinotify-otp-login__phone-input {
-    padding-left: 4rem !important;
+    padding-left: 5rem !important;
   }
 
   .joinotify-otp-login .iti__search-input {
@@ -77,6 +77,7 @@
 
   .joinotify-otp-login__button-secondary {
     border-radius: var(--joinotify-radius, 0.375rem);
+    border-style: solid;
   }
 
   .joinotify-otp-login__button-secondary:hover {

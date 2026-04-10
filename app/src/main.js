@@ -25,6 +25,34 @@ function readText(el, selector) {
 }
 
 /**
+ * Toggle the checkout login widget visibility while the modal is open.
+ *
+ * @since 1.0.0
+ * @param {boolean} visible Whether the widget should be shown.
+ * @return {void}
+ */
+function setCheckoutLoginVisibility(visible) {
+  document.querySelectorAll('[data-joinotify-otp-login][data-context="checkout"][data-hidden-until-modal="1"]').forEach((root) => {
+    root.style.display = visible ? '' : 'none';
+    root.setAttribute('aria-hidden', visible ? 'false' : 'true');
+  });
+}
+
+/**
+ * Check whether the checkout login modal is currently open.
+ *
+ * @since 1.0.0
+ * @return {boolean} True when the popup contains the checkout login widget.
+ */
+function isCheckoutLoginModalOpen() {
+  return Boolean(
+    document.querySelector(
+      '.mfp-content .woocommerce-form-login, .mfp-content [data-joinotify-otp-login][data-context="checkout"]',
+    ),
+  );
+}
+
+/**
  * Mount the Vue login application on a single DOM root.
  *
  * @since 1.0.0
@@ -90,10 +118,32 @@ function mountAccountPhoneField(root) {
  * @return {void}
  */
 document.addEventListener('DOMContentLoaded', () => {
-  document.querySelectorAll('[data-joinotify-otp-login]').forEach(mountOtpLoginApp);
+  document.querySelectorAll('[data-joinotify-otp-login]').forEach((root) => {
+    if (root.dataset.context === 'checkout' && root.dataset.hiddenUntilModal === '1') {
+      root.style.display = 'none';
+      root.setAttribute('aria-hidden', 'true');
+    }
+
+    mountOtpLoginApp(root);
+  });
+
   const accountPhoneRoot = document.getElementById('joinotify-account-phone');
 
   if (accountPhoneRoot) {
     mountAccountPhoneField(accountPhoneRoot);
+  }
+
+  if (window.jQuery && window.jQuery.magnificPopup) {
+    const $ = window.jQuery;
+
+    $(document).on('mfpOpen.joinotifyOtpLogin', () => {
+      if (isCheckoutLoginModalOpen()) {
+        setCheckoutLoginVisibility(true);
+      }
+    });
+
+    $(document).on('mfpClose.joinotifyOtpLogin', () => {
+      setCheckoutLoginVisibility(false);
+    });
   }
 });

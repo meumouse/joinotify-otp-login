@@ -56,7 +56,7 @@ class Otp_Validation {
      */
     public function __construct() {
         $this->otp_length = (int) apply_filters( 'Joinotify/Otp_Login/Otp_Length', self::OTP_LENGTH );
-        $this->otp_expiry_time = 300;
+        $this->otp_expiry_time = (int) apply_filters( 'Joinotify/Otp_Login/Otp_Expiry_Time', 300 );
     }
 
 
@@ -89,6 +89,20 @@ class Otp_Validation {
         $message = $this->set_message( $otp );
         $receiver = function_exists( 'joinotify_prepare_receiver' ) ? joinotify_prepare_receiver( preg_replace( '/\s+/', '', (string) $phone ) ) : $phone;
         $send_otp = joinotify_send_whatsapp_message_text( $sender, $receiver, $message );
+
+        if ( true === $send_otp || 201 === $send_otp || '201' === $send_otp ) {
+            do_action(
+                'Joinotify/Otp_Login/Otp_Sent',
+                array(
+                    'phone' => $phone,
+                    'otp' => $otp,
+                    'message' => $message,
+                    'sender' => $sender,
+                    'receiver' => $receiver,
+                    'expires' => $this->otp_expiry_time,
+                )
+            );
+        }
 
         return true === $send_otp || 201 === $send_otp || '201' === $send_otp;
     }
